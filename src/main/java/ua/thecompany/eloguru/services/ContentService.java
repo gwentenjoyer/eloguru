@@ -17,6 +17,4 @@ public interface ContentService {
     ContentDto updateContent(Long contentId, ContentInitDto contentInitDto);
 
     void deleteContentById(Long id);
-
-    boolean isAccountOwnsCourse(Long courseId, Long accountId);
 }
