@@ -8,7 +8,7 @@ import java.util.List;
 
 @Service
 public interface FeedbackService {
-    void saveFeedback(FeedbackInitDto feedbackInitDto);
+    void saveFeedback(FeedbackInitDto feedbackInitDto, Long ownerId);
 
     List<FeedbackDto> getFeedbacks(Long courseId);
 

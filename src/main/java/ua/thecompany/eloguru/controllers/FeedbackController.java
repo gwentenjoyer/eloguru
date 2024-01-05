@@ -31,8 +31,9 @@ public class FeedbackController {
     }
 
     @PostMapping
-    public ResponseEntity<FeedbackDto> saveFeedback(@Valid @RequestBody FeedbackInitDto feedbackInitDto){
-        feedbackService.saveFeedback(feedbackInitDto);
+    public ResponseEntity<FeedbackDto> saveFeedback(Principal principal, @Valid @RequestBody FeedbackInitDto feedbackInitDto){
+//        System.out.println(accountService.getIdByEmail(principal.getName()));
+        feedbackService.saveFeedback(feedbackInitDto, accountService.getIdByEmail(principal.getName()));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
@@ -47,6 +48,7 @@ public class FeedbackController {
 
     @PutMapping(value="/{id}")
     public ResponseEntity<FeedbackDto> updateFeedback(Principal principal, @Valid @RequestBody FeedbackInitDto feedbackInitDto, @PathVariable Long id){
+//        System.out.println(accountService.getIdByEmail(principal.getName()));
         if (feedbackService.isAccountOwnsFeedback(id, accountService.getIdByEmail(principal.getName()))) {
             feedbackService.updateFeedback(id, feedbackInitDto);
             return new ResponseEntity<>(HttpStatus.OK);

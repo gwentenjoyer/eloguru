@@ -26,4 +26,5 @@ public interface StudentService {
     Long getStudentId(Student student);
 
     Student getStudentModel(Long id);
+//    Student getStudentModelByAccoundId(Long id);
 }

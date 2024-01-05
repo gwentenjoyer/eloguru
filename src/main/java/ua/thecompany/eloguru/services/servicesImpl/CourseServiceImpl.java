@@ -43,9 +43,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     @Transactional
-    public void createCourse(CourseInitDto courseInitDto, Long teacherId) {
+    public void createCourse(CourseInitDto courseInitDto, Long teacherAccountId) {
         Course course = courseMapper.courseInitDtoToCourseModel(courseInitDto);
-        course.setTeacher(teacherService.getTeacherModelById(teacherId));
+        course.setTeacher(teacherService.getTeacherModelById(teacherAccountId));
         var res = courseRepository.save(course);
         log.info("Created new course with id: " + res.getId());
     }
@@ -197,6 +197,9 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public boolean isAccountOwnsCourse(Long courseId, Long accountId) {
+        System.out.println(courseRepository.findByIdAndActive(courseId, true).orElseThrow(EntityNotFoundException::new)
+                .getTeacher().getAccount().getId());
+
         return courseRepository.findByIdAndActive(courseId, true).orElseThrow(EntityNotFoundException::new)
                 .getTeacher().getAccount().getId() == accountId;
     }

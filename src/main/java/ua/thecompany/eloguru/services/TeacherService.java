@@ -23,4 +23,6 @@ public interface TeacherService {
     void deleteTeacherById(Long id);
 
     Long getTeacherId(Teacher teacher);
+
+//    Teacher getTeacherModelByAccoundId(Long id);
 }

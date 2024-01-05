@@ -10,6 +10,7 @@ import ua.thecompany.eloguru.dto.InitDto.AccountInitDto;
 import ua.thecompany.eloguru.dto.TeacherDto;
 import ua.thecompany.eloguru.mappers.TeacherMapper;
 import ua.thecompany.eloguru.model.EnumeratedRole;
+import ua.thecompany.eloguru.model.Student;
 import ua.thecompany.eloguru.model.Teacher;
 import ua.thecompany.eloguru.repositories.TeacherRepository;
 import ua.thecompany.eloguru.security.AuthService;

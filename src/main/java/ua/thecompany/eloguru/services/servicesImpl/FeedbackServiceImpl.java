@@ -11,6 +11,7 @@ import ua.thecompany.eloguru.mappers.FeedbackMapper;
 import ua.thecompany.eloguru.model.Feedback;
 import ua.thecompany.eloguru.repositories.FeedbackRepository;
 import ua.thecompany.eloguru.services.FeedbackService;
+import ua.thecompany.eloguru.services.StudentService;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,12 +23,14 @@ public class FeedbackServiceImpl implements FeedbackService {
 
     private FeedbackRepository feedbackRepository;
     private FeedbackMapper feedbackMapper;
+    private StudentService studentService;
 
     @Override
     @Transactional
-    public void saveFeedback(FeedbackInitDto feedbackInitDto) {
-        log.info("Feedback with id " + (feedbackRepository
-                .save(feedbackMapper.feedbackInitDtoToFeedbackModel(feedbackInitDto))).getId() + " successfully saved.");
+    public void saveFeedback(FeedbackInitDto feedbackInitDto, Long ownerId) {
+        Feedback feedback = feedbackMapper.feedbackInitDtoToFeedbackModel(feedbackInitDto);
+        feedback.setOwner(studentService.getStudentModel(ownerId));
+        log.info("Feedback with id " + (feedbackRepository.save(feedback)).getId() + " successfully saved.");
     }
 
     @Override
@@ -55,9 +58,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         Feedback feedback = feedbackRepository.findByIdAndActive(feedbackId, true)
                 .orElseThrow(() -> new EntityNotFoundException("Could not found feedback by id: "+ feedbackId));
         Feedback updateFeedback = feedbackMapper.feedbackInitDtoToFeedbackModel(feedbackInitDto);
-        updateFeedback.setId(feedbackId);
-        updateFeedbackFields(updateFeedback, feedback);
-        return feedbackMapper.feedbackModelToFeedbackDto(feedbackRepository.save(feedback));
+        return feedbackMapper.feedbackModelToFeedbackDto(feedbackRepository.save(updateFeedbackFields(updateFeedback, feedback)));
     }
 
     @Override
@@ -68,18 +69,20 @@ public class FeedbackServiceImpl implements FeedbackService {
         log.info("Feedback with id " + id + " successfully DELETED.");
     }
 
-    private void updateFeedbackFields(Feedback source, Feedback target) {
+    private Feedback updateFeedbackFields(Feedback source, Feedback target) {
         if (source.getRating() != null) {
             target.setRating(source.getRating());
         }
         if (source.getText() != null) {
-            target.setText(target.getText());
+            target.setText(source.getText());
         }
+        return target;
     }
 
     @Override
     @Transactional
     public boolean isAccountOwnsFeedback(Long feedbackId, Long accountId) {
+//        System.out.println(feedbackRepository.findByIdAndActive(feedbackId, true).orElseThrow(() -> new EntityNotFoundException()).getOwner().getAccount().getId());
         return feedbackRepository.findByIdAndActive(feedbackId, true).orElseThrow(() -> new EntityNotFoundException())
                 .getOwner().getAccount().getId() == accountId;
     }
