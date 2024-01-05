@@ -1,9 +1,6 @@
 package ua.thecompany.eloguru.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -24,4 +21,8 @@ public class ContentObject extends BaseEntity{
 
     @Column(name="essence")
     private String essence;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "topic", nullable = false)
+    private Topic topic;
 }
