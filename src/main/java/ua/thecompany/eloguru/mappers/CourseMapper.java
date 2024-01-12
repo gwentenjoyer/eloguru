@@ -15,17 +15,13 @@ public interface CourseMapper {
     @Mapping(target = "teacher", source = "teacherAccountId")
     Course courseDtoToCourseModel(CourseDto courseInitDto);
 
+    CourseInitDto courseDtoToCourseInitDto(CourseDto courseInitDto);
+
     @Mapping(target = "teacherAccountId", source = "teacher")
-//    @Mapping(target = "feedbacks.studentAccountId", source = "feedbacks.owner")
-//    @Mapping(target = "feedbacks.feedbackId", source = "feedbacks")
-//    @Mapping(target = "feedbacks.courseId", source = "feedbacks.course")
-//    @Mapping(target = "durationDays", source = "durationDays")
     CourseDto courseModelToCourseDto(Course course);
 
-//    @Mapping(target = "teacher", source = "teacherAccountId")
     Course courseInitDtoToCourseModel(CourseInitDto courseInitDto);
 
-//    @Mapping(target = "teacher", source = "teacherAccountId")
     Course updateCourseModelViaCourseInitDto(CourseInitDto courseInitDto, @MappingTarget Course course);
 
 }

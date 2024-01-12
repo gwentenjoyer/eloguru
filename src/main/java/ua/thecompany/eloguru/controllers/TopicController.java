@@ -16,7 +16,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/course/{courseId}/topic")
+@RequestMapping("/courses/{courseId}/topics")
 public class TopicController {
     private final CourseService courseService;
     private final TopicService topicService;

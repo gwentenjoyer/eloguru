@@ -15,7 +15,7 @@ import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/feedback")
+@RequestMapping("/feedbacks")
 public class FeedbackController {
     private final FeedbackService feedbackService;
     private final AccountService accountService;
@@ -32,7 +32,8 @@ public class FeedbackController {
 
     @PostMapping
     public ResponseEntity<FeedbackDto> saveFeedback(Principal principal, @Valid @RequestBody FeedbackInitDto feedbackInitDto){
-//        System.out.println(accountService.getIdByEmail(principal.getName()));
+        System.out.println(accountService.getIdByEmail(principal.getName()));
+        System.out.println(feedbackInitDto);
         feedbackService.saveFeedback(feedbackInitDto, accountService.getIdByEmail(principal.getName()));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

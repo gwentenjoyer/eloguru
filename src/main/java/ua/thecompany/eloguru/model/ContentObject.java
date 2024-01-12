@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @Entity
-@Table(name="content")
+@Table(name="contents")
 public class ContentObject extends BaseEntity{
 
     @Enumerated

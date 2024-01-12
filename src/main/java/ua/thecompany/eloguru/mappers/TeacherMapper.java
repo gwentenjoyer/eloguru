@@ -8,11 +8,6 @@ import ua.thecompany.eloguru.model.Teacher;
 
 @Mapper(componentModel = "spring")
 public interface TeacherMapper {
-
-//    @Mapping(target = "account.fullname", source = "fullname")
-//    @Mapping(target = "account.fullname", source = "fullname")
-//    Teacher teacherDtoToTeacherModel(TeacherDto teacherDto);
-
     @Mapping(target = "id", source = "account.id")
     @Mapping(target = "createdDate", source = "account.createdDate")
     @Mapping(target = "lastModifiedDate", source = "account.lastModifiedDate")

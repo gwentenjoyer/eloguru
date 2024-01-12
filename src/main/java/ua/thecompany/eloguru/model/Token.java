@@ -10,6 +10,7 @@ import lombok.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@Table(name="tokens")
 public class Token extends BaseEntity {
 
     @Column(unique = true)

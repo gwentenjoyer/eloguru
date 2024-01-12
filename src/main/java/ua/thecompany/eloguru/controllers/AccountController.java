@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/account")
+@RequestMapping("/accounts")
 public class AccountController {
     private final AccountService accountService;
     private final TeacherService teacherService;

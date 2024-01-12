@@ -47,6 +47,14 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     @Transactional
+    public Topic getTopicModelById(Long id) {
+        log.info("Retrieving topic by id: " + id);
+        return topicRepository.findByIdAndActive(id, true)
+                .orElseThrow(() -> new EntityNotFoundException("Could not found topic with id: " + id));
+    }
+
+    @Override
+    @Transactional
     public TopicDto updateTopic(TopicInitDto topicInitDto, Long id) {
         log.info("Updating topic by id: " + id);
         Topic topic = topicRepository.findByIdAndActive(id, true)

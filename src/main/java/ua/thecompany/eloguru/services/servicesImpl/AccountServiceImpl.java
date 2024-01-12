@@ -71,6 +71,8 @@ public class AccountServiceImpl implements AccountService {
             account.setCountry(accountInitDto.country());
         if (accountInitDto.fullname() != null)
             account.setFullname(accountInitDto.fullname());
+        if (accountInitDto.password() != null)
+            account.setPwhash(passwordEncoder.encode(accountInitDto.password()));
         return account;
     }
 

@@ -40,9 +40,7 @@ public class AuthServiceImpl implements AuthService {
         var savedUser = accountRepository.save(account);
         var jwtToken = jwtService.generateToken(account);
         saveUserToken(savedUser, jwtToken);
-//        return AuthResponse.builder()
-//                .message("Registration successful")
-//                .build();
+
         return savedUser;
     }
 

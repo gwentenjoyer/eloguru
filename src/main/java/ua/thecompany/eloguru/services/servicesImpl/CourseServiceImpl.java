@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ua.thecompany.eloguru.controllers.CourseController;
 import ua.thecompany.eloguru.dto.CourseDto;
 import ua.thecompany.eloguru.dto.FeedbackDto;
 import ua.thecompany.eloguru.dto.InitDto.CourseInitDto;
@@ -52,11 +53,9 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     @Transactional
-//    @Cacheable
     public Page<CourseDto> getCourses(@PageableDefault Pageable pageable) {
         log.info("Retrieving all courses");
         return courseRepository.findAll(pageable).map(courseMapper::courseModelToCourseDto);
-//        return courseRepository.findByActive(true).stream().map(entity -> courseMapper.courseModelToCourseDto(entity)).collect(Collectors.toList());
     }
 
     @Override
@@ -97,7 +96,6 @@ public class CourseServiceImpl implements CourseService {
         }
     }
 
-//    @Override
     @Transactional
     @CachePut(cacheNames = "courseCache", key = "#id")
     public CourseDto updateCourse(CourseDto courseDto, Long id) throws EntityNotFoundException{
@@ -107,7 +105,7 @@ public class CourseServiceImpl implements CourseService {
         if (retrievedCourse.isPresent()) {
             Course course = retrievedCourse.get();
 
-            return courseMapper.courseModelToCourseDto(courseRepository.save(updateCourseFromCourseDto(courseDto, course)));
+            return courseMapper.courseModelToCourseDto(courseRepository.save(updateCourseFromCourseInitDto(courseMapper.courseDtoToCourseInitDto(courseDto), course)));
         } else {
             throw new EntityNotFoundException();
         }
@@ -184,15 +182,6 @@ public class CourseServiceImpl implements CourseService {
         return course;
     }
 
-    private Course updateCourseFromCourseDto(CourseDto courseDto, Course course) {
-        if (courseDto == null) {
-            return course;
-        }
-//        if (courseInitDto.header() != null) {
-//            course.setHeader(courseInitDto.header());
-//        }
-        return course;
-    }
 
     @Override
     @Transactional

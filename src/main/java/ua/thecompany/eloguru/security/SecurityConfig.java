@@ -31,28 +31,24 @@ public class SecurityConfig {
         return http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authz) -> authz
-                        .requestMatchers("/account/signup", "/account/login", "/", "/account/check",
+                        .requestMatchers("/accounts/signup", "/accounts/login", "/", "/accounts/check",
                                 "/login", "/sign-up", "/courses", "swagger-ui/**", "/actuator", "/actuator/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/account/logout").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/feedback").hasAuthority(EnumeratedRole.STUDENT.toString())
-                        .requestMatchers(HttpMethod.POST, "/course/*/enroll", "/course/*/disenroll", "/feedback/**").hasAuthority(EnumeratedRole.STUDENT.toString())
-                        .requestMatchers(HttpMethod.POST, "/course/create", "/course/*/topic/create").hasAuthority(EnumeratedRole.TEACHER.toString())
-                        .requestMatchers(HttpMethod.GET, "/feedback/*", "/course", "/course/*", "/course/*/topic/*", "/course/*/topic").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/account/*", "/account/list").hasAuthority(EnumeratedRole.ADMIN.toString())
-                        .requestMatchers(HttpMethod.PUT, "/feedback/*").hasAuthority(EnumeratedRole.STUDENT.toString())
-                        .requestMatchers(HttpMethod.PUT, "/course/*", "/course/*/topic/*").hasAnyAuthority(EnumeratedRole.ADMIN.toString(), EnumeratedRole.TEACHER.toString())
-                        .requestMatchers(HttpMethod.DELETE, "/course/force_delete").hasAnyAuthority(EnumeratedRole.ADMIN.toString())
-                        .requestMatchers(HttpMethod.DELETE, "/course/*", "/course/*/topic/*").hasAnyAuthority(EnumeratedRole.ADMIN.toString(), EnumeratedRole.TEACHER.toString())
-                        .requestMatchers(HttpMethod.DELETE, "/account/*").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/feedback/*").hasAnyAuthority(EnumeratedRole.ADMIN.toString(), EnumeratedRole.STUDENT.toString())
+                        .requestMatchers(HttpMethod.POST, "/accounts/logout").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/courses/*/enroll", "/courses/*/disenroll", "/feedbacks/*", "/feedbacks").hasAuthority(EnumeratedRole.STUDENT.toString())
+                        .requestMatchers(HttpMethod.POST, "/courses/create", "/courses/*/topics/create").hasAuthority(EnumeratedRole.TEACHER.toString())
+                        .requestMatchers(HttpMethod.GET, "/feedbacks/*", "/courses", "/courses/*", "/courses/*/topics/*", "/courses/*/topics").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/accounts/*", "/accounts/list").hasAuthority(EnumeratedRole.ADMIN.toString())
+                        .requestMatchers(HttpMethod.PUT, "/feedbacks/*").hasAuthority(EnumeratedRole.STUDENT.toString())
+                        .requestMatchers(HttpMethod.PUT, "/courses/*", "/courses/*/topics/*").hasAnyAuthority(EnumeratedRole.ADMIN.toString(), EnumeratedRole.TEACHER.toString())
+                        .requestMatchers(HttpMethod.DELETE, "/courses/force_delete").hasAnyAuthority(EnumeratedRole.ADMIN.toString())
+                        .requestMatchers(HttpMethod.DELETE, "/courses/*", "/courses/*/topics/*").hasAnyAuthority(EnumeratedRole.ADMIN.toString(), EnumeratedRole.TEACHER.toString())
+                        .requestMatchers(HttpMethod.DELETE, "/accounts/*").authenticated()
+                        .requestMatchers(HttpMethod.DELETE, "/feedbacks/*").hasAnyAuthority(EnumeratedRole.ADMIN.toString(), EnumeratedRole.STUDENT.toString())
                         .requestMatchers("/swagger-ui/**", "/api-docs/*").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-//                .logout((logout) -> {logout.logoutUrl("/account/logout");
-//                    logout.addLogoutHandler(new HeaderWriterLogoutHandler(new ClearSiteDataHeaderWriter(ClearSiteDataHeaderWriter.Directive.CACHE)));
-//                    logout.logoutSuccessHandler(new HttpStatusReturningLogoutSuccessHandler());})
                     .build();
     }
 }

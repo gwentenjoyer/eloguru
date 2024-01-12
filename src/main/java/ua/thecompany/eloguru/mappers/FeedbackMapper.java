@@ -18,7 +18,5 @@ public interface FeedbackMapper {
     Feedback feedbackDtoToFeedbackModel(FeedbackDto feedbackDto);
 
     @Mapping(target = "course.id", source = "courseId")
-//    @Mapping(target = "owner.id", source = "studentAccountId")
-//    @Mapping(target = "id", source = "feedbackId")
     Feedback feedbackInitDtoToFeedbackModel(FeedbackInitDto feedbackInitDto);
 }
