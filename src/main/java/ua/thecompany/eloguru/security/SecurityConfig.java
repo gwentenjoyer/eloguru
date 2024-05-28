@@ -5,13 +5,24 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 import ua.thecompany.eloguru.model.EnumeratedRole;
+
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.servlet.config.annotation.*;
+
+import java.util.Arrays;
+
 
 @Configuration
 @EnableWebSecurity
@@ -29,26 +40,40 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         return http
+                .cors(Customizer.withDefaults())
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authz) -> authz
+                        .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                         .requestMatchers("/accounts/signup", "/accounts/login", "/", "/accounts/check",
-                                "/login", "/sign-up", "/courses", "swagger-ui/**", "/actuator", "/actuator/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/accounts/logout").authenticated()
-                        .requestMatchers(HttpMethod.POST, "/courses/*/enroll", "/courses/*/disenroll", "/feedbacks/*", "/feedbacks").hasAuthority(EnumeratedRole.STUDENT.toString())
-                        .requestMatchers(HttpMethod.POST, "/courses/create", "/courses/*/topics/create").hasAuthority(EnumeratedRole.TEACHER.toString())
-                        .requestMatchers(HttpMethod.GET, "/feedbacks/*", "/courses", "/courses/*", "/courses/*/topics/*", "/courses/*/topics").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/accounts/*", "/accounts/list").hasAuthority(EnumeratedRole.ADMIN.toString())
-                        .requestMatchers(HttpMethod.PUT, "/feedbacks/*").hasAuthority(EnumeratedRole.STUDENT.toString())
-                        .requestMatchers(HttpMethod.PUT, "/courses/*", "/courses/*/topics/*").hasAnyAuthority(EnumeratedRole.ADMIN.toString(), EnumeratedRole.TEACHER.toString())
-                        .requestMatchers(HttpMethod.DELETE, "/courses/force_delete").hasAnyAuthority(EnumeratedRole.ADMIN.toString())
-                        .requestMatchers(HttpMethod.DELETE, "/courses/*", "/courses/*/topics/*").hasAnyAuthority(EnumeratedRole.ADMIN.toString(), EnumeratedRole.TEACHER.toString())
-                        .requestMatchers(HttpMethod.DELETE, "/accounts/*").authenticated()
-                        .requestMatchers(HttpMethod.DELETE, "/feedbacks/*").hasAnyAuthority(EnumeratedRole.ADMIN.toString(), EnumeratedRole.STUDENT.toString())
-                        .requestMatchers("/swagger-ui/**", "/api-docs/*").permitAll()
-                        .anyRequest().authenticated())
+                                "/login", "/sign-up", "/courses", "swagger-ui/**", "/actuator", "/actuator/**", "**").permitAll()
+
+                )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+
                     .build();
+    }
+//    @Bean
+//    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
+//
+//        configuration.addAllowedHeader("*");
+//        configuration.setAllowCredentials(true);
+//
+//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+//        source.registerCorsConfiguration("/**", configuration);
+//        return source;
+//    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE"));
+        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
+        configuration.setAllowCredentials(true);
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
     }
 }
