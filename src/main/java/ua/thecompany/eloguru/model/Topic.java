@@ -17,6 +17,9 @@ public class Topic extends BaseEntity{
     @Column(name="label")
     private String label;
 
+    @Column(name="description")
+    private String description;
+
     @OneToMany(fetch = FetchType.LAZY)
     private List<ContentObject> contents = new ArrayList<>();
 

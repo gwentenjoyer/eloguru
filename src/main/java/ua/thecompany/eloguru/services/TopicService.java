@@ -13,6 +13,8 @@ public interface TopicService {
 
     List<TopicDto> getTopics();
 
+    List<TopicDto> getTopicsByCourse(Long courseId);
+
     TopicDto getTopicById(Long id);
 
     Topic getTopicModelById(Long id);

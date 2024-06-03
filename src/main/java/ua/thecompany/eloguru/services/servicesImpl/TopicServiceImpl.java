@@ -39,6 +39,13 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     @Transactional
+    public List<TopicDto> getTopicsByCourse(Long courseId) {
+        log.info("Retrieving all topics");
+        return topicRepository.findByActiveAndCourseId(true, courseId).stream().map(entity -> topicMapper.topicModelToTopicDto(entity)).collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional
     public TopicDto getTopicById(Long id) {
         log.info("Retrieving topic by id: " + id);
         return topicMapper.topicModelToTopicDto(topicRepository.findByIdAndActive(id, true)

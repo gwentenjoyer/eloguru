@@ -22,6 +22,6 @@ public interface CourseMapper {
 
     Course courseInitDtoToCourseModel(CourseInitDto courseInitDto);
 
-    Course updateCourseModelViaCourseInitDto(CourseInitDto courseInitDto, @MappingTarget Course course);
+//    Course updateCourseModelViaCourseInitDto(CourseInitDto courseInitDto, @MappingTarget Course course);
 
 }

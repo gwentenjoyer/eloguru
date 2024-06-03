@@ -177,8 +177,8 @@ public class CourseServiceImpl implements CourseService {
             course.setDescription(courseInitDto.description());
         if (courseInitDto.durationDays() != null)
             course.setDurationDays(courseInitDto.durationDays());
-        if (courseInitDto.start_date() != null)
-            course.setStartDate(courseInitDto.start_date());
+        if (courseInitDto.startDate() != null)
+            course.setStartDate(courseInitDto.startDate());
         return course;
     }
 

@@ -76,7 +76,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Transactional
     public Teacher getTeacherModelById(Long id) throws EntityNotFoundException {
         return teacherRepository.findByIdAndActive(id, true)
-                .orElseThrow(() -> new EntityNotFoundException("Could not found by id: "+ id));
+                .orElseThrow(() -> new EntityNotFoundException("Could not found teacher by id: " + id));
     }
 
     @Override

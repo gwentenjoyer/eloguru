@@ -6,4 +6,5 @@ import jakarta.validation.constraints.NotNull;
 import java.io.Serializable;
 
 public record TopicInitDto(@NotBlank(message = "Cannot be blank!") String label,
-                           @NotNull Long courseId) implements Serializable {}
+                           @NotNull Long courseId,
+                           String description) implements Serializable {}

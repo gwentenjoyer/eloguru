@@ -11,4 +11,4 @@ public record CourseInitDto(@NotBlank(message = "Cannot be blank!") String heade
                             EnumeratedCategories categories,
                             String description,
                             @Positive Integer durationDays,
-                            Date start_date) implements Serializable {}
+                            Date startDate) implements Serializable {}

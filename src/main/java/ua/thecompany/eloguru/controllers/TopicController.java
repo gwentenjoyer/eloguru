@@ -40,7 +40,7 @@ public class TopicController {
         ResponseEntity<CourseDto> responseEntity = courseController.getCourse(courseId);
         if (HttpStatus.OK == responseEntity.getStatusCode()){
             try{
-                TopicInitDto topic = new TopicInitDto(topicInitDto.label(), courseId);
+                TopicInitDto topic = new TopicInitDto(topicInitDto.label(), courseId, topicInitDto.description());
                 courseService.addTopic(responseEntity.getBody(), topic);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
@@ -66,7 +66,7 @@ public class TopicController {
     public ResponseEntity<CourseDto> updateTopic(@Valid @RequestBody TopicInitDto topicInitDto, @PathVariable Long courseId, @PathVariable Long topicId) {
         if (HttpStatus.OK == courseController.getCourse(courseId).getStatusCode()){
             try{
-                TopicInitDto topic = new TopicInitDto(topicInitDto.label(), courseId);
+                TopicInitDto topic = new TopicInitDto(topicInitDto.label(), courseId, topicInitDto.description());
                 topicService.updateTopic(topic, topicId);
                 return new ResponseEntity<>(HttpStatus.OK);
             }
@@ -81,7 +81,7 @@ public class TopicController {
     public ResponseEntity<List<TopicDto>> getTopics(@PathVariable Long courseId) {
         if (HttpStatus.OK == courseController.getCourse(courseId).getStatusCode()){
             try{
-                return new ResponseEntity<>(topicService.getTopics(), HttpStatus.OK);
+                return new ResponseEntity<>(topicService.getTopicsByCourse(courseId), HttpStatus.OK);
             }
             catch(EntityNotFoundException e){
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
