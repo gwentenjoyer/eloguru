@@ -97,4 +97,11 @@ public class StudentServiceImpl implements StudentService {
         return studentRepository.findByIdAndActive(id, true)
                 .orElseThrow(() -> new EntityNotFoundException("Could not found student with id " + id));
     }
+
+    public String getFullnameById(Long id) {
+        var test = getStudentModel(id).getAccount();
+        var test2 = studentMapper.studentModelToStudentDto(getStudentModel(id));
+        return getStudentModel(id).getAccount().getFullname();
+    }
+
 }

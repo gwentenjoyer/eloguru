@@ -9,7 +9,8 @@ import ua.thecompany.eloguru.model.Student;
 @Mapper(componentModel = "spring")
 public interface StudentMapper {
 
-    @Mapping(target = "id", source = "account.id")
+//    @Mapping(target = "id", source = "account.id")
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "createdDate", source = "account.createdDate")
     @Mapping(target = "lastModifiedDate", source = "account.lastModifiedDate")
     @Mapping(target = "role", source = "account.role")
