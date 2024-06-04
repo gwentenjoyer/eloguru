@@ -6,6 +6,7 @@ import RequireAuth from "./hooks/getAuth";
 import Profile from './components/Profile/Profile'
 import Course from './components/CoursePage/Course'
 import './index.css';
+import CourseList from "./components/CourseList/CourseList";
 
 const router = createBrowserRouter([
     {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
             {
                 path: "course",
                 element: <Course/>
+            },
+            {
+                path: "courses",
+                element: <CourseList/>
             },
             {
                 path: "profile",
