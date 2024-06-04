@@ -2,6 +2,7 @@ import { Pagination } from "flowbite-react";
 import React, {useEffect, useState} from 'react';
 import '../../css/CourseList.css';
 import Comment from "../CoursePage/Comment";
+import CourseComponent from "./CourseComponent";
 
 const CourseList = () => {
     // const [activeTab, setActiveTab] = useState('info');
@@ -28,32 +29,22 @@ const CourseList = () => {
 
 
 
-    return ( <div>
-
-        { isLoading ? <div>Loading...</div> :
+    return (
         <div>
 
-            {firstPage?.content.map((item, index) => (
-// <div>{item.header}</div>
+            { isLoading ? <div>Loading...</div> :
+                // <div></div>
+            <div className="cards-container d-flex flex-wrap mt-1">
 
-            <div className="card m-1 d-flex flex-column align-items-center h-100 productInstance">
-                <div className="d-flex justify-content-center">
-                    {/*<img src="${el.clPublicLink}" style="max-width: 390px; object-fit: contain;" className="card-img-top" alt="phone_photo"/>*/}
-
-                </div>
-                <div className="card-body d-flex flex-column align-items-center">
-                    <h5 className="card-title card-model-title">${item.header + " " + item.rating}</h5>
-                     <p className="card-text card-model-version">${item.duration}грн.</p>
-                </div>
+                {firstPage?.content.map((item, index) => (
+                    <CourseComponent item={item}></CourseComponent>
+                ))}
             </div>
-            ))}
-
-            <div className="flex courses-list-nav justify-content-center">
-                <Pagination className="flex flex-row" currentPage={currentPage} totalPages={firstPage.totalPages}
-                            onPageChange={onPageChange} showIcons/>
-            </div>
-        </div>
-        }
+                // <div className="flex courses-list-nav justify-content-center">
+                //     <Pagination className="flex flex-row" currentPage={currentPage} totalPages={firstPage.totalPages}
+                //                 onPageChange={onPageChange} showIcons/>
+                // </div>
+            }
         </div>
 
     );

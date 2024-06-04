@@ -2,3 +2,15 @@
     overflow-x: auto;
 
 }
+
+.card-img-top{
+    max-width: 390px; object-fit: contain;
+}
+
+.productInstance{
+    width: 18rem;
+}
+
+.photo-cont{
+    height: 390px;
+}
