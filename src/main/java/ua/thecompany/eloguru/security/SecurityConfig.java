@@ -44,8 +44,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-                        .requestMatchers("/accounts/signup", "/accounts/login", "/", "/accounts/check",
-                                "/login", "/sign-up", "/courses", "swagger-ui/**", "/actuator", "/actuator/**", "**").permitAll()
+//                        .requestMatchers("/accounts/signup", "/accounts/login", "/", "/accounts/check",
+//                                "/login", "/sign-up", "/courses", "swagger-ui/**", "/actuator", "/actuator/**", "**").permitAll()
+                                .requestMatchers("**").permitAll()
 
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

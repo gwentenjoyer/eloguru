@@ -20,7 +20,8 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long>,
     @Modifying
     void deleteById(Long id);
 
-    @Query("select t from #{#entityName} t where t.account.id = ?1")
+    @Query("select t from #{#entityName} t where t.id = ?1")
+//    @Query("select t from #{#entityName} t where t.account.id = ?1")
     Optional<Teacher> findByIdAndActive(Long id, boolean active);
 
     List<Teacher> findByAccountActive(boolean active);
