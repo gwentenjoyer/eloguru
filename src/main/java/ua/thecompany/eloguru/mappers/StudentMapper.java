@@ -15,7 +15,7 @@ public interface StudentMapper {
     @Mapping(target = "role", source = "account.role")
     @Mapping(target = "fullname", source = "account.fullname")
     @Mapping(target = "email", source = "account.email")
-    @Mapping(target = "pwhash", source = "account.pwhash")
+//    @Mapping(target = "pwhash", source = "account.pwhash")
     @Mapping(target = "phone", source = "account.phone")
     StudentDto studentModelToStudentDto(Student student);
 

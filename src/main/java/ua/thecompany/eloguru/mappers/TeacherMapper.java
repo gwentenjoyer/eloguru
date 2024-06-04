@@ -14,7 +14,7 @@ public interface TeacherMapper {
     @Mapping(target = "role", source = "account.role")
     @Mapping(target = "fullname", source = "account.fullname")
     @Mapping(target = "email", source = "account.email")
-    @Mapping(target = "pwhash", source = "account.pwhash")
+//    @Mapping(target = "pwhash", source = "account.pwhash")
     @Mapping(target = "phone", source = "account.phone")
     TeacherDto teacherModelToTeacherDto(Teacher teacher);
 

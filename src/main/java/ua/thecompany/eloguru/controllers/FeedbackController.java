@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.thecompany.eloguru.dto.FeedbackDto;
 import ua.thecompany.eloguru.dto.InitDto.FeedbackInitDto;
+import ua.thecompany.eloguru.model.EnumeratedRole;
 import ua.thecompany.eloguru.services.AccountService;
 import ua.thecompany.eloguru.services.FeedbackService;
 
@@ -32,8 +33,11 @@ public class FeedbackController {
 
     @PostMapping
     public ResponseEntity<FeedbackDto> saveFeedback(Principal principal, @Valid @RequestBody FeedbackInitDto feedbackInitDto){
-        System.out.println(accountService.getIdByEmail(principal.getName()));
-        System.out.println(feedbackInitDto);
+        var userRole = accountService.getAccountById(accountService.getIdByEmail(principal.getName())).role();
+        if (userRole != EnumeratedRole.STUDENT) {
+            // TODO: logs
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
         feedbackService.saveFeedback(feedbackInitDto, accountService.getIdByEmail(principal.getName()));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }

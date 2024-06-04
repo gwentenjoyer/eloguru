@@ -10,7 +10,7 @@ import ua.thecompany.eloguru.model.Account;
 @Mapper(componentModel = "spring")
 public interface AccountMapper {
 
-    Account accountDtoToAccountModel(AccountDto accountDto);
+//    Account accountDtoToAccountModel(AccountDto accountDto);
 
     AccountDto accountModelToAccountDto(Account account);
 

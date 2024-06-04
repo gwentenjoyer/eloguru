@@ -7,5 +7,5 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 
 public record AccountDto(Long id, LocalDateTime createdDate, LocalDateTime lastModifiedDate, boolean active, String fullname,
-                         String email, String pwhash, EnumeratedRole role, String country, String phone)
+                         String email, EnumeratedRole role, String country, String phone)
         implements Serializable {}
