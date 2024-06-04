@@ -1,0 +1,50 @@
+/*:root {*/
+/*    --bs-modal-bg: yellow;*/
+/*}*/
+
+.modal-content {
+    background-color: #fefefe;
+    /* margin: 15% auto; */
+    /*padding: 20px;*/
+    border: 0px;
+    /* width: 40%;
+    max-width: 450px;
+    min-width: 350px; */
+    /*width: 450px;*/
+    /*max-width: 450px;*/
+}
+
+.nav-tabs {
+    --bs-body-bg: rgb(0, 23, 123) !important;
+    --bs-navbar-active-color: #F3F6F8;
+    --bs-border-color: none;
+    /*--bs-nav-tabs-border-radius: 0px;*/
+    --bs-nav-tabs-border-radius: 0px;
+    --bs-nav-tabs-link-active-border-color: none!important;
+}
+
+.nav-tabs .nav-link {
+    border-top-left-radius: 0px!important;
+    border-top-right-radius: 0px!important;
+    border: 0px!important;
+}
+
+.nav-link .nav-tabs .nav-link.active {
+    color: var(--main-blu-rgb)!important;
+    background-color: var(--main-blu-rgb)!important;
+}
+
+@media (min-width: 1500px)
+.container, .container-lg, .container-md, .container-sm, .container-xl, .container-xxl {
+    max-width: 1420px;
+}
+/*.modal-log {*/
+/*    --bs-nav-tabs-link-active-bg: red;*/
+/*}*/
+
+.lg-signup-submit {
+    background-color: var(--main-blu);
+    color: var(--light);
+    width: 33%!important;
+    /*max-width: 200px;*/
+}

@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import '../../css/CourseDetailPage.css';
 import Collapse from "./Collapse";
+import Comment from "./Comment";
 
 const Course = () => {
     const [activeTab, setActiveTab] = useState('info');
@@ -47,34 +48,7 @@ const Course = () => {
         // const num = value.
         return parseFloat(value).toFixed(1);
     }
-    // function Collapse({ label, children }) {
-    //     const [isOpen, setIsOpen] = useState(false);
-    //
-    //     const handleToggle = () => {
-    //         setIsOpen(!isOpen);
-    //     };
-    //
-    //     return (
-    //         // <div>
-    //         //     <button onClick={handleToggle}>{title}</button>
-    //         //     {isOpen && <div>{children}</div>}
-    //         // </div>
-    //     <div className="card">
-    //         <div className="card-header">
-    //             <h5 className="mb-0">
-    //             <button className="btn btn-link" data-toggle="collapse" onClick={handleToggle}
-    //                         data-target="#collapseOne"
-    //                         aria-expanded="true" aria-controls="collapseOne">
-    //                     {label}
-    //                 </button>
-    //             </h5>
-    //         </div>
-    //         {isOpen && children}
-    //
-    //     </div>
-    // )
-    //     ;
-    // }
+
 
     return (
         <div className="course-detail-page">
@@ -91,32 +65,31 @@ const Course = () => {
                 <button className="sign-up-button">Enroll</button>
             </div>
             <div className="course-tabs">
-                <button onClick={() => setActiveTab('info')} className={activeTab === 'info' ? 'active' : ''}>Info</button>
-                <button onClick={() => setActiveTab('comments')} className={activeTab === 'comments' ? 'active' : ''}>Comments</button>
-                <button onClick={() => setActiveTab('themes')} className={activeTab === 'themes' ? 'active' : ''}>Themes</button>
+                <button onClick={() => setActiveTab('info')} className={activeTab === 'info' ? 'active' : ''}>Info
+                </button>
+                <button onClick={() => setActiveTab('comments')}
+                        className={activeTab === 'comments' ? 'active' : ''}>Comments
+                </button>
+                <button onClick={() => setActiveTab('themes')}
+                        className={activeTab === 'themes' ? 'active' : ''}>Themes
+                </button>
             </div>
             <div className="course-content">
-                {activeTab === 'info' && <div>{"test"}</div>}
-                {activeTab === 'comments' && <div>Comments section...</div>}
+                {activeTab === 'info' && <div>{"test"}
+
+                </div>}
+                {activeTab === 'comments' && <div>
+                    <div id="comment-container">
+                        {course?.feedbacks.map((item, index) => (
+                            <Comment name={item.fullname} text={item.text}>
+                            </Comment>
+                        ))}
+
+                    </div>
+                </div>
+                }
                 {activeTab === 'themes' && <div>
                     <div id="accordion">
-                        {
-                            // console.log(fetchTopics())
-
-                        }
-                        {/*<Collapse> sdf</Collapse>*/}
-                        {/*{course?.topics.map((item) => (*/}
-                        {/*    // <div key={item}>{item}</div>*/}
-                        {/*    <Collapse label={item.label}>*/}
-                        {/*        <div className="collapse" aria-labelledby="headingThree"*/}
-                        {/*             data-parent="#accordion">*/}
-                        {/*            <div className="card-body">*/}
-                        {/*                {item.description}*/}
-                        {/*            </div>*/}
-                        {/*        </div>*/}
-                        {/*    </Collapse>*/}
-
-                        {/*))}*/}
                         {course?.topics.map((item, index) => (
                             <Collapse key={index} label={item.label} id={index}>
                                 <div>
@@ -126,7 +99,8 @@ const Course = () => {
                         ))}
                     </div>
 
-                </div>}
+                </div>
+                }
             </div>
         </div>
     );

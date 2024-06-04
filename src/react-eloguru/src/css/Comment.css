@@ -1,0 +1,19 @@
+.comment-item {
+    display: flex;
+    border: 1px solid black;
+    border-radius: 5px;
+    padding: 10px;
+    width: 300px;
+    font-family: Arial, sans-serif;
+}
+.comment-item div {
+    flex: 1;
+}
+.comment-item .rate-comment {
+    border-left: 1px solid black;
+    padding-left: 10px;
+    margin-left: 10px;
+}
+.comment-item .rate {
+    font-weight: bold;
+}
