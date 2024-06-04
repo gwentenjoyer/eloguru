@@ -54,9 +54,8 @@ const Course = () => {
         <div className="course-detail-page">
             <div className="course-header">
                 {isLoading ? <div>Loading...</div> :
-                    <div className="course-info">
-                        <h1>{(course?.header)}</h1>
-                        <h5>{(course?.description)}</h5>
+                    <div className="course-info m-2">
+                        <h1 >{(course?.header)}</h1>
                         <p>Rate: {printRate(course?.rating)} / 5</p>
 
                         <p>Days: {(course?.durationDays)}</p>
@@ -75,7 +74,7 @@ const Course = () => {
                 </button>
             </div>
             <div className="course-content">
-                {activeTab === 'info' && <div>{"test"}
+                {activeTab === 'info' && <div>{(course?.description)}
 
                 </div>}
                 {activeTab === 'comments' && <div>

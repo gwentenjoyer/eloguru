@@ -17,3 +17,18 @@
 .comment-item .rate {
     font-weight: bold;
 }
+
+.center-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px; /* Set the height of the div */
+    border: 1px solid black; /* Optional: Add a border to the div */
+}
+
+.rounded-photo {
+    border-radius: 50%; /* Rounds the corners to create a circle */
+    width: 50px; /* Set the width of the photo */
+    height: 50px; /* Set the height of the photo */
+    object-fit: cover; /* Scales the photo to fill the entire element without distorting it */
+}
