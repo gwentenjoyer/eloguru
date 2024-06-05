@@ -24,6 +24,10 @@ public interface StudentRepository extends JpaRepository<Student, Long>,
     @Query("select t from #{#entityName} t where t.id = ?1")
     Optional<Student> findByIdAndActive(Long id, boolean active);
 
+    @Transactional
+    @Query("select t from #{#entityName} t where t.account.active = :active and t.account.id = :id")
+    Optional<Student> findByAccountIdAndActive(Long id, boolean active);
+
     List<Student> findByAccountActive(boolean active);
 
     @Transactional

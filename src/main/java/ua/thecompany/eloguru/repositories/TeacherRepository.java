@@ -24,6 +24,11 @@ public interface TeacherRepository extends JpaRepository<Teacher, Long>,
 //    @Query("select t from #{#entityName} t where t.account.id = ?1")
     Optional<Teacher> findByIdAndActive(Long id, boolean active);
 
+//    @Query("select t from #{#entityName} t where t.account.id = ?1")
+    @Transactional
+    @Query("select t from #{#entityName} t where t.account.active = :active and t.account.id = :id")
+    Optional<Teacher> findByAccountIdAndActive(Long id, boolean active);
+
     List<Teacher> findByAccountActive(boolean active);
 
     @Transactional

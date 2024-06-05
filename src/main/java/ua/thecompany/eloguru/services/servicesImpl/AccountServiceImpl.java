@@ -8,9 +8,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.thecompany.eloguru.dto.AccountDto;
 import ua.thecompany.eloguru.dto.InitDto.AccountInitDto;
+import ua.thecompany.eloguru.dto.StudentDto;
+import ua.thecompany.eloguru.dto.TeacherDto;
 import ua.thecompany.eloguru.mappers.AccountMapper;
 import ua.thecompany.eloguru.model.Account;
 import ua.thecompany.eloguru.repositories.AccountRepository;
+import ua.thecompany.eloguru.repositories.StudentRepository;
+import ua.thecompany.eloguru.repositories.TeacherRepository;
 import ua.thecompany.eloguru.services.AccountService;
 
 import java.util.List;
@@ -23,6 +27,9 @@ import java.util.stream.Collectors;
 public class AccountServiceImpl implements AccountService {
 
     private AccountRepository accountRepository;
+    private TeacherRepository teacherRepository;
+    private StudentRepository studentRepository;
+
     private AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -107,4 +114,26 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.findByEmail(email).orElseThrow(() -> new EntityNotFoundException("")).getId();
     }
 
+
+
+//    public TeacherDto getTeacherByAccountId(Long id){
+//        return teacherRepository.findByIdAndActive(id, true).stream().map(entity -> accountMapper.accountModelToAccountDto(entity)).collect(Collectors.toList());
+//
+//    }
+//
+//    public StudentDto getStudentByAccountId(Long id){
+//
+//    }
+    @Override
+    @Transactional
+    public TeacherDto getTeacherByAccountId(Long id){
+        return accountMapper.teacherModelToTeacherDto(teacherRepository.findByAccountIdAndActive(id, true)
+                .orElseThrow(() -> new EntityNotFoundException("Could not found by id: "+ id)));
+    }
+    @Override
+    @Transactional
+    public StudentDto getStudentByAccountId(Long id){
+        return accountMapper.studentModelToStudentDto(studentRepository.findByAccountIdAndActive(id, true)
+                .orElseThrow(() -> new EntityNotFoundException("Could not found by id: "+ id)));
+    }
 }

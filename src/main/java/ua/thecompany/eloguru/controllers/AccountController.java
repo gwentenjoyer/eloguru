@@ -94,7 +94,14 @@ public class AccountController {
     @GetMapping("/check")
     public ResponseEntity<?> checkAuth(Principal principal) {
         ArrayList<String> res = new ArrayList<>();
-        res.add(accountService.getUserRole(principal.getName()));
+        var userRole = accountService.getUserRole(principal.getName());
+        res.add(userRole);
+        var userId = accountService.getIdByEmail(principal.getName()).toString();
+        res.add(userId);
+        if(userRole == EnumeratedRole.TEACHER.toString()){
+            var test = accountService.getTeacherByAccountId(Integer.valueOf(userId).longValue());
+            System.out.println(test);
+        }
         res.add(principal.getName());
         if(principal.getName() != null) {
             return new ResponseEntity<>(res, HttpStatus.OK);

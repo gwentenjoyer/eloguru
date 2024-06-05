@@ -4,6 +4,7 @@ import {NavLink, Link} from "react-router-dom";
 import "../../css/Navbar.css"
 import LoginModal from '../Login/LoginModal'
 // import getRefreshTokens from "../hooks/getRefreshTokens";
+import { useNavigate } from "react-router-dom";
 
 export default function NavBar() {
 
@@ -11,6 +12,7 @@ export default function NavBar() {
     const [isLoading, setIsLoading] = useState(true);
     const [modalShow, setModalShow] = React.useState(false);
 
+    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserInfo = async () => {
@@ -68,6 +70,9 @@ export default function NavBar() {
                     {/*</div>*/}
                     {/*<ModalTriggerButton/>*/}
                     <>
+                        <Button variant="primary" onClick={() => navigate(`/profile`)}>
+                            Profile
+                        </Button>
                         <Button variant="primary" onClick={() => setModalShow(true)}>
                             Log in
                         </Button>

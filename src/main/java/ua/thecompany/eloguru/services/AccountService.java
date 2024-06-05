@@ -4,6 +4,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.stereotype.Service;
 import ua.thecompany.eloguru.dto.AccountDto;
 import ua.thecompany.eloguru.dto.InitDto.AccountInitDto;
+import ua.thecompany.eloguru.dto.StudentDto;
+import ua.thecompany.eloguru.dto.TeacherDto;
 import ua.thecompany.eloguru.model.Account;
 
 import java.util.List;
@@ -25,5 +27,8 @@ public interface AccountService {
     boolean validateIdByEmail(String email, Long id);
 
     Long getIdByEmail(String email) throws EntityNotFoundException;
+
+    TeacherDto getTeacherByAccountId(Long id);
+    StudentDto getStudentByAccountId(Long id);
 
 }
