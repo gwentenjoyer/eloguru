@@ -14,3 +14,8 @@
 .photo-cont{
     height: 390px;
 }
+
+.catalog-sidebar{
+    /* width: 200px; */
+    max-width: 320px;
+}
