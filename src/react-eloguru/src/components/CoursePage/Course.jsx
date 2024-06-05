@@ -3,7 +3,7 @@ import '../../css/CourseDetailPage.css';
 import Collapse from "./Collapse";
 import Comment from "./Comment";
 
-const Course = () => {
+const Course = ({courseId}) => {
     const [activeTab, setActiveTab] = useState('info');
     const [activeTopic, setActiveTopic] = useState('info');
     const [course, setCourse] = useState();
@@ -12,7 +12,8 @@ const Course = () => {
     // setCourse(test)
     useEffect(() => {
             const fetchUserInfo = async () => {
-                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/4`, {credentials: 'include'});
+                console.log(courseId)
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}`, {credentials: 'include'});
                 const data = await response.json();
                 console.log(data);
                 // {

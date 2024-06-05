@@ -1,12 +1,28 @@
 import React from "react";
-import '../../css/Comment.css'
+import '../../css/CourseComponent.css'
+import { useNavigate } from "react-router-dom";
+
 function CourseComponent({ item }) {
     const printRate = (value) => {
-        // const num = value.
         return parseFloat(value).toFixed(1);
     }
+
+    // const handleClick = (event) => {
+    //     const id = event.currentTarget.id;
+    //     window.location.href = `${process.env.REACT_APP_SERVER_URL}/courses/${id}`;
+    //
+    //     // console.log(`The div with id "${id}" was clicked.`);
+    // };
+
+    const navigate = useNavigate();
+
+    const handleClick = (event) => {
+        const id = event.currentTarget.id;
+        navigate(`/course/${id}`);
+    };
+
     return (
-        <div className="card m-1 d-flex flex-column align-items-center h-100 productInstance">
+        <div className="card m-1 d-flex flex-column align-items-center h-100 productInstance" id={item.id} onClick={handleClick}>
             <div className="d-flex justify-content-center photo-cont">
                 <img src="/logo512.png" className="card-img-top" alt="phone_photo"/>
 
@@ -18,6 +34,7 @@ function CourseComponent({ item }) {
             </div>
         </div>
     );
+
 }
 
 export default CourseComponent;

@@ -51,13 +51,13 @@ const CourseList = () => {
                     </div>
                 </aside>
                 {isLoading ? <div>Loading...</div> :
-                    <div>
+                    <div className="flex flex-column w-100 justify-content-center">
                         <div className="cards-container d-flex flex-wrap mt-1">
                             {firstPage?.content.map((item, index) => (
                                 <CourseComponent item={item} key={index}></CourseComponent>
                             ))}
                         </div>
-                        <div className="flex courses-list-nav justify-content-center">
+                        <div className="pagination-container">
                             <Pagination
                                 className="flex flex-row pagination"
                                 currentPage={currentPage}

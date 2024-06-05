@@ -7,6 +7,7 @@ import Profile from './components/Profile/Profile'
 import Course from './components/CoursePage/Course'
 import './index.css';
 import CourseList from "./components/CourseList/CourseList";
+import CourseWrapper from "./components/CourseList/CourseWrapper";
 
 const router = createBrowserRouter([
     {
@@ -26,8 +27,8 @@ const router = createBrowserRouter([
                 element: <div>o</div>
             },
             {
-                path: "course",
-                element: <Course/>
+                path: "course/:id",
+                element: <CourseWrapper />
             },
             {
                 path: "courses",
