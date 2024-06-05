@@ -59,7 +59,7 @@ const CourseList = () => {
                         </div>
                         <div className="flex courses-list-nav justify-content-center">
                             <Pagination
-                                className="flex flex-row"
+                                className="flex flex-row pagination"
                                 currentPage={currentPage}
                                 totalPages={firstPage?.totalPages || 1}
                                 onPageChange={onPageChange}
