@@ -1,20 +1,47 @@
 import React, {useEffect, useState} from "react";
 import "../../css/profile.css";
+import Collapse from "../CoursePage/Collapse";
 
 export default function Profile() {
 
     const [userInfo, setUserInfo] = useState();
+    const [userCheckInfo, setUserCheckInfo] = useState();
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
     const fetchCheck = async () => {
         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
-        const data = await response.json();
-        console.log(data);
-        // setUserInfo(data);
+        // if (!response.ok){
+        //     console.error("Failed to fetch data to ckeck auth")
+        //     return;
+        // }
+        // const data = await response?.json();
+        // console.log(data);
+        // // setUserInfo(data);
 
-        setUserInfo(
+        setUserCheckInfo(
+            {
+                "idByRole": "3",
+                "role": "teacher",
+                "userId": "6",
+                "email": "myteacher@gmail.com"
+            }
+        );
+        setIsLoading(false);
+    };
+
+    const fetchCourses = async () => {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
+        // if (!response.ok){
+        //     console.error("Failed to fetch data to ckeck auth")
+        //     return;
+        // }
+        // const data = await response?.json();
+        // console.log(data);
+        // // setUserInfo(data);
+
+        setUserCheckInfo(
             {
                 "idByRole": "3",
                 "role": "teacher",
@@ -29,7 +56,7 @@ export default function Profile() {
             const apiUrl = process.env.REACT_APP_SERVER_URL;
             console.log(apiUrl)
             const fetchUserInfo = async () => {
-                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/5`, {credentials: 'include'});
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/6`, {credentials: 'include'});
                 const data = await response.json();
                 console.log(data);
                 data.fullname="test te"
@@ -63,6 +90,7 @@ export default function Profile() {
     }
 
     const formatDate = (date) => {
+        let formattedDate = null;
         const options = {
             weekday: 'long',
             day: '2-digit',
@@ -72,8 +100,8 @@ export default function Profile() {
             minute: '2-digit',
             hour12: false
         };
-
-        const formattedDate = new Intl.DateTimeFormat('en-US', options).format(new Date(date));
+        if (date != null)
+            formattedDate = new Intl.DateTimeFormat('en-US', options).format(new Date(date));
         return formattedDate;
     }
 
@@ -316,9 +344,21 @@ export default function Profile() {
                         </div>
                     </div>
                 </div>
-<div className="mb-2 text-center">
-<h5>Courses</h5>
-</div>
+            <div className="mb-2 text-center">
+               <h5>Courses</h5>
+                {
+                    isEditMode ? <> </> :
+                    <div>
+                        {course?.topics.map((item, index) => (
+                            <Collapse key={index} label={item.label} id={index}>
+                                <div>
+                                    {item.description}
+                                </div>
+                            </Collapse>
+                        ))}
+                    </div>
+                }
+            </div>
             </div>
         </div>
     );

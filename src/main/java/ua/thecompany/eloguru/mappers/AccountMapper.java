@@ -20,8 +20,9 @@ public interface AccountMapper {
 //    StudentDto accountModelToStudentDto(Account account);
 //    TeacherDto accountModelToTeacherDto(Account account);
 
-    StudentDto studentModelToStudentDto(Student account);
-    TeacherDto teacherModelToTeacherDto(Teacher account);
+//    StudentDto studentModelToStudentDto(Student account);
+//
+//    TeacherDto teacherModelToTeacherDto(Teacher account);
 
 
     Account accountInitDtoToAccountModel(AccountInitDto accountInitDto);

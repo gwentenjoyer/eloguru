@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 
-public record CourseDto(Long id, LocalDateTime createdDate, LocalDateTime lastModifiedDate, boolean active, Long teacherAccountId,
+public record CourseDto(Long id, LocalDateTime createdDate, LocalDateTime lastModifiedDate, boolean active, Long teacherId,
                         String header, String description, String rating, Date startDate, Integer durationDays,
                         EnumeratedCategories categories, ArrayList<TopicDto> topics, ArrayList<FeedbackDto> feedbacks)
         implements Serializable {}

@@ -11,6 +11,8 @@ import ua.thecompany.eloguru.dto.InitDto.AccountInitDto;
 import ua.thecompany.eloguru.dto.StudentDto;
 import ua.thecompany.eloguru.dto.TeacherDto;
 import ua.thecompany.eloguru.mappers.AccountMapper;
+import ua.thecompany.eloguru.mappers.StudentMapper;
+import ua.thecompany.eloguru.mappers.TeacherMapper;
 import ua.thecompany.eloguru.model.Account;
 import ua.thecompany.eloguru.repositories.AccountRepository;
 import ua.thecompany.eloguru.repositories.StudentRepository;
@@ -32,6 +34,9 @@ public class AccountServiceImpl implements AccountService {
 
     private AccountMapper accountMapper;
     private final PasswordEncoder passwordEncoder;
+
+    private TeacherMapper teacherMapper;
+    private StudentMapper studentMapper;
 
     @Override
     @Transactional
@@ -127,26 +132,26 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
     public TeacherDto getTeacherByAccountId(Long id){
-        return accountMapper.teacherModelToTeacherDto(teacherRepository.findByAccountIdAndActive(id, true)
+        return teacherMapper.teacherModelToTeacherDto(teacherRepository.findByAccountIdAndActive(id, true)
                 .orElseThrow(() -> new EntityNotFoundException("Could not found by id: "+ id)));
     }
     @Override
     @Transactional
     public StudentDto getStudentByAccountId(Long id){
-        return accountMapper.studentModelToStudentDto(studentRepository.findByAccountIdAndActive(id, true)
+        return studentMapper.studentModelToStudentDto(studentRepository.findByAccountIdAndActive(id, true)
                 .orElseThrow(() -> new EntityNotFoundException("Could not found by id: "+ id)));
     }
 
     @Override
     @Transactional
     public TeacherDto getTeacherById(Long id){
-        return accountMapper.teacherModelToTeacherDto(teacherRepository.findByIdAndActive(id, true)
+        return teacherMapper.teacherModelToTeacherDto(teacherRepository.findByIdAndActive(id, true)
                 .orElseThrow(() -> new EntityNotFoundException("Could not found by id: "+ id)));
     }
     @Override
     @Transactional
     public StudentDto getStudentById(Long id){
-        return accountMapper.studentModelToStudentDto(studentRepository.findByIdAndActive(id, true)
+        return studentMapper.studentModelToStudentDto(studentRepository.findByIdAndActive(id, true)
                 .orElseThrow(() -> new EntityNotFoundException("Could not found by id: "+ id)));
     }
 }

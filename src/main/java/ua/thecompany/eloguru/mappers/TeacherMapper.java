@@ -6,7 +6,7 @@ import ua.thecompany.eloguru.dto.InitDto.AccountInitDto;
 import ua.thecompany.eloguru.dto.TeacherDto;
 import ua.thecompany.eloguru.model.Teacher;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", uses = CourseMapper.class)
 public interface TeacherMapper {
     @Mapping(target = "id", source = "account.id")
     @Mapping(target = "createdDate", source = "account.createdDate")
@@ -14,8 +14,10 @@ public interface TeacherMapper {
     @Mapping(target = "role", source = "account.role")
     @Mapping(target = "fullname", source = "account.fullname")
     @Mapping(target = "email", source = "account.email")
-//    @Mapping(target = "pwhash", source = "account.pwhash")
+    @Mapping(target = "country", source = "account.country")
+    @Mapping(target = "active", source = "account.active")
     @Mapping(target = "phone", source = "account.phone")
+    @Mapping(target = "teachingCoursesId", source = "teaching", qualifiedByName = "courseToId")
     TeacherDto teacherModelToTeacherDto(Teacher teacher);
 
     @Mapping(target = "account.email", source = "email")
