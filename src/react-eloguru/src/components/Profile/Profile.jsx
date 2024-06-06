@@ -8,6 +8,23 @@ export default function Profile() {
     const [isEditMode, setIsEditMode] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
 
+    const fetchCheck = async () => {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
+        const data = await response.json();
+        console.log(data);
+        // setUserInfo(data);
+
+        setUserInfo(
+            {
+                "idByRole": "3",
+                "role": "teacher",
+                "userId": "6",
+                "email": "myteacher@gmail.com"
+            }
+        );
+        setIsLoading(false);
+    };
+
     useEffect(() => {
             const apiUrl = process.env.REACT_APP_SERVER_URL;
             console.log(apiUrl)
@@ -27,6 +44,7 @@ export default function Profile() {
                 setIsLoading(false);
             };
             fetchUserInfo();
+            fetchCheck();
         }, // eslint-disable-next-line
         []);
 

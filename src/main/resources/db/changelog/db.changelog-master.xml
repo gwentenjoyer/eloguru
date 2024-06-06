@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.20.xsd">
+
+    <include file="db/changelog/2024/06/06-01-changelog.xml"/>
+    <changeSet id="1717680344711-1" author="1234 (generated)">
+        <createTable tableName="accounts">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_accounts"/>
+            </column>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="active" type="BOOLEAN"/>
+            <column name="fullname" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="pwhash" type="VARCHAR(255)"/>
+            <column name="role" type="VARCHAR(255)"/>
+            <column name="country" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1717680344711-2" author="1234 (generated)">
+        <createTable tableName="contents">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_contents"/>
+            </column>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="active" type="BOOLEAN"/>
+            <column name="type" type="SMALLINT"/>
+            <column name="label" type="VARCHAR(255)"/>
+            <column name="essence" type="VARCHAR(255)"/>
+            <column name="topic" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1717680344711-3" author="1234 (generated)">
+        <createTable tableName="courses">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_courses"/>
+            </column>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="active" type="BOOLEAN"/>
+            <column name="teacher_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="header" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="rating" type="VARCHAR(255)"/>
+            <column name="start_date" type="DATETIME"/>
+            <column name="duration_days" type="INT"/>
+            <column name="categories" type="VARCHAR(255)"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1717680344711-4" author="1234 (generated)">
+        <createTable tableName="feedbacks">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_feedbacks"/>
+            </column>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="active" type="BOOLEAN"/>
+            <column name="text" type="TEXT"/>
+            <column name="owner" type="BIGINT"/>
+            <column name="rating" type="INT"/>
+            <column name="course" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1717680344711-5" author="1234 (generated)">
+        <createTable tableName="student_course">
+            <column name="course_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_student_course"/>
+            </column>
+            <column name="student_id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_student_course"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1717680344711-6" author="1234 (generated)">
+        <createTable tableName="students">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_students"/>
+            </column>
+            <column name="account_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1717680344711-7" author="1234 (generated)">
+        <createTable tableName="teachers">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_teachers"/>
+            </column>
+            <column name="account_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1717680344711-8" author="1234 (generated)">
+        <createTable tableName="tokens">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_tokens"/>
+            </column>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="active" type="BOOLEAN"/>
+            <column name="token" type="VARCHAR(255)"/>
+            <column name="account" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1717680344711-9" author="1234 (generated)">
+        <createTable tableName="topics">
+            <column autoIncrement="true" name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_topics"/>
+            </column>
+            <column name="created_date" type="DATETIME"/>
+            <column name="last_modified_date" type="DATETIME"/>
+            <column name="active" type="BOOLEAN"/>
+            <column name="label" type="VARCHAR(255)"/>
+            <column name="description" type="VARCHAR(255)"/>
+            <column name="course_id" type="BIGINT"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1717680344711-10" author="1234 (generated)">
+        <createTable tableName="topics_contents">
+            <column name="topic_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="contents_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet id="1717680344711-11" author="1234 (generated)">
+        <addUniqueConstraint columnNames="email" constraintName="uc_accounts_email" tableName="accounts"/>
+    </changeSet>
+    <changeSet id="1717680344711-12" author="1234 (generated)">
+        <addUniqueConstraint columnNames="account" constraintName="uc_tokens_account" tableName="tokens"/>
+    </changeSet>
+    <changeSet id="1717680344711-13" author="1234 (generated)">
+        <addUniqueConstraint columnNames="token" constraintName="uc_tokens_token" tableName="tokens"/>
+    </changeSet>
+    <changeSet id="1717680344711-14" author="1234 (generated)">
+        <addUniqueConstraint columnNames="contents_id" constraintName="uc_topics_contents_contents"
+                             tableName="topics_contents"/>
+    </changeSet>
+    <changeSet id="1717680344711-15" author="1234 (generated)">
+        <addForeignKeyConstraint baseColumnNames="topic" baseTableName="contents" constraintName="FK_CONTENTS_ON_TOPIC"
+                                 referencedColumnNames="id" referencedTableName="topics"/>
+    </changeSet>
+    <changeSet id="1717680344711-16" author="1234 (generated)">
+        <addForeignKeyConstraint baseColumnNames="teacher_id" baseTableName="courses"
+                                 constraintName="FK_COURSES_ON_TEACHER" referencedColumnNames="id"
+                                 referencedTableName="teachers"/>
+    </changeSet>
+    <changeSet id="1717680344711-17" author="1234 (generated)">
+        <addForeignKeyConstraint baseColumnNames="course" baseTableName="feedbacks"
+                                 constraintName="FK_FEEDBACKS_ON_COURSE" referencedColumnNames="id"
+                                 referencedTableName="courses"/>
+    </changeSet>
+    <changeSet id="1717680344711-18" author="1234 (generated)">
+        <addForeignKeyConstraint baseColumnNames="owner" baseTableName="feedbacks"
+                                 constraintName="FK_FEEDBACKS_ON_OWNER" referencedColumnNames="id"
+                                 referencedTableName="students"/>
+    </changeSet>
+    <changeSet id="1717680344711-19" author="1234 (generated)">
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="students"
+                                 constraintName="FK_STUDENTS_ON_ACCOUNT" referencedColumnNames="id"
+                                 referencedTableName="accounts"/>
+    </changeSet>
+    <changeSet id="1717680344711-20" author="1234 (generated)">
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="teachers"
+                                 constraintName="FK_TEACHERS_ON_ACCOUNT" referencedColumnNames="id"
+                                 referencedTableName="accounts"/>
+    </changeSet>
+    <changeSet id="1717680344711-21" author="1234 (generated)">
+        <addForeignKeyConstraint baseColumnNames="account" baseTableName="tokens" constraintName="FK_TOKENS_ON_ACCOUNT"
+                                 referencedColumnNames="id" referencedTableName="accounts"/>
+    </changeSet>
+    <changeSet id="1717680344711-22" author="1234 (generated)">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="topics" constraintName="FK_TOPICS_ON_COURSE"
+                                 referencedColumnNames="id" referencedTableName="courses"/>
+    </changeSet>
+    <changeSet id="1717680344711-23" author="1234 (generated)">
+        <addForeignKeyConstraint baseColumnNames="course_id" baseTableName="student_course"
+                                 constraintName="fk_stucou_on_course" referencedColumnNames="id"
+                                 referencedTableName="courses"/>
+    </changeSet>
+    <changeSet id="1717680344711-24" author="1234 (generated)">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="student_course"
+                                 constraintName="fk_stucou_on_student" referencedColumnNames="id"
+                                 referencedTableName="students"/>
+    </changeSet>
+    <changeSet id="1717680344711-25" author="1234 (generated)">
+        <addForeignKeyConstraint baseColumnNames="contents_id" baseTableName="topics_contents"
+                                 constraintName="fk_topcon_on_content_object" referencedColumnNames="id"
+                                 referencedTableName="contents"/>
+    </changeSet>
+    <changeSet id="1717680344711-26" author="1234 (generated)">
+        <addForeignKeyConstraint baseColumnNames="topic_id" baseTableName="topics_contents"
+                                 constraintName="fk_topcon_on_topic" referencedColumnNames="id"
+                                 referencedTableName="topics"/>
+    </changeSet>
+</databaseChangeLog>
