@@ -12,7 +12,7 @@ export default function Profile() {
             const apiUrl = process.env.REACT_APP_SERVER_URL;
             console.log(apiUrl)
             const fetchUserInfo = async () => {
-                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/2`, {credentials: 'include'});
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/5`, {credentials: 'include'});
                 const data = await response.json();
                 console.log(data);
                 data.fullname="test te"
@@ -92,207 +92,215 @@ export default function Profile() {
         <div className="container py-5">
             <h1 className="display-6 mb-2 text-center">Мій профіль</h1>
             <h2 className="mb-2 text-center">Власна інформація</h2>
-            <div className="row g-5 max-size m-auto">
-                <div className="col-lg-6">
-                    <div className="position-relative">
-                        <div className="p-2" style={{"borderRadius": "30px"}}>
-                            { isEditMode ? <></> : <section className="node_category card d-inline-block w-100 mb-3">
-                                <div className="card-body"><h3 className="lead">You are:
-                                    {
-                                        <span className={"display-6 font-4"}
-                                              style={{"fontSize": "20px"}}>{isLoading ?
-                                            <div>Завантаження...</div> : ` ${userInfo.role}`}</span>
-                                    }
-                                </h3>
-                                </div>
-                            </section>
-                            }
-                            <section className="node_category card d-inline-block w-100 mb-3">
-                                <div className="card-body"><h3 className="lead">Full name:</h3>
-                                    {
-                                        isEditMode ? <>
-                                                <input type="text" id="fullname" className="userDataInput"
+            <div>
+                <div className="row g-5 max-size m-auto">
+                    <div className="col-lg-6">
+                        <div className="position-relative">
+                            <div className="p-2" style={{"borderRadius": "30px"}}>
+                                {isEditMode ? <></> : <section className="node_category card d-inline-block w-100 mb-3">
+                                    <div className="card-body"><h3 className="lead">You are:
+                                        {
+                                            <span className={"display-6 font-4"}
+                                                  style={{"fontSize": "20px"}}>{isLoading ?
+                                                <div>Завантаження...</div> : ` ${userInfo.role}`}</span>
+                                        }
+                                    </h3>
+                                    </div>
+                                </section>
+                                }
+                                <section className="node_category card d-inline-block w-100 mb-3">
+                                    <div className="card-body"><h3 className="lead">Full name:</h3>
+                                        {
+                                            isEditMode ? <>
+                                                    <input type="text" id="fullname" className="userDataInput"
+                                                           style={{
+                                                               "width": "100%",
+                                                               "background": "#FFFF0044",
+                                                               "color": "black",
+                                                               "borderColor": "white"
+                                                           }}
+                                                           placeholder="Edit your full name" name="surname"
+                                                           value={userInfo.fullname} onChange={handleChange}
+                                                    />
+                                                </> :
+                                                <span className={"display-6 font-4"}
+                                                      style={{"fontSize": "26px"}}>{isLoading ?
+                                                    <div>Завантаження...</div> : userInfo.fullname}</span>
+                                        }
+                                    </div>
+                                </section>
+
+                                <section className="node_category card d-inline-block w-100 mb-3">
+                                    <div className="card-body"><h3 className="lead">Email:</h3>
+                                        {isLoading ? <div>Loading...</div> :
+                                            isEditMode ?
+                                                <input type="text" id="email" className="userDataInput"
                                                        style={{
                                                            "width": "100%",
                                                            "background": "#FFFF0044",
                                                            "color": "black",
                                                            "borderColor": "white"
                                                        }}
-                                                       placeholder="Edit your full name" name="surname"
-                                                       value={userInfo.fullname} onChange={handleChange}
+                                                       placeholder="Відредагуйте свій вік" name="email"
+                                                       value={userInfo.email} onChange={handleChange}
                                                 />
-                                            </> :
-                                            <span className={"display-6 font-4"}
-                                                  style={{"fontSize": "26px"}}>{isLoading ?
-                                                <div>Завантаження...</div> : userInfo.fullname}</span>
-                                    }
-                                </div>
-                            </section>
+                                                :
+                                                <div>
+                                                    {userInfo.email}
+                                                </div>
+                                        }
+                                    </div>
+                                </section>
+                                <section className="node_category card d-inline-block w-100 mb-3">
+                                    <div className="card-body"><h3 className="lead">Phone</h3>
+                                        {isLoading ? <div>Loading...</div> :
+                                            isEditMode ?
+                                                <input type="text" id="phone" className="userDataInput"
+                                                       style={{
+                                                           "width": "100%",
+                                                           "background": "#FFFF0044",
+                                                           "color": "black",
+                                                           "borderColor": "white"
+                                                       }}
+                                                       placeholder="Edit phone:" name="phone"
+                                                       value={userInfo.phone} onChange={handleChange}
+                                                />
+                                                :
+                                                <div>
+                                                    {userInfo.phone}
+                                                </div>
+                                        }
+                                    </div>
+                                </section>
 
-                            <section className="node_category card d-inline-block w-100 mb-3">
-                                <div className="card-body"><h3 className="lead">Email:</h3>
-                                    {isLoading ? <div>Loading...</div> :
-                                        isEditMode ?
-                                            <input type="text" id="email" className="userDataInput"
-                                                   style={{
-                                                       "width": "100%",
-                                                       "background": "#FFFF0044",
-                                                       "color": "black",
-                                                       "borderColor": "white"
-                                                   }}
-                                                   placeholder="Відредагуйте свій вік" name="email"
-                                                   value={userInfo.email} onChange={handleChange}
-                                            />
-                                            :
-                                            <div>
-                                                {userInfo.email}
-                                            </div>
-                                    }
-                                </div>
-                            </section>
-                            <section className="node_category card d-inline-block w-100 mb-3">
-                                <div className="card-body"><h3 className="lead">Phone</h3>
-                                    {isLoading ? <div>Loading...</div> :
-                                        isEditMode ?
-                                            <input type="text" id="phone" className="userDataInput"
-                                                   style={{
-                                                       "width": "100%",
-                                                       "background": "#FFFF0044",
-                                                       "color": "black",
-                                                       "borderColor": "white"
-                                                   }}
-                                                   placeholder="Edit phone:" name="phone"
-                                                   value={userInfo.phone} onChange={handleChange}
-                                            />
-                                            :
-                                            <div>
-                                                {userInfo.phone}
-                                            </div>
-                                    }
-                                </div>
-                            </section>
-
+                            </div>
                         </div>
                     </div>
-                </div>
-                <div className="col-lg-6">
-                    <div className="position-relative">
-                        <div className="d-flex text-decoration-none text-black p-2">
+                    <div className="col-lg-6">
+                        <div className="position-relative">
+                            <div className="d-flex text-decoration-none text-black p-2">
 
-                            <div className="d-flex flex-column w-100">
-                                <section className="node_category card d-inline-block w-100 mb-3">
-                                    <div className="d-flex flex-row w-100"
-                                         style={{"padding": "0 0.5rem "}}
-                                    >
-                                    {
-                                            isEditMode ?
-                                                <>
+                                <div className="d-flex flex-column w-100">
+                                    <section className="node_category card d-inline-block w-100 mb-3">
+                                        <div className="d-flex flex-row w-100"
+                                             style={{"padding": "0 0.5rem "}}
+                                        >
+                                            {
+                                                isEditMode ?
+                                                    <>
 
-                                                    <div
-                                                        className="w-50 bg-warning logout text-center p-2 my-1 d-flex justify-content-center"
-                                                        style={{
-                                                            "borderRadius": "30px",
-                                                            "cursor": "pointer",
-                                                            "margin": "0 0.5rem "
-                                                        }}
-                                                        onClick={handleUpdateUserData}>
-                                                        <button className={"btn btn-warning, text-center"}
-                                                                style={{"padding": "0px"}}
-                                                                onClick={handleUpdateUserData}>Save
-                                                        </button>
-                                                    </div>
-                                                    <div
-                                                        className="d-flex justify-content-center w-50 bg-danger logout text-center p-2 my-1"
-
-                                                        style={{
-                                                            "borderRadius": "30px",
-                                                            "cursor": "pointer",
-                                                            "margin": "0 0.5rem "
-                                                        }}
-                                                        onClick={handleCancelButton}>
-                                                        <button
-                                                            className={isEditMode ? "btn-danger btn" : "btn-warning btn"}
+                                                        <div
+                                                            className="w-50 bg-warning logout text-center p-2 my-1 d-flex justify-content-center"
                                                             style={{
                                                                 "borderRadius": "30px",
                                                                 "cursor": "pointer",
                                                                 "margin": "0 0.5rem "
                                                             }}
+                                                            onClick={handleUpdateUserData}>
+                                                            <button className={"btn btn-warning, text-center"}
+                                                                    style={{"padding": "0px"}}
+                                                                    onClick={handleUpdateUserData}>Save
+                                                            </button>
+                                                        </div>
+                                                        <div
+                                                            className="d-flex justify-content-center w-50 bg-danger logout text-center p-2 my-1"
 
-                                                            onClick={handleCancelButton}>{"Скасувати"}</button>
+                                                            style={{
+                                                                "borderRadius": "30px",
+                                                                "cursor": "pointer",
+                                                                "margin": "0 0.5rem "
+                                                            }}
+                                                            onClick={handleCancelButton}>
+                                                            <button
+                                                                className={isEditMode ? "btn-danger btn" : "btn-warning btn"}
+                                                                style={{
+                                                                    "borderRadius": "30px",
+                                                                    "cursor": "pointer",
+                                                                    "margin": "0 0.5rem "
+                                                                }}
+
+                                                                onClick={handleCancelButton}>{"Скасувати"}</button>
+                                                        </div>
+                                                        {/*<div*/}
+                                                        {/*    className="d-flex flex-row w-50 bg-danger logout text-center p-2 my-1"*/}
+                                                        {/*>*/}
+                                                        {/*    <button*/}
+                                                        {/*        className={isEditMode ? "btn-danger btn" : "btn-warning btn"}*/}
+                                                        {/*        style={{*/}
+                                                        {/*            "borderRadius": "30px",*/}
+                                                        {/*            "cursor": "pointer",*/}
+                                                        {/*            "margin": "0 0.5rem "*/}
+                                                        {/*        }}*/}
+
+                                                        {/*        onClick={handleCancelButton}>{"Скасувати"}</button>*/}
+                                                        {/*</div>*/}
+                                                    </>
+                                                    : <>
+                                                        <div className="w-50 bg-warning logout text-center p-2 my-1"
+                                                             style={{
+                                                                 "borderRadius": "30px",
+                                                                 "cursor": "pointer",
+                                                                 "margin": "0 0.5rem "
+                                                             }}
+                                                             onClick={handleEditButton}>
+                                                            <button className={"btn btn-warning"} style={{"padding": "0px"}}
+                                                                    onClick={handleEditButton}>Edit
+                                                            </button>
+                                                        </div>
+                                                        <div className="bg-danger w-50 logout text-center p-2 my-1"
+                                                             style={{
+                                                                 "borderRadius": "30px",
+                                                                 "cursor": "pointer",
+                                                                 "margin": "0 0.5rem "
+                                                             }}
+
+                                                             onClick={handleLogoutButton}>
+                                                            <button className={"btn btn-danger"} style={{"padding": "0px"}}
+                                                                    onClick={handleLogoutButton}>Вихід
+                                                            </button>
+                                                        </div>
+                                                    </>
+
+                                            }
+                                        </div>
+                                    </section>
+                                    {isEditMode ? <></> :
+                                        <section className="node_category card d-inline-block w-100 mb-3">
+                                            <div className="card-body"><h3 className="lead">Account creation date:</h3>
+                                                {isLoading ? <div>Loading...</div> :
+                                                    <div>
+                                                        {formatDate(userInfo.createdDate)}
                                                     </div>
-                                                    {/*<div*/}
-                                                    {/*    className="d-flex flex-row w-50 bg-danger logout text-center p-2 my-1"*/}
-                                                    {/*>*/}
-                                                    {/*    <button*/}
-                                                    {/*        className={isEditMode ? "btn-danger btn" : "btn-warning btn"}*/}
-                                                    {/*        style={{*/}
-                                                    {/*            "borderRadius": "30px",*/}
-                                                    {/*            "cursor": "pointer",*/}
-                                                    {/*            "margin": "0 0.5rem "*/}
-                                                    {/*        }}*/}
-
-                                                    {/*        onClick={handleCancelButton}>{"Скасувати"}</button>*/}
-                                                    {/*</div>*/}
-                                                </>
-                                                : <>
-                                                    <div className="w-50 bg-warning logout text-center p-2 my-1"
-                                                         style={{
-                                                             "borderRadius": "30px",
-                                                             "cursor": "pointer",
-                                                             "margin": "0 0.5rem "
-                                                         }}
-                                                         onClick={handleEditButton}>
-                                                        <button className={"btn btn-warning"} style={{"padding": "0px"}}
-                                                                onClick={handleEditButton}>Edit
-                                                        </button>
-                                                    </div>
-                                                    <div className="bg-danger w-50 logout text-center p-2 my-1"
-                                                         style={{
-                                                             "borderRadius": "30px",
-                                                             "cursor": "pointer",
-                                                             "margin": "0 0.5rem "
-                                                         }}
-
-                                                         onClick={handleLogoutButton}>
-                                                        <button className={"btn btn-danger"} style={{"padding": "0px"}}
-                                                                onClick={handleLogoutButton}>Вихід
-                                                        </button>
-                                                    </div>
-                                                </>
-
-                                        }
-                                    </div>
-                                </section>
-                                {isEditMode ? <></> : <section className="node_category card d-inline-block w-100 mb-3">
-                                    <div className="card-body"><h3 className="lead">Account creation date:</h3>
-                                        {isLoading ? <div>Loading...</div> :
-                                            <div>
-                                                {formatDate(userInfo.createdDate)}
+                                                }
                                             </div>
-                                        }
-                                    </div>
-                                </section>}
-                                {isEditMode ? <></> : <section className="node_category card d-inline-block w-100 mb-3">
-                                    <div className="card-body"><h3 className="lead">Last midified date:</h3>
-                                        {isLoading ? <div>Loading...</div> :
-                                            <div>
-                                                {formatDate(userInfo.lastModifiedDate)}
+                                        </section>}
+                                    {isEditMode ? <></> :
+                                        <section className="node_category card d-inline-block w-100 mb-3">
+                                            <div className="card-body"><h3 className="lead">Last midified date:</h3>
+                                                {isLoading ? <div>Loading...</div> :
+                                                    <div>
+                                                        {formatDate(userInfo.lastModifiedDate)}
+                                                    </div>
+                                                }
                                             </div>
-                                        }
-                                    </div>
-                                </section>}
-                                {isEditMode ? <></> : <section className="node_category card d-inline-block w-100 mb-3">
-                                    <div className="card-body"><h3 className="lead">Privacy and policies</h3>
-                                        <ul>
-                                            <li><span><a href="">Data retention summary</a></span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </section>}
+                                        </section>}
+                                    {isEditMode ? <></> :
+                                        <section className="node_category card d-inline-block w-100 mb-3">
+                                            <div className="card-body"><h3 className="lead">Privacy and policies</h3>
+                                                <ul>
+                                                    <li><span><a href="">Data retention summary</a></span>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </section>}
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
+<div className="mb-2 text-center">
+<h5>Courses</h5>
+</div>
             </div>
         </div>
     );
