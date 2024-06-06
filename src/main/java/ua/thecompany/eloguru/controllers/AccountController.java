@@ -18,6 +18,8 @@ import ua.thecompany.eloguru.services.TeacherService;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @RestController
@@ -91,19 +93,20 @@ public class AccountController {
 
     @GetMapping("/check")
     public ResponseEntity<?> checkAuth(Principal principal) {
-        ArrayList<String> res = new ArrayList<>();
+        Map res = new HashMap();
         var userRole = accountService.getUserRole(principal.getName());
-        res.add(userRole);
+        res.put("role", userRole);
         var userId = accountService.getIdByEmail(principal.getName()).toString();
+        res.put("userId", userId);
         if(userRole == EnumeratedRole.TEACHER.toString()){
             var idByRole = accountService.getTeacherByAccountId(Integer.valueOf(userId).longValue());
-            res.add(idByRole.id().toString());
+            res.put("idByRole", idByRole.id().toString());
         }
         else if(userRole == EnumeratedRole.STUDENT.toString()){
             var idByRole = accountService.getStudentByAccountId(Integer.valueOf(userId).longValue());
-            res.add(idByRole.id().toString());
+            res.put("idByRole", idByRole.id().toString());
         }
-        res.add(principal.getName());
+        res.put("email", principal.getName());
         if(principal.getName() != null) {
             return new ResponseEntity<>(res, HttpStatus.OK);
         }
@@ -124,7 +127,7 @@ public class AccountController {
         }
     }
 
-    @GetMapping(value="/{id}")
+    @GetMapping(value="/teacher/{id}")
     public ResponseEntity<TeacherDto> getTeacherById(@PathVariable Long id){
         try{
             TeacherDto accountModel = accountService.getTeacherById(id);
@@ -135,7 +138,7 @@ public class AccountController {
         }
     }
 
-    @GetMapping(value="/{id}")
+    @GetMapping(value="/student/{id}")
     public ResponseEntity<StudentDto> getStudentById(@PathVariable Long id){
         try{
             StudentDto accountModel = accountService.getStudentById(id);
