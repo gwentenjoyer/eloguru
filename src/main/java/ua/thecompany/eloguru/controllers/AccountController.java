@@ -8,10 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import ua.thecompany.eloguru.dto.AccountDto;
-import ua.thecompany.eloguru.dto.CourseDto;
+import ua.thecompany.eloguru.dto.*;
 import ua.thecompany.eloguru.dto.InitDto.AccountInitDto;
-import ua.thecompany.eloguru.dto.LoginRequest;
 import ua.thecompany.eloguru.model.EnumeratedRole;
 import ua.thecompany.eloguru.security.AuthService;
 import ua.thecompany.eloguru.services.AccountService;
@@ -97,10 +95,13 @@ public class AccountController {
         var userRole = accountService.getUserRole(principal.getName());
         res.add(userRole);
         var userId = accountService.getIdByEmail(principal.getName()).toString();
-        res.add(userId);
         if(userRole == EnumeratedRole.TEACHER.toString()){
-            var test = accountService.getTeacherByAccountId(Integer.valueOf(userId).longValue());
-            System.out.println(test);
+            var idByRole = accountService.getTeacherByAccountId(Integer.valueOf(userId).longValue());
+            res.add(idByRole.id().toString());
+        }
+        else if(userRole == EnumeratedRole.STUDENT.toString()){
+            var idByRole = accountService.getStudentByAccountId(Integer.valueOf(userId).longValue());
+            res.add(idByRole.id().toString());
         }
         res.add(principal.getName());
         if(principal.getName() != null) {
@@ -120,6 +121,28 @@ public class AccountController {
         }
         catch (EntityNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping(value="/{id}")
+    public ResponseEntity<TeacherDto> getTeacherById(@PathVariable Long id){
+        try{
+            TeacherDto accountModel = accountService.getTeacherById(id);
+            return new ResponseEntity<>(accountModel, HttpStatus.OK);
+        }
+        catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping(value="/{id}")
+    public ResponseEntity<StudentDto> getStudentById(@PathVariable Long id){
+        try{
+            StudentDto accountModel = accountService.getStudentById(id);
+            return new ResponseEntity<>(accountModel, HttpStatus.OK);
+        }
+        catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
 }

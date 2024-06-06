@@ -136,4 +136,17 @@ public class AccountServiceImpl implements AccountService {
         return accountMapper.studentModelToStudentDto(studentRepository.findByAccountIdAndActive(id, true)
                 .orElseThrow(() -> new EntityNotFoundException("Could not found by id: "+ id)));
     }
+
+    @Override
+    @Transactional
+    public TeacherDto getTeacherById(Long id){
+        return accountMapper.teacherModelToTeacherDto(teacherRepository.findByIdAndActive(id, true)
+                .orElseThrow(() -> new EntityNotFoundException("Could not found by id: "+ id)));
+    }
+    @Override
+    @Transactional
+    public StudentDto getStudentById(Long id){
+        return accountMapper.studentModelToStudentDto(studentRepository.findByIdAndActive(id, true)
+                .orElseThrow(() -> new EntityNotFoundException("Could not found by id: "+ id)));
+    }
 }

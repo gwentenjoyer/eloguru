@@ -31,4 +31,7 @@ public interface AccountService {
     TeacherDto getTeacherByAccountId(Long id);
     StudentDto getStudentByAccountId(Long id);
 
+    TeacherDto getTeacherById(Long id);
+    StudentDto getStudentById(Long id);
+
 }
