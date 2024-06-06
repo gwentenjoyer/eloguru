@@ -150,4 +150,24 @@ public class AccountController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
+
+    @GetMapping(value="/getUserInfo")
+    public ResponseEntity<?> getUserInfo(Principal principal){
+        if (principal == null)
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        var email = principal.getName();
+        var acc = accountService.getAccountByEmail(email);
+        var accRole = acc.role().toString();
+        if(accRole == EnumeratedRole.TEACHER.toString()){
+            var teacher = accountService.getTeacherByAccountId(acc.id());
+            return new ResponseEntity<>(teacher, HttpStatus.OK);
+
+        }
+        else if(accRole == EnumeratedRole.STUDENT.toString()){
+            var student = accountService.getStudentByAccountId(acc.id());
+            return new ResponseEntity<>(student, HttpStatus.OK);
+
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+    }
 }

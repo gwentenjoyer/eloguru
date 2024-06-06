@@ -154,4 +154,12 @@ public class AccountServiceImpl implements AccountService {
         return studentMapper.studentModelToStudentDto(studentRepository.findByIdAndActive(id, true)
                 .orElseThrow(() -> new EntityNotFoundException("Could not found by id: "+ id)));
     }
+
+    @Override
+    @Transactional
+    public AccountDto getAccountByEmail(String email){
+        Account userData = accountRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Could not found by email: "+ email));
+        return accountMapper.accountModelToAccountDto(userData);
+    }
 }

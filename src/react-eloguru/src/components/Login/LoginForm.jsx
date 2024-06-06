@@ -1,10 +1,13 @@
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import {useState} from "react";
+import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 export default function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -13,9 +16,12 @@ export default function LoginForm() {
             password
         }
         console.log(logData)
-        window.location.href = "/profile"
-        // If passwords match, send the data to the server
-        // Here you can implement your logic to send data to the server
+        axios.post(`${process.env.REACT_APP_SERVER_URL}/accounts/login`, logData, {withCredentials: true})
+            .then(res => {
+                    // window.location.href = "/profile"
+                    navigate(`/profile`);
+                }
+        )
     };
 
     return (

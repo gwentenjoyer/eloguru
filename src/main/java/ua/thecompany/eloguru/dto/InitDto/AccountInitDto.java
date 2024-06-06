@@ -7,5 +7,5 @@ import java.io.Serializable;
 
 public record AccountInitDto(@NotBlank(message = "Cannot be blank!") @Email String email,
                              @NotBlank(message = "Cannot be blank!") String password,
-                             @NotBlank(message = "Cannot be blank!") String phone,
+                             String phone,
                              String country, String fullname) implements Serializable {}

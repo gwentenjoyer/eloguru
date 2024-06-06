@@ -34,4 +34,6 @@ public interface AccountService {
     TeacherDto getTeacherById(Long id);
     StudentDto getStudentById(Long id);
 
+    AccountDto getAccountByEmail(String email);
+
 }
