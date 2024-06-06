@@ -1,6 +1,8 @@
 import React, {useEffect, useState} from "react";
 import "../../css/profile.css";
 import Collapse from "../CoursePage/Collapse";
+import {useNavigate} from "react-router-dom";
+import CoursePreview from "./CoursePreview";
 
 export default function Profile() {
 
@@ -9,54 +11,53 @@ export default function Profile() {
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
+    const navigate = useNavigate();
+    const [courses, setCourses] = useState([]);
 
-    const fetchCheck = async () => {
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
-        // if (!response.ok){
-        //     console.error("Failed to fetch data to ckeck auth")
-        //     return;
-        // }
-        // const data = await response?.json();
-        // console.log(data);
-        // // setUserInfo(data);
-
-        setUserCheckInfo(
-            {
-                "idByRole": "3",
-                "role": "teacher",
-                "userId": "6",
-                "email": "myteacher@gmail.com"
-            }
-        );
-        setIsLoading(false);
+    const handleClick = (event) => {
+        const id = event.currentTarget.id;
+        navigate(`/course/${id}`);
     };
 
-    const fetchCourses = async () => {
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
-        // if (!response.ok){
-        //     console.error("Failed to fetch data to ckeck auth")
-        //     return;
-        // }
-        // const data = await response?.json();
-        // console.log(data);
-        // // setUserInfo(data);
+    // const fetchCheck = async () => {
+    //     // const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
+    //     // if (!response.ok){
+    //     //     console.error("Failed to fetch data to ckeck auth")
+    //     //     return;
+    //     // }
+    //     // const data = await response?.json();
+    //     // console.log(data);
+    //     // // setUserInfo(data);
+    //
+    //     setUserCheckInfo(
+    //         {
+    //             "idByRole": "3",
+    //             "role": "teacher",
+    //             "userId": "6",
+    //             "email": "myteacher@gmail.com"
+    //         }
+    //     );
+    //     setIsLoading(false);
+    // };
 
-        setUserCheckInfo(
-            {
-                "idByRole": "3",
-                "role": "teacher",
-                "userId": "6",
-                "email": "myteacher@gmail.com"
-            }
-        );
-        setIsLoading(false);
+    const fetchCourse = async (id) => {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${id}`, {credentials: 'include'});
+        if (!response.ok){
+            console.error("Failed to fetch data to get course")
+            return;
+        }
+        const data = await response?.json();
+        console.log(data);
+        // setUserInfo(data);
+        return data;
     };
 
     useEffect(() => {
             const apiUrl = process.env.REACT_APP_SERVER_URL;
             console.log(apiUrl)
             const fetchUserInfo = async () => {
-                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/6`, {credentials: 'include'});
+                setIsLoading(true);
+                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/getUserInfo`, {credentials: 'include'});
                 const data = await response.json();
                 console.log(data);
                 data.fullname="test te"
@@ -70,10 +71,16 @@ export default function Profile() {
                 // }
                 setIsLoading(false);
             };
-            fetchUserInfo();
-            fetchCheck();
+            const fetchAllCourses = async () => {
+                const coursePromises = userInfo.teachingCoursesId.map(id => fetchCourse(id));
+                const courseData = await Promise.all(coursePromises);
+                setCourses(courseData.filter(course => course !== null)); // Filter out any null responses
+            };
+            fetchUserInfo().then(() => fetchAllCourses())
+
+            // fetchCheck();
         }, // eslint-disable-next-line
-        []);
+        [userInfo.teachingCoursesId]);
 
     const handleEditButton = () => {
         setIsEditMode(!isEditMode);
@@ -134,6 +141,17 @@ export default function Profile() {
         });
     }
 
+    const getCourses = async () => {
+        if (userInfo?.role == "TEACHER"){
+            console.log("tea")
+            // for userInfo.tea
+            userInfo.teachingCoursesId.forEach(() => <div>`${233}`</div>)
+        }
+        else if(userInfo?.role == "STUDENT"){
+            console.log("stu")
+        }
+    }
+
     return (
         <div className="container py-5">
             <h1 className="display-6 mb-2 text-center">Мій профіль</h1>
@@ -148,7 +166,7 @@ export default function Profile() {
                                         {
                                             <span className={"display-6 font-4"}
                                                   style={{"fontSize": "20px"}}>{isLoading ?
-                                                <div>Завантаження...</div> : ` ${userInfo.role}`}</span>
+                                                <div>Завантаження...</div> : ` ${userInfo?.role}`}</span>
                                         }
                                     </h3>
                                     </div>
@@ -171,7 +189,7 @@ export default function Profile() {
                                                 </> :
                                                 <span className={"display-6 font-4"}
                                                       style={{"fontSize": "26px"}}>{isLoading ?
-                                                    <div>Завантаження...</div> : userInfo.fullname}</span>
+                                                    <div>Завантаження...</div> : userInfo?.fullname}</span>
                                         }
                                     </div>
                                 </section>
@@ -344,22 +362,40 @@ export default function Profile() {
                         </div>
                     </div>
                 </div>
-            <div className="mb-2 text-center">
-               <h5>Courses</h5>
-                {
-                    isEditMode ? <> </> :
-                    <div>
-                        {course?.topics.map((item, index) => (
-                            <Collapse key={index} label={item.label} id={index}>
+
+                {isLoading ?
+                    <div>Loading...</div> :
+                    <div className="mb-2 text-center">
+                        <h5>Courses</h5>
+                        {
+
+                            isEditMode ? <> </> :
                                 <div>
-                                    {item.description}
+                                    {/*{*/}
+                                    {/*//     if(userInfo.role == "TEACHER"){*/}
+                                    {/*//     console.log("tea");*/}
+                                    {/*// }*/}
+                                    {/*    {getCourses()}*/}
+                                    {/*//     course?.topics.map((item, index) => (*/}
+                                    {/*//*/}
+                                    {/*// ))*/}
+                                    {/*}*/}
+                                    {/*{getCourses()}*/}
+                                    {/*{userInfo.teachingCoursesId.forEach(() => <div>`asddddddddddd${3}`</div>)}*/}
+                                    {/*{userInfo.teachingCoursesId.forEach(item) => console.log(item)}*/}
+                                    {courses.length > 0 ? (
+                                        courses.map((course, index) => (
+                                            <h3 key={index}>{course.header}</h3>
+                                        ))
+                                    ) : (
+                                        <p>No courses available.</p>
+                                    )}
                                 </div>
-                            </Collapse>
-                        ))}
+                        }
                     </div>
                 }
-            </div>
-            </div>
-        </div>
-    );
-}
+
+                    </div>
+                    </div>
+                    );
+                }

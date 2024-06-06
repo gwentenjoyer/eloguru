@@ -18,8 +18,9 @@ export default function LoginForm() {
         console.log(logData)
         axios.post(`${process.env.REACT_APP_SERVER_URL}/accounts/login`, logData, {withCredentials: true})
             .then(res => {
-                    // window.location.href = "/profile"
-                    navigate(`/profile`);
+                    window.location.href = "/profile"
+                // setEmail(email);
+                //     navigate(`/profile`);
                 }
         )
     };

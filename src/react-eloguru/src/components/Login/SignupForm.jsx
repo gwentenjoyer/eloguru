@@ -32,8 +32,8 @@ export default function SignupForm() {
         // Here you can implement your logic to send data to the server
         axios.post(`${process.env.REACT_APP_SERVER_URL}/accounts/signup?role=${selectedOption}`, logData, {withCredentials: true})
             .then(res => {
-                    // window.location.href = "/profile"
-                    navigate(`/profile`);
+                    window.location.href = "/profile"
+                    // navigate(`/profile`);
                 }
             )
     };
