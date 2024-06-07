@@ -1,6 +1,6 @@
 import React from "react";
 import '../../css/Comment.css'
-function Comment({ name, text }) {
+function Comment({ name, text, rate}) {
     return (
         // <div className="css-l6lvqi">
         //     <div className="css-wuhn9k">
@@ -23,11 +23,11 @@ function Comment({ name, text }) {
                 <div>
                     <img src="/blankUser.png" alt="User photo" className="rounded-photo"/>
                 </div>
-                <div className="comment-center m-1">Name: John Doe</div>
+                <div className="comment-center m-1">{name}</div>
             </div>
             <div className="rate-comment">
-                <div className="rate">Rate: 5/5</div>
-                <div className="comment">Comment: Great service!</div>
+                <div className="rate">Rate: {rate}/5</div>
+                <div className="comment">{text}</div>
             </div>
         </div>
     );
