@@ -62,7 +62,7 @@ const Course = ({courseId}) => {
                         <p>Days: {(course?.durationDays)}</p>
                     </div>
                 }
-                <button className="sign-up-button">Enroll</button>
+                {/*<button className="sign-up-button" disabled={userInfo?.role != "TEACHER"} onClick={()=>{console.log("test")}}>Enroll</button>*/}
             </div>
             <div className="course-tabs">
                 <button onClick={() => setActiveTab('info')} className={activeTab === 'info' ? 'active' : ''}>Info

@@ -109,7 +109,7 @@ export default function SignupForm() {
                             checked={selectedOption === "teacher"}
                             onChange={() => setSelectedOption("teacher")}
                         />
-                        <label htmlFor="option2">Teacher</label>
+                        <label htmlFor="teacher">Teacher</label>
                     </div>
 
                 </div>

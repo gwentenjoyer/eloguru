@@ -20,6 +20,10 @@
     max-width: 1060px;
 }
 
+h3{
+    margin-bottom: 0px;
+}
+
 .userDataSurname{
     color: #212529;
     max-width: 54px;

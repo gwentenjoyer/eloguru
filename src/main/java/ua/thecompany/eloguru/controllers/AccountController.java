@@ -10,7 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.thecompany.eloguru.dto.*;
 import ua.thecompany.eloguru.dto.InitDto.AccountInitDto;
-import ua.thecompany.eloguru.email.EmailService;
+//import ua.thecompany.eloguru.email.EmailService;
 import ua.thecompany.eloguru.model.EnumeratedRole;
 import ua.thecompany.eloguru.security.AuthService;
 import ua.thecompany.eloguru.services.AccountService;
@@ -30,7 +30,7 @@ public class AccountController {
     private final TeacherService teacherService;
     private final StudentService studentService;
     private final AuthService authService;
-    private final EmailService emailService;
+//    private final EmailService emailService;
 
     @PostMapping("signup")
     public ResponseEntity<?> saveAccount(@RequestParam(value = "role", required = true) @Valid String accountType,
@@ -142,12 +142,12 @@ public class AccountController {
         }
     }
 
-    @GetMapping("/activate")
-    public ResponseEntity<?> activate(@RequestParam(defaultValue = "") String activationCode) throws MessagingException {
-        emailService.sendEmail("neongenesisbaklan@gmail.com", "test", "test");
-//        return ResponseEntity.ok();
-        return ResponseEntity.status(HttpStatus.OK).body(null);
-    }
+//    @GetMapping("/activate")
+//    public ResponseEntity<?> activate(@RequestParam(defaultValue = "") String activationCode) throws MessagingException {
+//        emailService.sendEmail("neongenesisbaklan@gmail.com", "test", "test");
+////        return ResponseEntity.ok();
+//        return ResponseEntity.status(HttpStatus.OK).body(null);
+//    }
 
 
     @GetMapping(value="/student/{id}")
