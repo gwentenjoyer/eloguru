@@ -7,38 +7,11 @@ import CoursePreview from "./CoursePreview";
 export default function Profile() {
 
     const [userInfo, setUserInfo] = useState();
-    const [userCheckInfo, setUserCheckInfo] = useState();
 
     const [isEditMode, setIsEditMode] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const [courses, setCourses] = useState([]);
-
-    const handleClick = (event) => {
-        const id = event.currentTarget.id;
-        navigate(`/course/${id}`);
-    };
-
-    // const fetchCheck = async () => {
-    //     // const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
-    //     // if (!response.ok){
-    //     //     console.error("Failed to fetch data to ckeck auth")
-    //     //     return;
-    //     // }
-    //     // const data = await response?.json();
-    //     // console.log(data);
-    //     // // setUserInfo(data);
-    //
-    //     setUserCheckInfo(
-    //         {
-    //             "idByRole": "3",
-    //             "role": "teacher",
-    //             "userId": "6",
-    //             "email": "myteacher@gmail.com"
-    //         }
-    //     );
-    //     setIsLoading(false);
-    // };
 
     const fetchCourse = async (id) => {
         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${id}`, {credentials: 'include'});
@@ -47,40 +20,53 @@ export default function Profile() {
             return;
         }
         const data = await response?.json();
-        console.log(data);
         // setUserInfo(data);
         return data;
     };
 
     useEffect(() => {
             const apiUrl = process.env.REACT_APP_SERVER_URL;
-            console.log(apiUrl)
             const fetchUserInfo = async () => {
                 setIsLoading(true);
-                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/getUserInfo`, {credentials: 'include'});
-                const data = await response.json();
-                console.log(data);
-                data.fullname="test te"
-                setUserInfo(data);
-                // {
-                //     "surname":"nick"
-                //     ,"name":"sur"
-                //     ,"id":0,
-                //     "categories":["A1"],
-                //     "age":0
-                // }
-                setIsLoading(false);
+                try {
+                    const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/getUserInfo`, { credentials: 'include' });
+                    if (!response.ok){
+                        console.error("Failed to fetch data user")
+                        navigate('/');
+                        // return;
+                    }
+                    const data = await response.json();
+                    setUserInfo(data);
+                    setIsLoading(false);
+                } catch (error) {
+                    console.error("Error fetching user info:", error);
+                    setIsLoading(false);
+                }
             };
-            const fetchAllCourses = async () => {
+            fetchUserInfo();
+        },
+        []);
+
+    useEffect(() => {
+        const fetchAllCourses = async () => {
+            if (userInfo && userInfo?.role == "TEACHER" && userInfo?.teachingCoursesId) {
                 const coursePromises = userInfo.teachingCoursesId.map(id => fetchCourse(id));
                 const courseData = await Promise.all(coursePromises);
-                setCourses(courseData.filter(course => course !== null)); // Filter out any null responses
-            };
-            fetchUserInfo().then(() => fetchAllCourses())
+                const filteredCourses = courseData.filter(course => course !== null && course.id !== undefined);
+                // setCourses(courseData.filter(course => course !== null)); // Filter out any null responses
+                setCourses(filteredCourses);
+            }
+            if (userInfo && userInfo?.role == "STUDENT" && userInfo?.coursesId) {
+                const coursePromises = userInfo.coursesId.map(id => fetchCourse(id));
+                const courseData = await Promise.all(coursePromises);
+                const filteredCourses = courseData.filter(course => course !== null && course.id !== undefined);
+                // setCourses(courseData.filter(course => course !== null)); // Filter out any null responses
+                setCourses(filteredCourses);
+            }
+        };
 
-            // fetchCheck();
-        }, // eslint-disable-next-line
-        [userInfo.teachingCoursesId]);
+        fetchAllCourses();
+    }, [userInfo]);
 
     const handleEditButton = () => {
         setIsEditMode(!isEditMode);
@@ -131,7 +117,6 @@ export default function Profile() {
         // window.location.reload();
         // e.preventDefault();
         handleEditButton();
-        console.log("hi")
     }
     const handleChange = async (event) => {
         const value = event.target.type === 'number' ? parseInt(event.target.value) : event.target.value;
@@ -365,31 +350,23 @@ export default function Profile() {
 
                 {isLoading ?
                     <div>Loading...</div> :
-                    <div className="mb-2 text-center">
-                        <h5>Courses</h5>
+                    <div className="mb-2 text-center ">
+                        {userInfo?.role != "ADMIN" && <h5>Courses you're {userInfo.role == "TEACHER"? "teaching": "studying"}:</h5>}
                         {
 
                             isEditMode ? <> </> :
-                                <div>
-                                    {/*{*/}
-                                    {/*//     if(userInfo.role == "TEACHER"){*/}
-                                    {/*//     console.log("tea");*/}
-                                    {/*// }*/}
-                                    {/*    {getCourses()}*/}
-                                    {/*//     course?.topics.map((item, index) => (*/}
-                                    {/*//*/}
-                                    {/*// ))*/}
-                                    {/*}*/}
-                                    {/*{getCourses()}*/}
-                                    {/*{userInfo.teachingCoursesId.forEach(() => <div>`asddddddddddd${3}`</div>)}*/}
-                                    {/*{userInfo.teachingCoursesId.forEach(item) => console.log(item)}*/}
+                                <div className="d-flex flex-column justify-content-center text-center align-items-center">
                                     {courses.length > 0 ? (
-                                        courses.map((course, index) => (
-                                            <h3 key={index}>{course.header}</h3>
+                                        courses.sort((a, b) => a.id - b.id).map((course, index) => (
+                                            <CoursePreview label={course.header} id={course.id} ></CoursePreview>
                                         ))
                                     ) : (
-                                        <p>No courses available.</p>
-                                    )}
+
+                                        userInfo.role != "ADMIN" && (userInfo.role == "TEACHER"?<p>You don't teach any courses.</p>:
+                                     <p>You don't study any course. Go to <a href={'/courses'}>courses</a> to find one.</p>)
+
+
+                                        )}
                                 </div>
                         }
                     </div>

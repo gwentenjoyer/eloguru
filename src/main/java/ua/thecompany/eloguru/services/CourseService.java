@@ -35,4 +35,6 @@ public interface CourseService {
     Course getCourseModel(Long id);
 
     boolean isAccountOwnsCourse(Long courseId, Long accountId);
+    boolean isTeacherOwnsCourse(Long courseId, Long teacherId);
+
 }

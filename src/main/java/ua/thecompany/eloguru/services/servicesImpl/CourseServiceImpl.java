@@ -193,4 +193,14 @@ public class CourseServiceImpl implements CourseService {
                 .getTeacher().getAccount().getId() == accountId;
     }
 
+    @Override
+    @Transactional
+    public boolean isTeacherOwnsCourse(Long courseId, Long teacherId) {
+        System.out.println(courseRepository.findByIdAndActive(courseId, true).orElseThrow(EntityNotFoundException::new)
+                .getTeacher().getAccount().getId());
+
+        return courseRepository.findByIdAndActive(courseId, true).orElseThrow(EntityNotFoundException::new)
+                .getTeacher().getId() == teacherId;
+    }
+
 }

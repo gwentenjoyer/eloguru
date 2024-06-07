@@ -8,7 +8,8 @@ import ua.thecompany.eloguru.model.Teacher;
 
 @Mapper(componentModel = "spring", uses = CourseMapper.class)
 public interface TeacherMapper {
-    @Mapping(target = "id", source = "account.id")
+//    @Mapping(target = "accountId", source = "account.id")
+    @Mapping(target = "id", source = "id")
     @Mapping(target = "createdDate", source = "account.createdDate")
     @Mapping(target = "lastModifiedDate", source = "account.lastModifiedDate")
     @Mapping(target = "role", source = "account.role")

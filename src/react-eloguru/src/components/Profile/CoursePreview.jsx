@@ -7,15 +7,10 @@ function CoursePreview({ label, id }) {
         navigate(`/course/${id}`);
     };
     return (
-        <div className="card">
-            <div className="card-header" id={`heading${id}`}>
+        <div className="card w-50 m-1">
+            <div className="card-header prof-course-butе" id={`heading${id}`} onClick={handleToggle}>
                 <h5 className="mb-0">
-                    <button
-                        className="btn btn-link"
-                        onClick={handleToggle}
-                    >
                         {label}
-                    </button>
                 </h5>
             </div>
 

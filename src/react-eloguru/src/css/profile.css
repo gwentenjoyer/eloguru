@@ -60,3 +60,11 @@
     border: 1px solid rgba(0,0,0,.125);
     border-radius: 0;
 }
+
+.mytestflex {
+    display: flex!important;
+    justify-content: center!important;
+}
+.prof-course-butе:hover{
+    cursor: pointer;
+}
