@@ -15,26 +15,29 @@ const CreateCourse = () => {
     const handleSubmit = async (event) => {
         event.preventDefault();
         const courseData = {
-            name: courseName,
+            header: courseName,
             description,
             startDate,
             durationDays,
-            category
+            categories: category
         };
 console.log(courseData);
-        // try {
-        //     const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/courses`, courseData, { withCredentials: true });
-        //     if (response.status === 201) {
-        //         setSuccess(true);
-        //         setCourseName('');
-        //         setDescription('');
-        //         // Optionally navigate to another page or show a success message
-        //         navigate('/profile');
-        //     }
-        // } catch (error) {
-        //     console.error('Error creating course:', error);
-        //     setError('Failed to create course. Please try again.');
-        // }
+        try {
+            const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/courses/create`, courseData, { withCredentials: true });
+            if (response.status === 201) {
+                setSuccess(true);
+                setCourseName('');
+                setDescription('');
+                setCategory('');
+                setStartDate('');
+                setDurationDays('');
+                // Optionally navigate to another page or show a success message
+                navigate('/courses');
+            }
+        } catch (error) {
+            console.error('Error creating course:', error);
+            setError('Failed to create course. Please try again.');
+        }
     };
 
     const getToday = () => {
@@ -82,9 +85,11 @@ console.log(courseData);
                 <div>
                     <label htmlFor="my-select">Category:</label>
                     <select id="my-select" name="fruits" onChange={e => setCategory(e.target.value)}>
-                        <option value="apple">Apple</option>
-                        <option value="banana">Banana</option>
-                        <option value="cherry">Cherry</option>
+                        <option value="IT">IT</option>
+                        <option value="TECH">Tech</option>
+                        <option value="SCIENCE">Science</option>
+                        <option value="PSYCOLOGY">Psycology</option>
+                        <option value="OTHER">Other</option>
                     </select>
                 </div>
                 <div>

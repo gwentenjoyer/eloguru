@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import '../../css/CourseDetailPage.css';
 import Collapse from "./Collapse";
 import Comment from "./Comment";
+import axios from "axios";
 
 const Course = ({courseId}) => {
     const [activeTab, setActiveTab] = useState('info');
@@ -14,18 +15,13 @@ const Course = ({courseId}) => {
             const fetchUserInfo = async () => {
                 console.log(courseId)
                 const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}`, {credentials: 'include'});
+                if (!response.ok) {
+                    throw new Error('Course not found');
+                    //TODO: не перекидає на ерор пейдж
+                }
                 const data = await response.json();
                 console.log(data);
-                // {
-                //     "surname":"nick"
-                //     ,"name":"sur"
-                //     ,"id":0,
-                //     "categories":["A1"],
-                //     "age":0
-                // }
                 setCourse(data);
-                // let test = {name: "sdf", description: "sdf", rating: 5, hours: "5"}
-                // setCourse(test);
                 setIsLoading(false);
             };
 
@@ -50,19 +46,58 @@ const Course = ({courseId}) => {
         return parseFloat(value).toFixed(1);
     }
 
+    const getUserRole = () => {
+        return JSON.parse(localStorage.getItem("account")).role;
+    }
+
+    const handleEnroll = async () => {
+        // const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}/enroll`, {withCredentials: true});
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}/enroll`, {credentials: 'include', method: "POST"});
+
+        if (!response.status === 200){
+            console.log(response)
+            console.error("Failed to enroll")
+        }
+        console.log("enrolled")
+        // navigate('/');
+        // window.location.href = "/"
+
+    };
+
+    const handleDelete = async () => {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}/delete`, {credentials: 'include', method: "POST"});
+
+        if (!response.status === 200){
+            console.log(response)
+            console.error("Failed to enroll")
+        }
+        console.log("deleted")
+        // navigate('/');
+        // window.location.href = "/"
+
+    };
 
     return (
         <div className="course-detail-page">
             <div className="course-header">
                 {isLoading ? <div>Loading...</div> :
                     <div className="course-info m-2">
-                        <h1 >{(course?.header)}</h1>
+                        <h1>{(course?.header)}</h1>
                         <p>Rate: {printRate(course?.rating)} / 5</p>
 
                         <p>Days: {(course?.durationDays)}</p>
                     </div>
                 }
-                {/*<button className="sign-up-button" disabled={userInfo?.role != "TEACHER"} onClick={()=>{console.log("test")}}>Enroll</button>*/}
+                <button className="sign-up-button" disabled={getUserRole() != "STUDENT"} onClick={() => {
+                    handleEnroll()
+                }}>Enroll
+                </button>
+                {getUserRole() != "STUDENT" && <button className="sign-up-button" onClick={() => {
+                    handleDelete()
+                }}>Delete
+                </button>
+                }
+
             </div>
             <div className="course-tabs">
                 <button onClick={() => setActiveTab('info')} className={activeTab === 'info' ? 'active' : ''}>Info

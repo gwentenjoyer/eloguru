@@ -11,6 +11,7 @@ import CourseWrapper from "./components/CourseList/CourseWrapper";
 import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import CreateCourse from "./components/CreateCourse/CreateCourse";
+import ErrorPage from "./components/RootLayout/ErrorPage";
 
 const router = createBrowserRouter([
     {
@@ -59,7 +60,7 @@ const router = createBrowserRouter([
             },
 
         ],
-        errorElement: <div>ooo criko criko</div>
+        errorElement: <ErrorPage />
     },
 ]);
 

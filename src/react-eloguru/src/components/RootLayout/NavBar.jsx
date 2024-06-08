@@ -132,6 +132,9 @@ export default function NavBar() {
                         {/*        Log in*/}
                         {/*    </Button>*/}
                         {/*}*/}
+                        <Button variant="primary" onClick={() => setModalShow(true)}>
+                            Log in
+                        </Button>
                         {userInfo.status === 200 ?
                             <>
                             <Button variant="primary" onClick={() => navigate(`/profile`)}>

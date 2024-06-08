@@ -61,7 +61,7 @@ public class CourseController {
         }
     }
 
-    @DeleteMapping("{id}")
+    @PostMapping("{id}/delete")
     public ResponseEntity<CourseDto> deleteCourse(Principal principal, @PathVariable Long id) {
         if (courseService.isTeacherOwnsCourse(id, accountService.getTeacherByAccountId(accountService.getIdByEmail(principal.getName())).id())) {
 //        if (courseService.isAccountOwnsCourse(id, accountService.getIdByEmail(principal.getName()))) {
@@ -90,6 +90,8 @@ public class CourseController {
     @PostMapping("/{courseId}/enroll")
     public ResponseEntity<CourseDto> enrollToCourse(Principal principal, @PathVariable Long courseId) {
             try{
+                if (principal == null)
+                    throw new EntityNotFoundException("Empty principal");
                 if (accountService.getUserRole(principal.getName()) != EnumeratedRole.STUDENT.toString())
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 enroll(courseId,
@@ -120,6 +122,13 @@ public class CourseController {
         courseService.force_delete();
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+//    @PostMapping("/{courseId}/delete")
+//    public ResponseEntity<CourseDto> deleteCourse(Principal principal, @PathVariable Long courseId) {
+//        courseService.force_delete();
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
+
 
     private void enroll(Long courseId, Long studentAccountId) {
         courseService.enrollToCourse(courseId, studentAccountId);
