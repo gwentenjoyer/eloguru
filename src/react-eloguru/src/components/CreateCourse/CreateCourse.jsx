@@ -84,7 +84,7 @@ console.log(courseData);
                 </div>
                 <div>
                     <label htmlFor="my-select">Category:</label>
-                    <select id="my-select" name="fruits" onChange={e => setCategory(e.target.value)}>
+                    <select id="my-select" name="categories" onChange={e => setCategory(e.target.value)}>
                         <option value="IT">IT</option>
                         <option value="TECH">Tech</option>
                         <option value="SCIENCE">Science</option>

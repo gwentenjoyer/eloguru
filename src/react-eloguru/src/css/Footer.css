@@ -17,3 +17,25 @@
     color: var(--light);
     margin-right: 10px;
 }
+
+/* Footer.css */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+.page-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.content-wrap {
+    flex: 1;
+}
+
+.footer {
+    background-color: #000080; /* or your desired background color */
+    padding: 20px;
+    color: white;
+}

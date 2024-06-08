@@ -50,7 +50,9 @@ export default function Profile() {
     useEffect(() => {
         const fetchAllCourses = async () => {
             if (userInfo && userInfo?.role == "TEACHER" && userInfo?.teachingCoursesId) {
-                const coursePromises = userInfo.teachingCoursesId.map(id => fetchCourse(id));
+                console.log(userInfo?.teachingCoursesId)
+                // TODO: crush if course deleted
+                const coursePromises = userInfo?.teachingCoursesId.map(id => fetchCourse(id));
                 const courseData = await Promise.all(coursePromises);
                 const filteredCourses = courseData.filter(course => course !== null && course.id !== undefined);
                 // setCourses(courseData.filter(course => course !== null)); // Filter out any null responses

@@ -2,12 +2,21 @@ import NavBar from "./NavBar";
 import {Outlet} from "react-router-dom";
 import Footer from "./Footer";
 
-export default function rootLayout() {
+export default function rootLayout({children}) {
     return (
         <>
-            <NavBar/>
-            <Outlet/>
-            <Footer/>
+            <div className="page-container">
+                <div className="content-wrap">
+                    <NavBar/>
+                    <Outlet/>
+                </div>
+                <Footer/>
+            </div>
         </>
+        // <>
+        //     <NavBar/>
+        //     <Outlet/>
+        //     <Footer/>
+        // </>
     );
 }
