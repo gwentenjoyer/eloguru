@@ -72,7 +72,7 @@ export default function Profile() {
         setIsEditMode(!isEditMode);
     }
     const handleLogoutButton = () => {
-        fetch(`${process.env.REACT_APP_BASE_URL}/api/v1/logout`, {
+        fetch(`${process.env.REACT_APP_BASE_URL}/accounts/logout`, {
             credentials: 'include',
             method: 'POST',
         })

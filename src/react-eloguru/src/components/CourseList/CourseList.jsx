@@ -32,6 +32,10 @@ const CourseList = () => {
 
     return (
         <div>
+            <div>
+{/*<div>*/}
+{/*    Create course*/}
+{/*</div>*/}
             <div className="mainwrapper d-flex flex-row pt-4 mb-3">
                 <aside className="catalog-sidebar me-4 ms-3">
                     <div className="sidebar-title">
@@ -68,6 +72,7 @@ const CourseList = () => {
                         </div>
                     </div>
                 }
+            </div>
             </div>
         </div>
     );

@@ -1,6 +1,6 @@
 import {useState, useEffect} from 'react';
 import {Outlet} from 'react-router-dom';
-// import getRefreshTokens from "./getRefreshTokens";
+// import getRefreshTokens.js from "./getRefreshTokens.js";
 
 export default function RequireAuth({url}) {
     const [isOk, setIsOk] = useState(null);
@@ -11,7 +11,7 @@ export default function RequireAuth({url}) {
             const response = await fetch(`${process.env.REACT_BASE_URL}/${url}`,{credentials: 'include'});
             if (response.status === 200 && !response.redirected) {
                 setIsOk(true);
-            // } else if (await getRefreshTokens() === true) {
+            // } else if (await getRefreshTokens.js() === true) {
             //     await fetchData()
             } else {
                 setIsFinal(true);
@@ -24,7 +24,7 @@ export default function RequireAuth({url}) {
         window.location.href = "login";
     }
     if (isOk === null) {
-        return <div>Завантаження...</div>;
+        return <div>Loading...</div>;
     }
 
     return isOk ? <Outlet/> : <div></div>;

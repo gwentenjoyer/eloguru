@@ -3,8 +3,12 @@ import {Button, Navbar, Container} from "react-bootstrap";
 import {NavLink, Link} from "react-router-dom";
 import "../../css/Navbar.css"
 import LoginModal from '../Login/LoginModal'
-// import getRefreshTokens from "../hooks/getRefreshTokens";
+// import getRefreshTokens.js from "../hooks/getRefreshTokens.js";
 import { useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+import getRefreshTokens from "../../hooks/getRefreshTokens";
+import axios from "axios";
+// import handleLogout from "../../hooks/handleLogout";
 
 export default function NavBar() {
 
@@ -14,20 +18,66 @@ export default function NavBar() {
 
     const navigate = useNavigate();
 
+    const checkAccessToken = () => {
+        const token = Cookies.get('accessToken');
+        console.log(!!token)
+        return !!token;
+    };
+
+    const handleLogout = async () => {
+        // const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/logout`, { credentials: 'include'});
+        const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/accounts/logout`, {withCredentials: true});
+
+        if (!response.status === 200){
+            console.log(response)
+            console.error("Failed to fetch data user")
+        }
+        console.log(123)
+        // navigate('/');
+        // window.location.href = "/"
+
+    };
+
     useEffect(() => {
-        const fetchUserInfo = async () => {
-            // const data = await fetch(`https://carbonautoschool.onrender.com/api/v1/check-auth`, {credentials: 'include'});
-            // if (!data.redirected) {
-            //     setUserInfo(data);
-            // } else if (await getRefreshTokens() === true) {
-            //     setUserInfo(data);
-            // }
-            // if (await data.text() === "ADMIN") {
-            //     setIsLoading(false);
-            // }
-        };
-        fetchUserInfo();
-    }, []);
+            const fetchUserInfo = async () => {
+                try {
+                    const data = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
+                    // const data = await response?.json();
+                    // if (!response?.redirected) {
+                    //     setUserInfo(data);
+                    // }
+                    // // else if (await getRefreshTokens.js() === true) {
+                    // //     setUserInfo(data);
+                    // // }
+                    // if (data?.role === "admin") {
+                    //     setIsLoading(false);
+                    // }
+                    if (!data.ok) {
+                        if (data.status === 401) {
+                            console.log("Unauthorized. Please log in.");
+                        } else if (data.status === 400) {
+                            console.log("Bad request.");
+                        } else {
+                            console.log("An error occurred:", data.statusText);
+                        }
+                        return;
+                    }
+
+                    if (!data.redirected) {
+                        setUserInfo(data);
+                    } else if (await getRefreshTokens() === true) {
+                        setUserInfo(data);
+                    }
+                    if (await data.text() === "admin") {
+                        setIsLoading(false);
+                    }
+                }
+                catch {
+                    console.log("unlogined")
+                }
+            };
+            fetchUserInfo();
+        }, []);
 
     return (
         <header>
@@ -70,13 +120,32 @@ export default function NavBar() {
                     {/*</div>*/}
                     {/*<ModalTriggerButton/>*/}
                     <>
-                        <Button variant="primary" onClick={() => navigate(`/profile`)}>
-                            Profile
-                        </Button>
-                        <Button variant="primary" onClick={() => setModalShow(true)}>
-                            Log in
+                        <Button variant="primary" onClick={() => navigate(`/CreateCourse`)}>
+                            Create
                         </Button>
 
+                        {/*{ checkAccessToken()?*/}
+
+                            {/*:*/}
+
+                        {/*    <Button variant="primary" onClick={() => setModalShow(true)}>*/}
+                        {/*        Log in*/}
+                        {/*    </Button>*/}
+                        {/*}*/}
+                        {userInfo.status === 200 ?
+                            <>
+                            <Button variant="primary" onClick={() => navigate(`/profile`)}>
+                                Profile
+                            </Button>
+                            <Button variant="primary" onClick={() => handleLogout()}>
+                                Log out
+                            </Button>
+                            </>
+                            :
+                            <Button variant="primary" onClick={() => setModalShow(true)}>
+                                Log in
+                            </Button>
+                        }
                         <LoginModal
                             show={modalShow}
                             onHide={() => setModalShow(false)}

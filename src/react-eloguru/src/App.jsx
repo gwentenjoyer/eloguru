@@ -8,6 +8,9 @@ import Course from './components/CoursePage/Course'
 import './index.css';
 import CourseList from "./components/CourseList/CourseList";
 import CourseWrapper from "./components/CourseList/CourseWrapper";
+import Cookies from 'js-cookie';
+import React, { useEffect, useState } from 'react';
+import CreateCourse from "./components/CreateCourse/CreateCourse";
 
 const router = createBrowserRouter([
     {
@@ -41,6 +44,16 @@ const router = createBrowserRouter([
                     {
                         path: "",
                         element: <Profile/>,
+                    },
+                ]
+            },
+            {
+                path: "createCourse",
+                element: <RequireAuth url={"createCourse"}/>,
+                children: [
+                    {
+                        path: "",
+                        element: <CreateCourse/>,
                     },
                 ]
             },
