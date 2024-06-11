@@ -3,13 +3,15 @@ import '../../css/CourseDetailPage.css';
 import Collapse from "./Collapse";
 import Comment from "./Comment";
 import axios from "axios";
+import Rating from '@mui/material/Rating';
 
 const Course = ({courseId}) => {
     const [activeTab, setActiveTab] = useState('info');
-    const [activeTopic, setActiveTopic] = useState('info');
+    const [topics, setTopics] = useState('info');
     const [course, setCourse] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const [isEditMode, setIsEditMode] = useState(false);
+    const [userRole, setUserRole] = useState('');
 
 
     const [courseName, setCourseName] = useState('');
@@ -17,50 +19,61 @@ const Course = ({courseId}) => {
     const [durationDays, setDurationDays] = useState('');
     const [startDate, setStartDate] = useState('');
     const [category, setCategory] = useState('');
+    const [rating, setRating] = useState('');
+    const [comment, setComment] = useState('');
+    const [commentRate, setCommentRate] = useState('');
 
     // setCourse(test)
     useEffect(() => {
             const fetchUserInfo = async () => {
                 console.log(courseId)
-                const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}`, {credentials: 'include'});
-                if (!response.ok) {
-                    throw new Error('Course not found');
+
+                try {
+                    const [courseResponse, topicsResponse] = await Promise.all([
+                        fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}`, { credentials: 'include' }),
+                        fetchTopics()
+                    ]);
+
+                    if (!courseResponse.ok) {
+                        throw new Error(`Failed to fetch course data: ${courseResponse.statusText}`);
+                    }
+
                     //TODO: не перекидає на ерор пейдж
+
+                    const data = await courseResponse.json();
+                    setCourse(data);
+                    setTopics(await topicsResponse.json())
+                    setCourseName(data?.header)
+                    setDescription(data?.description)
+                    setDurationDays(data?.durationDays)
+                    setStartDate(data?.startDate? data?.startDate?.slice(0, 10): '')
+                    setCategory(data?.categories)
+                    await getUserRole();
+                    setIsLoading(false);
+
+                } catch (error) {
+                    console.error("Error fetching course and topics:", error);
+                    throw error;
                 }
-                const data = await response.json();
-                console.log("31", data);
-                setCourse(data);
-                setCourseName(data?.header)
-                setDescription(data?.description)
-                setDurationDays(data?.durationDays)
-                setStartDate(data?.startDate? data?.startDate?.slice(0, 10): '')
-                setCategory(data?.categories)
-                setIsLoading(false);
             };
 
             fetchUserInfo();
         },
         []);
 
-    // const showLoaded = (content) => {
-    function showLoaded(content){
-        console.log(isLoading)
-        return isLoading || !course ? "Loading..." : content;
-    }
-
     const fetchTopics = async () => {
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/4/topics`, {credentials: 'include'});
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}/topics`, {credentials: 'include'});
         console.log(response)
         return response;
     }
 
-    const printRate = (value) => {
-        // const num = value.
-        return parseFloat(value).toFixed(1);
-    }
+    const getUserRole = async () => {
+        // return JSON.parse(localStorage.getItem("account")).role;
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
 
-    const getUserRole = () => {
-        return JSON.parse(localStorage.getItem("account")).role;
+        if (response.status == 200){
+            setUserRole((await response.json()).role.toString().toUpperCase());
+        }
     }
 
     const handleEnroll = async () => {
@@ -82,6 +95,40 @@ const Course = ({courseId}) => {
         setIsEditMode(!isEditMode);
     }
 
+    const handleCommentCancel = () => {
+
+    }
+
+
+    const handleCommentSave = async () => {
+        const payload = {
+            courseId,
+            text: comment,
+            rating: commentRate
+        }
+        try {
+            // const response = await axios.put(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}`, payload, { withCredentials: true });
+            // if (response.status === 200) {
+            //     // setSuccess(true);
+            //     // setCourseName('');
+            //     // setDescription('');
+            //     // setCategory('');
+            //     // setStartDate('');
+            //     // setDurationDays('');
+            //     // Optionally navigate to another page or show a success message
+            //     // navigate('/courses');
+            //     setComment("");
+            //     setCommentRate(null);
+            //     console.log("successfully created comment")
+            //     window.location.href=`/course/${courseId}`
+            // }
+        } catch (error) {
+            console.error('Error creating course:', error);
+            // setError('Failed to create course. Please try again.');
+        }
+    }
+
+
     const handleCancel = () => {
         setActiveTab('info')
         setIsEditMode();
@@ -99,19 +146,6 @@ const Course = ({courseId}) => {
         // window.location.href = "/"
 
     };
-
-    // const handleUpdate = async () => {
-    //     // const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}/delete`, {credentials: 'include', method: "POST"});
-    //     //
-    //     // if (!response.status === 200){
-    //     //     console.log(response)
-    //     //     console.error("Failed to enroll")
-    //     // }
-    //     console.log("update")
-    //     // navigate('/');
-    //     // window.location.href = "/"
-    //
-    // };
 
     const handleUpdate = async () => {
         const courseData = {
@@ -167,7 +201,13 @@ const Course = ({courseId}) => {
                                 onChange={(e) => setCourseName(e.target.value)}
                             />
                             : <h1>{(course?.header)}</h1>}
-                        {!isEditMode && <p>Rate: {printRate(course?.rating)} / 5</p>}
+                        {!isEditMode &&
+                            <Rating className={"mt-2 mb-2"}
+                            name="simple-controlled"
+                            value={course?.rating}
+                            readOnly
+                            precision={0.5}
+                        />}
                         {
                             isEditMode?
                                 <div>
@@ -208,17 +248,17 @@ const Course = ({courseId}) => {
                         }
                     </div>
                 }
-                <button className="sign-up-button" disabled={getUserRole() != "STUDENT"} onClick={() => {
+                <button className="sign-up-button" disabled={userRole != "STUDENT"} onClick={() => {
                     handleEnroll()
                 }}>Enroll
                 </button>
-                {getUserRole() != "STUDENT" && <button className="sign-up-button" onClick={() => {
+                {userRole != "STUDENT" && <button className="sign-up-button" onClick={() => {
                     handleDelete()
                 }}>Delete
                 </button>
                 }
 
-                {getUserRole() != "STUDENT" && !isEditMode &&
+                {userRole != "STUDENT" && !isEditMode &&
                     <div className="w-50 bg-warning logout text-center p-2 my-1"
                          style={{
                              "borderRadius": "30px",
@@ -232,7 +272,7 @@ const Course = ({courseId}) => {
                     </div>
                 }
 
-                {getUserRole() != "STUDENT" && isEditMode &&
+                {userRole != "STUDENT" && isEditMode &&
                     <div className="bg-success w-50 logout text-center p-2 my-1"
                          style={{
                              "borderRadius": "30px",
@@ -246,7 +286,7 @@ const Course = ({courseId}) => {
                         </span>
                     </div>
                 }
-                {getUserRole() != "STUDENT" && isEditMode &&
+                {userRole != "STUDENT" && isEditMode &&
                     <div className="bg-danger w-50 logout text-center p-2 my-1"
                          style={{
                              "borderRadius": "30px",
@@ -266,7 +306,9 @@ const Course = ({courseId}) => {
                 <button onClick={() => setActiveTab('info')} className={activeTab === 'info' ? 'active' : ''}>Info
                 </button>
                 {!isEditMode &&
-                    <button onClick={() => setActiveTab('comments')}
+                    <button onClick={() => {
+                        setDescription("");
+                        setActiveTab('comments')}}
                             className={activeTab === 'comments' ? 'active' : ''}>Comments
                     </button>
                 }
@@ -289,7 +331,60 @@ const Course = ({courseId}) => {
                     </div>
 
                 </div>}
-                {(activeTab === 'comments' && !isEditMode) && <div>
+                {(activeTab === 'comments' && !isEditMode) && <div className={"mb-3"}>
+                    {userRole == "STUDENT" &&
+                        <div className="d-flex flex-row">
+                        <div className="d-flex text-center justify-content-center align-items-center"><label>You may leave your course review:</label></div>
+                        <div className="mx-3 d-flex flex-column w-75">
+                            <div>
+
+                                <Rating
+                                    name="simple-controlled"
+                                    value={commentRate}
+                                    onChange={(event, newValue) => {setCommentRate(newValue)}}
+
+                                />
+
+                            </div>
+                         <div>
+
+                            <textarea
+                                className={"w-100"}
+                                value={comment}
+                                onChange={(e) => setComment(e.target.value)}
+                                required
+                            ></textarea>
+                         </div>
+                            <div className="d-flex flex-row justify-content-end">
+                                <div className="bg-success w-50 logout text-center p-2 my-1"
+                                     style={{
+                                         "borderRadius": "30px",
+                                         "cursor": "pointer",
+                                         "margin": "0 0.5rem "
+                                     }}
+
+                                     onClick={handleCommentSave}>
+                                                    <span className={"btn btn-success"} style={{"padding": "0px"}}
+                                                    >Save
+                                                    </span>
+                                </div>
+                                    <div className="bg-danger w-50 logout text-center p-2 my-1"
+                                         style={{
+                                             "borderRadius": "30px",
+                                             "cursor": "pointer",
+                                             "margin": "0 0.5rem "
+                                         }}
+
+                                         onClick={handleCommentCancel}>
+                                                    <span className={"btn btn-danger"} style={{"padding": "0px"}}
+                                                    >Cancel
+                                                    </span>
+                                    </div>
+                            </div>
+                        </div>
+
+                    </div>}
+                    <div></div>
                     <div id="comment-container">
                         {course?.feedbacks.map((item, index) => (
                             <Comment name={item.fullname} text={item.text} rate={item.rating}>
@@ -301,8 +396,9 @@ const Course = ({courseId}) => {
                 }
                 {activeTab === 'themes' && <div>
                     <div id="accordion">
-                        {course?.topics.map((item, index) => (
-                            <Collapse key={index} label={item.label} id={index}>
+                        {console.log(topics)}
+                        {topics.map((item, index) => (
+                            <Collapse key={index} label={item.label} id={index} courseId={courseId} topicId={item.topicId}>
                                 <div>
                                     {item.description}
                                 </div>

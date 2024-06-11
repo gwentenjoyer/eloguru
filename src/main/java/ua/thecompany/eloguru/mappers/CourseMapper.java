@@ -8,8 +8,9 @@ import ua.thecompany.eloguru.dto.CourseDto;
 import ua.thecompany.eloguru.dto.InitDto.CourseInitDto;
 import ua.thecompany.eloguru.model.Course;
 import ua.thecompany.eloguru.services.TeacherService;
+import ua.thecompany.eloguru.services.TopicService;
 
-@Mapper(componentModel = "spring", uses = {TopicMapper.class, TeacherService.class, FeedbackMapper.class})
+@Mapper(componentModel = "spring", uses = {TopicMapper.class, TeacherService.class, FeedbackMapper.class, TopicMapper.class, TopicService.class})
 public interface CourseMapper {
 
 
@@ -19,6 +20,7 @@ public interface CourseMapper {
     CourseInitDto courseDtoToCourseInitDto(CourseDto courseInitDto);
 
     @Mapping(target = "teacherId", source = "teacher.id")
+    @Mapping(target = "topics", source = "topics", qualifiedByName = "topicToId")
     CourseDto courseModelToCourseDto(Course course);
 
     Course courseInitDtoToCourseModel(CourseInitDto courseInitDto);

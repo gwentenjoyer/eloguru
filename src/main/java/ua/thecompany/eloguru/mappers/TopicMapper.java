@@ -2,8 +2,10 @@ package ua.thecompany.eloguru.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.Named;
 import ua.thecompany.eloguru.dto.InitDto.TopicInitDto;
 import ua.thecompany.eloguru.dto.TopicDto;
+import ua.thecompany.eloguru.model.Course;
 import ua.thecompany.eloguru.model.Topic;
 
 @Mapper(componentModel = "spring")
@@ -21,4 +23,10 @@ public interface TopicMapper {
     TopicInitDto topicModelToTopicInitDto(Topic topic);
 
     TopicInitDto topicDtoToTopicInitDto(TopicDto topicDto);
+
+
+    @Named("topicToId")
+    default Long topicToId(Topic topic) {
+        return topic.getId();
+    }
 }

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import '../../css/CourseList.css';
 import CourseComponent from "./CourseComponent";
 import { Pagination } from "flowbite-react";
+import {useLocation} from "react-router-dom";
 
 const CourseList = () => {
     const [firstPage, setFirstPage] = useState();
@@ -9,9 +10,15 @@ const CourseList = () => {
     const [currentPage, setCurrentPage] = useState(1);
     const [pageSize, setPageSize] = useState(2);
 
+    const location  = useLocation();
+
     const fetchUserInfo = async (page, size) => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses?page=${page}&size=${size}`, { credentials: 'include' });
+
+            const queryParams = new URLSearchParams(location.search);
+            const label = queryParams.get('label');
+
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses?page=${page}&size=${size}${label && `&label=${label}`}`, { credentials: 'include' });
             const data = await response.json();
             console.log(data)
             setFirstPage(data);
@@ -24,7 +31,7 @@ const CourseList = () => {
 
     useEffect(() => {
         fetchUserInfo(currentPage - 1, pageSize);
-    }, [currentPage, pageSize]);
+    }, [currentPage, pageSize, location]);
 
     const onPageChange = (page) => {
         setCurrentPage(page);

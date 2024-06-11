@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import Cookies from "js-cookie";
 import getRefreshTokens from "../../hooks/getRefreshTokens";
 import axios from "axios";
+import SearchBar from "./SearchBar";
 // import handleLogout from "../../hooks/handleLogout";
 
 export default function NavBar() {
@@ -25,16 +26,16 @@ export default function NavBar() {
     };
 
     const handleLogout = async () => {
-        // const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/logout`, { credentials: 'include'});
-        const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/accounts/logout`, {withCredentials: true});
-
-        if (!response.status === 200){
-            console.log(response)
-            console.error("Failed to fetch data user")
-        }
-        console.log(123)
-        // navigate('/');
-        // window.location.href = "/"
+         fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/logout`, {
+            credentials: 'include',
+            method: 'POST',
+        })
+            .then(() => {
+                localStorage.clear();
+                window.location.href = "/"})
+            .catch((error) => {
+                console.error('Error:', error);
+            });
 
     };
 
@@ -95,11 +96,12 @@ export default function NavBar() {
                             <div className="navbar-nav p-lg-0">
                                 <NavLink className={"nav-item nav-link"} to="/courses">Курси</NavLink>
                                 <NavLink className={"nav-item nav-link"} to="/about">Про нас</NavLink>
-                                {!isLoading ?
-                                    <NavLink className={"nav-item nav-link"} to="/admin">Адміністрування</NavLink>
-                                    :
-                                    <></>
-                                }
+                                {/*{!isLoading ?*/}
+                                {/*    <NavLink className={"nav-item nav-link"} to="/admin">Адміністрування</NavLink>*/}
+                                {/*    :*/}
+                                {/*    <></>*/}
+                                {/*}*/}
+                                <SearchBar></SearchBar>
                             </div>
                         </Container>
                     </Navbar.Collapse>

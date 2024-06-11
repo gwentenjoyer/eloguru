@@ -18,7 +18,7 @@ function Comment({ name, text, rate}) {
         //         </div>
         //     </div>
         // </div>
-        <div className="comment-item m-3">
+        <div className="comment-item m-3 ">
             <div className="name text-center text-middle align-items-center">
                 <div>
                     <img src="/blankUser.png" alt="User photo" className="rounded-photo"/>

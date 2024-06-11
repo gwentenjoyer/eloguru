@@ -11,7 +11,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ua.thecompany.eloguru.controllers.CourseController;
 import ua.thecompany.eloguru.dto.CourseDto;
 import ua.thecompany.eloguru.dto.FeedbackDto;
 import ua.thecompany.eloguru.dto.InitDto.CourseInitDto;
@@ -63,7 +62,7 @@ public class CourseServiceImpl implements CourseService {
     @Cacheable(cacheNames = "courseCache", key = "#header")
     public Page<CourseDto> searchCourseByHeader(@PageableDefault Pageable pageable, String header) {
         log.info("Retrieving courses with pattern: " + header);
-        return courseRepository.findByHeaderContaining(pageable, header).map(courseMapper::courseModelToCourseDto);
+        return courseRepository.findByHeaderContainingIgnoreCase(pageable, header).map(courseMapper::courseModelToCourseDto);
     }
 
     @Override

@@ -96,7 +96,7 @@ public class AccountController {
     @GetMapping("/check")
     public ResponseEntity<?> checkAuth(Principal principal) {
         if (principal == null)
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         Map res = new HashMap();
         var userRole = accountService.getUserRole(principal.getName());
         res.put("role", userRole);

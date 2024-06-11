@@ -52,7 +52,7 @@ public class TopicController {
     }
 
 
-    @DeleteMapping("/{topicId}")
+    @PostMapping("/{topicId}/delete")
     public ResponseEntity<CourseDto> deleteTopic(@PathVariable Long courseId, @PathVariable Long topicId) {
 
         if (HttpStatus.OK == courseController.getCourse(courseId).getStatusCode()){

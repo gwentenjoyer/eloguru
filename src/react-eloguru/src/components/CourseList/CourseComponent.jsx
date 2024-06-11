@@ -1,6 +1,7 @@
 import React from "react";
 import '../../css/CourseComponent.css'
 import { useNavigate } from "react-router-dom";
+import Rating from "@mui/material/Rating";
 
 function CourseComponent({ item }) {
     const printRate = (value) => {
@@ -29,7 +30,12 @@ function CourseComponent({ item }) {
             </div>
             <div className="card-body d-flex flex-column align-items-center">
                 <h5 className="card-title card-model-title">{item?.header}</h5>
-                <h6 className="card-title card-model-title">Rating: {printRate(item?.rating)} / 5</h6>
+                <Rating
+                    name="simple-controlled"
+                    value={item?.rating}
+                    readOnly
+                    precision={0.5}
+                />
                 <p className="card-text card-model-version">{item?.durationDays} days</p>
             </div>
         </div>

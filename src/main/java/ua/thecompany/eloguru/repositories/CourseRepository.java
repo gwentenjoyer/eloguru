@@ -8,7 +8,7 @@ import ua.thecompany.eloguru.model.Course;
 
 @Repository
 public interface CourseRepository extends BaseRepository<Course, Long> {
-    Page<Course> findByHeaderContaining(Pageable pageable, String headerPart);
+    Page<Course> findByHeaderContainingIgnoreCase(Pageable pageable, String headerPart);
 
     @Override
     @Query("select t from #{#entityName} t where t.active = true")
