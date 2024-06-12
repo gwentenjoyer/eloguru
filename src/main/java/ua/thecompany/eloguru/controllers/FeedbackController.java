@@ -34,11 +34,15 @@ public class FeedbackController {
     @PostMapping
     public ResponseEntity<FeedbackDto> saveFeedback(Principal principal, @Valid @RequestBody FeedbackInitDto feedbackInitDto){
         var userRole = accountService.getAccountById(accountService.getIdByEmail(principal.getName())).role();
+        if (principal == null ) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
         if (userRole != EnumeratedRole.STUDENT) {
             // TODO: logs
+            System.out.println(userRole);
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-        feedbackService.saveFeedback(feedbackInitDto, accountService.getIdByEmail(principal.getName()));
+        feedbackService.saveFeedback(feedbackInitDto, accountService.getStudentByAccountId(accountService.getIdByEmail(principal.getName())).id());
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 

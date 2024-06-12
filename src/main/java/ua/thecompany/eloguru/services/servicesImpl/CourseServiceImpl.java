@@ -26,7 +26,9 @@ import ua.thecompany.eloguru.services.TeacherService;
 import ua.thecompany.eloguru.services.TopicService;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @Slf4j
@@ -187,9 +189,6 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public boolean isAccountOwnsCourse(Long courseId, Long accountId) {
-        System.out.println(courseRepository.findByIdAndActive(courseId, true).orElseThrow(EntityNotFoundException::new)
-                .getTeacher().getAccount().getId());
-
         return courseRepository.findByIdAndActive(courseId, true).orElseThrow(EntityNotFoundException::new)
                 .getTeacher().getAccount().getId() == accountId;
     }
@@ -197,11 +196,15 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public boolean isTeacherOwnsCourse(Long courseId, Long teacherId) {
-        System.out.println(courseRepository.findByIdAndActive(courseId, true).orElseThrow(EntityNotFoundException::new)
-                .getTeacher().getAccount().getId());
-
         return courseRepository.findByIdAndActive(courseId, true).orElseThrow(EntityNotFoundException::new)
                 .getTeacher().getId() == teacherId;
     }
+    @Override
+    @Transactional
+    public List<Long> getCourseTopicsIds(Long courseId){
+        System.out.println(courseRepository.selectTopicsByCourseId(courseId));
+        return new ArrayList<Long>(courseRepository.selectTopicsByCourseId(courseId));
+    }
+
 
 }

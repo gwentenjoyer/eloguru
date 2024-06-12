@@ -3,8 +3,11 @@ package ua.thecompany.eloguru.repositories;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import ua.thecompany.eloguru.model.Course;
+
+import java.util.List;
 
 @Repository
 public interface CourseRepository extends BaseRepository<Course, Long> {
@@ -13,4 +16,12 @@ public interface CourseRepository extends BaseRepository<Course, Long> {
     @Override
     @Query("select t from #{#entityName} t where t.active = true")
     Page<Course> findAll(Pageable pageable);
+
+
+////    @Override
+//    @Query("select t.topics.id from #{#entityName} t where t.id = :courseId")
+//    List<Long> selectTopicsByCourseId(Long courseId);
+    @Query("select t.id from  #{#entityName} c join c.topics t where c.id = :courseId")
+    List<Long> selectTopicsByCourseId(@Param("courseId") Long courseId);
+
 }

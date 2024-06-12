@@ -26,8 +26,6 @@ const Course = ({courseId}) => {
     // setCourse(test)
     useEffect(() => {
             const fetchUserInfo = async () => {
-                console.log(courseId)
-
                 try {
                     const [courseResponse, topicsResponse] = await Promise.all([
                         fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}`, { credentials: 'include' }),
@@ -107,23 +105,24 @@ const Course = ({courseId}) => {
             rating: commentRate
         }
         try {
-            // const response = await axios.put(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}`, payload, { withCredentials: true });
-            // if (response.status === 200) {
-            //     // setSuccess(true);
-            //     // setCourseName('');
-            //     // setDescription('');
-            //     // setCategory('');
-            //     // setStartDate('');
-            //     // setDurationDays('');
-            //     // Optionally navigate to another page or show a success message
-            //     // navigate('/courses');
-            //     setComment("");
-            //     setCommentRate(null);
-            //     console.log("successfully created comment")
-            //     window.location.href=`/course/${courseId}`
-            // }
+            // const response = await axios.put(`${process.env.REACT_APP_SERVER_URL}/feedbacks`, payload, { withCredentials: true });
+            // const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/feedbacks`, {credentials: 'include', method: "POST", body: payload});
+            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/feedbacks`, {
+                credentials: 'include',
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            });
+            if (response.status === 201) {
+                setComment("");
+                setCommentRate(null);
+                console.log("successfully created comment")
+                // window.location.href=`/course/${courseId}`
+            }
         } catch (error) {
-            console.error('Error creating course:', error);
+            console.error('Error creating feedback:', error);
             // setError('Failed to create course. Please try again.');
         }
     }
@@ -332,7 +331,7 @@ const Course = ({courseId}) => {
 
                 </div>}
                 {(activeTab === 'comments' && !isEditMode) && <div className={"mb-3"}>
-                    {userRole == "STUDENT" &&
+                    {userRole === "STUDENT" &&
                         <div className="d-flex flex-row">
                         <div className="d-flex text-center justify-content-center align-items-center"><label>You may leave your course review:</label></div>
                         <div className="mx-3 d-flex flex-column w-75">

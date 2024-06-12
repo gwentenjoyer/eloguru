@@ -17,6 +17,7 @@ import ua.thecompany.eloguru.services.CourseService;
 import ua.thecompany.eloguru.services.StudentService;
 
 import java.security.Principal;
+import java.util.List;
 
 @RequiredArgsConstructor
 @RestController
@@ -55,6 +56,16 @@ public class CourseController {
     public ResponseEntity<CourseDto> getCourse(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(courseService.getCourseById(id), HttpStatus.OK);
+        }
+        catch (EntityNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("{id}/topicses")
+    public ResponseEntity<List<Long>> getCourseTopicsIds(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(courseService.getCourseTopicsIds(id), HttpStatus.OK);
         }
         catch (EntityNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
