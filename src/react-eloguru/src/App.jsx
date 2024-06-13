@@ -12,6 +12,8 @@ import Cookies from 'js-cookie';
 import React, { useEffect, useState } from 'react';
 import CreateCourse from "./components/CreateCourse/CreateCourse";
 import ErrorPage from "./components/RootLayout/ErrorPage";
+import AboutUs from "./components/MainPage/AboutUs";
+import AboutPage from "./components/MainPage/AboutPage";
 
 const router = createBrowserRouter([
     {
@@ -24,11 +26,11 @@ const router = createBrowserRouter([
             },
             {
                 path: "about",
-                element: <div>abba</div>
+                element: <AboutPage/>
             },
             {
                 path: "mistake",
-                element: <div>o</div>
+                element: <ErrorPage />
             },
             {
                 path: "course/:id",

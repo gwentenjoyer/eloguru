@@ -1,6 +1,6 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css"
-// import "animate.css"
+import "animate.css"
 import {Link} from "react-router-dom";
 
 export default function AboutUs() {

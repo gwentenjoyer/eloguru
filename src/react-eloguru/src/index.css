@@ -1,6 +1,9 @@
 body{
   font-family: "Work Sans",sans-serif;
 }
+.about-text{
+  font-family: "Work Sans",sans-serif;
+}
 
 :root {
   --primary: #ffc107;

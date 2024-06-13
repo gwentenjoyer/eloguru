@@ -21,8 +21,7 @@
 }
 
 
-ul {
-    /*display: block;*/
+.pagination-container ul {
     list-style-type: none !important;
     margin-block-start: 1em;
     margin-block-end: 1em;
@@ -54,4 +53,22 @@ ul {
     display: flex;
     list-style: none;
     padding: 0;
+}
+
+.filterDays{
+    height: 26px;
+    width: 50px!important;
+}
+
+#pageSizeInput {
+    padding: 6px;
+    height: 42px;
+    margin-top: -8px;
+    text-align: center;
+    font-size: 17px;
+    border: 1px solid grey;
+    float: left;
+    width: 80%;
+    /*width: 320px;*/
+    background: #f1f1f1;
 }
