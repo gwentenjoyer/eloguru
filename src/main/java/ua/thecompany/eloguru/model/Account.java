@@ -29,6 +29,15 @@ public class Account extends BaseEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private EnumeratedRole role = EnumeratedRole.STUDENT;
 
+    @Column
+    private String activationCode;
+
+//    @OneToMany(mappedBy = "user")
+//    private List<Token> tokens;
+//
+//    @OneToOne(mappedBy = "accounts")
+//    private RefreshToken refreshToken;
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority(role.toString()));

@@ -2,9 +2,9 @@ import {Fragment, useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import axios from "axios";
-import {useNavigate} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 
-// import '../../css/Login.css'
+import '../../css/Login.css'
 export default function SignupForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -12,6 +12,7 @@ export default function SignupForm() {
     const [passwordsMatch, setPasswordsMatch] = useState(true);
     const navigate = useNavigate();
     const [selectedOption, setSelectedOption] = useState("student");
+    const [hasAgreed, setHasAgreed] = useState("student");
 
     const handleButtonClick = () => {
         console.log(`The selected option is "${selectedOption}".`);
@@ -38,6 +39,14 @@ export default function SignupForm() {
             )
     };
 
+    const handleCheckChange = async (event) => {
+        // const {name, value, type, checked} = event.target;
+        // setState(prevState => ({
+        //     ...prevState,
+        //     [name]: type === "checkbox" ? checked : value
+        // }));
+    }
+
     return (
         <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3" controlId="formBasicEmail">
@@ -47,7 +56,7 @@ export default function SignupForm() {
                     // type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter your email" />
+                    placeholder="Enter your email"/>
             </Form.Group>
 
             {/*<Form.Group className="mb-3" controlId="formBasicEmail">*/}
@@ -69,7 +78,7 @@ export default function SignupForm() {
                 />
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
+            <Form.Group className="mb-4" controlId="formBasicConfirmPassword">
                 <Form.Label>Confirm Password:</Form.Label>
                 <Form.Control
                     type="password"
@@ -84,37 +93,53 @@ export default function SignupForm() {
             {/*    <Form.Check type="checkbox" label="Check me out" />*/}
             {/*</Form.Group>*/}
             <Form.Group>
-                <Form.Label>Register as:</Form.Label>
+            {/*    <Form.Label>Register as:</Form.Label>*/}
 
-                <div className="d-flex flex-row mb-3">
-                    <div className={"me-2"}>
+            {/*    <div className="d-flex flex-row mb-3">*/}
+            {/*        <div className={"me-2"}>*/}
 
+            {/*            <input*/}
+            {/*                type="radio"*/}
+            {/*                id="student"*/}
+            {/*                name="student"*/}
+            {/*                value="student"*/}
+            {/*                checked={selectedOption === "student"}*/}
+            {/*                onChange={() => setSelectedOption("student")}*/}
+            {/*            />*/}
+            {/*            <label htmlFor="student">Student</label>*/}
+            {/*        </div>*/}
+            {/*        <div className={"me-2"}>*/}
+
+            {/*            <input*/}
+            {/*                type="radio"*/}
+            {/*                id="teacher"*/}
+            {/*                name="teacher"*/}
+            {/*                value="teacher"*/}
+            {/*                checked={selectedOption === "teacher"}*/}
+            {/*                onChange={() => setSelectedOption("teacher")}*/}
+            {/*            />*/}
+            {/*            <label htmlFor="teacher">Teacher</label>*/}
+            {/*        </div>*/}
+
+            {/*    </div>*/}
+                <div className="formField" style={{"marginBottom": "25px"}}>
+                    <label className="formFieldCheckboxLabel">
                         <input
-                            type="radio"
-                            id="student"
-                            name="student"
-                            value="student"
-                            checked={selectedOption === "student"}
-                            onChange={() => setSelectedOption("student")}
+                            className="formFieldCheckbox"
+                            type="checkbox"
+                            name="hasAgreed"
+                            value={hasAgreed}
+                            onChange={handleCheckChange}
                         />
-                        <label htmlFor="student">Student</label>
-                    </div>
-                    <div className={"me-2"}>
-
-                        <input
-                            type="radio"
-                            id="teacher"
-                            name="teacher"
-                            value="teacher"
-                            checked={selectedOption === "teacher"}
-                            onChange={() => setSelectedOption("teacher")}
-                        />
-                        <label htmlFor="teacher">Teacher</label>
-                    </div>
-
+                        I agree with {" "}
+                        <Link to="null" className="formFieldTermsLink">
+                            Terms & Service
+                        </Link>
+                    </label>
                 </div>
             </Form.Group>
-            <div className={"row justify-content-center"}>
+
+            <div className={"row justify-content-center my-3"}>
 
                 <Button variant="primary" type="submit" className="justify-content-evenly lg-signup-submit">
                     Sign up
@@ -126,10 +151,10 @@ export default function SignupForm() {
         //         <div className="modal-body-login d-flex flex-column align-items-center w-100">
         //             <div className="account-login-form d-flex flex-column w-100">
         //                 <label htmlfor="user_email_login" className="sidebar-text mt-3"><b>Email</b></label>
-    //                 <input className="user_data_input" type="text" placeholder="Enter Email" id="user_email_login"
-    //                        required/>
-    //                     <label for="user_pass_login" className="sidebar-text mt-3"><b>Password</b></label>
-    //                     <input type="password" className="user_data_input" placeholder="Enter Password"
+        //                 <input className="user_data_input" type="text" placeholder="Enter Email" id="user_email_login"
+        //                        required/>
+        //                     <label for="user_pass_login" className="sidebar-text mt-3"><b>Password</b></label>
+        //                     <input type="password" className="user_data_input" placeholder="Enter Password"
     //                            id="user_pass_login" required/>
     //                         <p id="error-text-log" className="text-danger">Error message here.</p>
     //             </div>

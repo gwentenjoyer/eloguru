@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import ua.thecompany.eloguru.dto.*;
 import ua.thecompany.eloguru.dto.InitDto.AccountInitDto;
 //import ua.thecompany.eloguru.email.EmailService;
+import ua.thecompany.eloguru.email.EmailService;
 import ua.thecompany.eloguru.model.EnumeratedRole;
 import ua.thecompany.eloguru.security.AuthService;
 import ua.thecompany.eloguru.services.AccountService;
@@ -21,6 +22,7 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -29,6 +31,7 @@ public class AccountController {
     private final AccountService accountService;
     private final TeacherService teacherService;
     private final StudentService studentService;
+    private final EmailService emailService;
     private final AuthService authService;
 //    private final EmailService emailService;
 
@@ -36,6 +39,7 @@ public class AccountController {
     public ResponseEntity<?> saveAccount(@RequestParam(value = "role", required = true) @Valid String accountType,
                                           @Valid @RequestBody AccountInitDto accountInitDto) {
         try {
+            emailService.sendEmail(accountInitDto.email(), "Account registration", UUID.randomUUID().toString());
 
             if (accountType.equals(EnumeratedRole.TEACHER.toString())) {
                 teacherService.createTeacher(accountInitDto);
