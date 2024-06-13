@@ -14,6 +14,7 @@ import SearchBar from "./SearchBar";
 export default function NavBar() {
 
     const [userInfo, setUserInfo] = useState(302);
+    const [userInfoData, setUserInfoData] = useState(302);
     const [isLoading, setIsLoading] = useState(true);
     const [modalShow, setModalShow] = React.useState(false);
 
@@ -53,6 +54,7 @@ export default function NavBar() {
                     // if (data?.role === "admin") {
                     //     setIsLoading(false);
                     // }
+                    // console.log(await data.json())
                     if (!data.ok) {
                         if (data.status === 401) {
                             console.log("Unauthorized. Please log in.");
@@ -66,8 +68,10 @@ export default function NavBar() {
 
                     if (!data.redirected) {
                         setUserInfo(data);
-                    } else if (await getRefreshTokens() === true) {
-                        setUserInfo(data);
+                    // } else if (await getRefreshTokens() === true) {
+                    //     setUserInfo(data);
+                        setUserInfoData(await data.json())
+                        console.log(userInfoData.role)
                     }
                     if (await data.text() === "admin") {
                         setIsLoading(false);
@@ -85,8 +89,10 @@ export default function NavBar() {
             <Navbar className="navbar navbar-expand-lg navbar-light sticky-top p-0 navbar-blu" variant="dark"
                     expand="lg">
                 <Container>
-                    <NavLink className={"py-4 px-lg-5 me-2 align-items-center l-height navbar-brand"} to="/">
-                        <h2 className={"me-0 fa logo-text font-6"}><i className="fa fa-solid fa-user-graduate text-white me-2"></i><span id="brandname-first-e">E</span>loguru
+                {/*<div className={"d-flex flex-row justify-content-around w-100"}>*/}
+
+                    <NavLink className={"py-4 pr-lg-5 me-2 align-items-center l-height navbar-brand"} to="/">
+                        <h2 className={"me-0 fa logo-text font-6 brandname-first-e"} ><i className="fa fa-solid fa-user-graduate text-white me-2 brandname-first-e"></i><span id="brandname-first-e">E</span>loguru
                         </h2></NavLink>
                     <div className={"ms-auto"}>
                         <Navbar.Toggle className={"ms-auto"} aria-controls="basic-navbar-nav"/>
@@ -94,8 +100,13 @@ export default function NavBar() {
                     <Navbar.Collapse id="basic-navbar-nav">
                         <Container className={"p-0"}>
                             <div className="navbar-nav p-lg-0">
-                                <NavLink className={"nav-item nav-link"} to="/courses">Курси</NavLink>
-                                <NavLink className={"nav-item nav-link"} to="/about">Про нас</NavLink>
+                                <div className="d-flex align-items-center m-1">
+
+                                    <NavLink className={"nav-item nav-link"} to="/courses">Courses</NavLink>
+                                </div>
+                                <div className="d-flex align-items-center m-1">
+                                    <NavLink className={"nav-item nav-link"} to="/about">About</NavLink>
+                                </div>
                                 {/*{!isLoading ?*/}
                                 {/*    <NavLink className={"nav-item nav-link"} to="/admin">Адміністрування</NavLink>*/}
                                 {/*    :*/}
@@ -122,9 +133,13 @@ export default function NavBar() {
                     {/*</div>*/}
                     {/*<ModalTriggerButton/>*/}
                     <>
-                        <Button variant="primary" onClick={() => navigate(`/CreateCourse`)}>
-                            Create
-                        </Button>
+                        {userInfoData?.role == "teacher" &&
+                            <Button variant="warning" className="m-2" onClick={() => navigate(`/CreateCourse`)}>
+                                Create
+                            </Button>
+                        }
+
+
 
                         {/*{ checkAccessToken()?*/}
 
@@ -134,20 +149,20 @@ export default function NavBar() {
                         {/*        Log in*/}
                         {/*    </Button>*/}
                         {/*}*/}
-                        <Button variant="primary" onClick={() => setModalShow(true)}>
-                            Log in
-                        </Button>
+                        {/*<Button variant="primary" className="button-login" onClick={() => setModalShow(true)}>*/}
+                        {/*    Log in*/}
+                        {/*</Button>*/}
                         {userInfo.status === 200 ?
                             <>
-                            <Button variant="primary" onClick={() => navigate(`/profile`)}>
-                                Profile
-                            </Button>
-                            <Button variant="primary" onClick={() => handleLogout()}>
-                                Log out
-                            </Button>
+                                <Button variant="primary" className="m-2 button-login" onClick={() => navigate(`/profile`)}>
+                                    Profile
+                                </Button>
+                                <Button variant="primary" className="button-login m-2" onClick={() => handleLogout()}>
+                                    Log out
+                                </Button>
                             </>
                             :
-                            <Button variant="primary" onClick={() => setModalShow(true)}>
+                            <Button variant="primary" className="button-login" onClick={() => setModalShow(true)}>
                                 Log in
                             </Button>
                         }

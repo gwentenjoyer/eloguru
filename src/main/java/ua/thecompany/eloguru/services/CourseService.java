@@ -9,6 +9,8 @@ import ua.thecompany.eloguru.dto.InitDto.CourseInitDto;
 import ua.thecompany.eloguru.dto.InitDto.TopicInitDto;
 import ua.thecompany.eloguru.model.Course;
 
+import java.util.List;
+
 @Service
 public interface CourseService {
     void createCourse(CourseInitDto courseInitDto, Long teacherId);
@@ -37,4 +39,5 @@ public interface CourseService {
     boolean isAccountOwnsCourse(Long courseId, Long accountId);
     boolean isTeacherOwnsCourse(Long courseId, Long teacherId);
 
+    List<Long> getCourseTopicsIds(Long courseId);
 }

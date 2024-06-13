@@ -12,9 +12,21 @@ export default function Profile() {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const [courses, setCourses] = useState([]);
+    const [accountId, setaccountId] = useState([]);
 
     const fetchCourse = async (id) => {
         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${id}`, {credentials: 'include'});
+        if (!response.ok){
+            console.error("Failed to fetch data to get course")
+            return;
+        }
+        const data = await response?.json();
+        // setUserInfo(data);
+        return data;
+    };
+
+    const fetchUserCheck = async (id) => {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
         if (!response.ok){
             console.error("Failed to fetch data to get course")
             return;
@@ -29,18 +41,27 @@ export default function Profile() {
             const fetchUserInfo = async () => {
                 setIsLoading(true);
                 try {
-                    const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/getUserInfo`, { credentials: 'include' });
-                    if (!response.ok){
+                    const [userInfoResponse, checkResponse] = await Promise.all([
+                        fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/getUserInfo`, { credentials: 'include' }),
+                        fetchUserCheck()
+                    ]);
+
+                    if (!userInfoResponse.ok){
                         console.error("Failed to fetch data user")
                         navigate('/');
                         // return;
                     }
-                    const data = await response.json();
+
+                    const data = await userInfoResponse.json();
+                    console.log(data)
                     setUserInfo(data);
+                    console.log("asdfasdf", checkResponse)
+                    setaccountId(checkResponse.userId);
                     setIsLoading(false);
                 } catch (error) {
                     console.error("Error fetching user info:", error);
-                    setIsLoading(false);
+                    // setIsLoading(false);
+                    navigate('/')
                 }
             };
             fetchUserInfo();
@@ -101,18 +122,47 @@ export default function Profile() {
     }
 
     const handleUpdateUserData = async () => {
-        fetch(`${process.env.REACT_APP_BASE_URL}/student/${userInfo.id}`, {
+
+        // try {
+        //     const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/${accountId}`, { credentials: 'include' });
+        //     if (!response.ok){
+        //         console.error("Failed to fetch data user")
+        //         navigate('/');
+        //         // return;
+        //     }
+        //
+        //     const data = await response.json();
+        //     console.log(data)
+        //     setUserInfo(data);
+        //     setIsLoading(false);
+        // } catch (error) {
+        //     console.error("Error fetching user info:", error);
+        //     setIsLoading(false);
+        // }
+        const payload = {
+            "email": userInfo.email,
+            // "password": "string",
+            "phone": userInfo.phone,
+            "country": userInfo.country,
+            "fullname": userInfo.fullname
+        }
+
+        const res  = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/${accountId}`, {
             credentials: 'include',
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(userInfo)
+            body: JSON.stringify(payload)
         })
-            .then(window.location.reload())
+            // .then(async(t) => { let te = (await t.json); console.log(te)})
+            // .then(te => console.log(te))
+            // .then(window.location.reload())
             .catch((error) => {
                 console.error('Error:', error);
             });
+        const data = await res.json();
+        console.log(data);
     }
 
     const handleCancelButton = (e) => {
@@ -170,13 +220,13 @@ export default function Profile() {
                                                                "color": "black",
                                                                "borderColor": "white"
                                                            }}
-                                                           placeholder="Edit your full name" name="surname"
+                                                           placeholder="Edit your full name" name="fullname"
                                                            value={userInfo.fullname} onChange={handleChange}
                                                     />
                                                 </> :
                                                 <span className={"display-6 font-4"}
                                                       style={{"fontSize": "26px"}}>{isLoading ?
-                                                    <div>Завантаження...</div> : userInfo?.fullname}</span>
+                                                    <div>Loading...</div> : userInfo?.fullname}</span>
                                         }
                                     </div>
                                 </section>
@@ -193,11 +243,11 @@ export default function Profile() {
                                                            "borderColor": "white"
                                                        }}
                                                        placeholder="Відредагуйте свій вік" name="email"
-                                                       value={userInfo.email} onChange={handleChange}
+                                                       value={userInfo?.email} onChange={handleChange}
                                                 />
                                                 :
                                                 <div>
-                                                    {userInfo.email}
+                                                    {userInfo?.email}
                                                 </div>
                                         }
                                     </div>
@@ -214,11 +264,11 @@ export default function Profile() {
                                                            "borderColor": "white"
                                                        }}
                                                        placeholder="Edit phone:" name="phone"
-                                                       value={userInfo.phone} onChange={handleChange}
+                                                       value={userInfo?.phone} onChange={handleChange}
                                                 />
                                                 :
                                                 <div>
-                                                    {userInfo.phone}
+                                                    {userInfo?.phone}
                                                 </div>
                                         }
                                     </div>

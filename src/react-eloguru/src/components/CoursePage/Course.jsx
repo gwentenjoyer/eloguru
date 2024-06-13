@@ -37,7 +37,6 @@ const Course = ({courseId}) => {
                     }
 
                     //TODO: не перекидає на ерор пейдж
-
                     const data = await courseResponse.json();
                     setCourse(data);
                     setTopics(await topicsResponse.json())

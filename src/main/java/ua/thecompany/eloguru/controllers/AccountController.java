@@ -161,6 +161,17 @@ public class AccountController {
         }
     }
 
+    @PutMapping(value="/student/{id}")
+    public ResponseEntity<StudentDto> putStudentById(@PathVariable Long id){
+        try{
+            StudentDto accountModel = accountService.getStudentById(id);
+            return new ResponseEntity<>(accountModel, HttpStatus.OK);
+        }
+        catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
     @GetMapping(value="/getUserInfo")
     public ResponseEntity<?> getUserInfo(Principal principal){
         if (principal == null)
