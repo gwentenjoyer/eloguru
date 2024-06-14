@@ -31,7 +31,7 @@ public class Course extends BaseEntity{
     @Column(name="header")
     private String header;
 
-    @Column(name="description")
+    @Column(name="description", length = 2048)
     private String description;
 
     @Column(name="rating")

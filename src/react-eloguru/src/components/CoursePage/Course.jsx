@@ -6,6 +6,8 @@ import axios from "axios";
 import Rating from '@mui/material/Rating';
 
 const Course = ({courseId}) => {
+
+    const localcourses = localStorage.getItem("studentEnrolled");
     const [activeTab, setActiveTab] = useState('info');
     const [topics, setTopics] = useState('info');
     const [course, setCourse] = useState();
@@ -22,8 +24,9 @@ const Course = ({courseId}) => {
     const [rating, setRating] = useState('');
     const [comment, setComment] = useState('');
     const [commentRate, setCommentRate] = useState('');
+    const [userEnrolled, setUserEnrolled] = useState(localcourses ? JSON.parse(localcourses).includes(courseId): false);
 
-    // setCourse(test)
+
     useEffect(() => {
             const fetchUserInfo = async () => {
                 try {
@@ -82,9 +85,21 @@ const Course = ({courseId}) => {
             console.error("Failed to enroll")
         }
         console.log("enrolled")
-        // navigate('/');
-        // window.location.href = "/"
+        setUserEnrolled(true);
 
+    };
+
+    const handleDisenroll = async () => {
+        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}/disenroll`, {credentials: 'include', method: "POST"});
+        console.log("another", response)
+        if (response.status !== 200){
+            console.log(response)
+            console.error("Failed to disenroll")
+        }
+        if (response.status === 200){
+            console.log("disenrolled")
+            setUserEnrolled(false);
+        }
     };
 
     const handleEditButton = () => {
@@ -104,8 +119,6 @@ const Course = ({courseId}) => {
             rating: commentRate
         }
         try {
-            // const response = await axios.put(`${process.env.REACT_APP_SERVER_URL}/feedbacks`, payload, { withCredentials: true });
-            // const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/feedbacks`, {credentials: 'include', method: "POST", body: payload});
             const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/feedbacks`, {
                 credentials: 'include',
                 method: "POST",
@@ -122,7 +135,6 @@ const Course = ({courseId}) => {
             }
         } catch (error) {
             console.error('Error creating feedback:', error);
-            // setError('Failed to create course. Please try again.');
         }
     }
 
@@ -192,41 +204,42 @@ const Course = ({courseId}) => {
             <div className="course-header">
                 {isLoading ? <div>Loading...</div> :
                     <div className="course-info m-2">
-                        {isEditMode?
+                        {isEditMode ?
                             <input
                                 type="text"
-                                value={ courseName}
+                                value={courseName}
                                 onChange={(e) => setCourseName(e.target.value)}
                             />
                             : <h1>{(course?.header)}</h1>}
                         {!isEditMode &&
                             <Rating className={"mt-2 mb-2"}
-                            name="simple-controlled"
-                            value={course?.rating}
-                            readOnly
-                            precision={0.5}
-                        />}
+                                    name="simple-controlled"
+                                    value={course?.rating}
+                                    readOnly
+                                    precision={0.5}
+                            />}
                         {
-                            isEditMode?
+                            isEditMode ?
                                 <div>
 
-                                <label htmlFor="start">Start date:</label>
+                                    <label htmlFor="start">Start date:</label>
 
-                            <input
-                                type="text"
-                                value={ durationDays}
-                                onChange={(e) => setDurationDays(e.target.value)}
-                            />
+                                    <input
+                                        type="text"
+                                        value={durationDays}
+                                        onChange={(e) => setDurationDays(e.target.value)}
+                                    />
 
                                 </div>
-                            : <p>Days: {course.durationDays ? (course?.durationDays) : "not set"}</p>}
+                                : <p>Days: {course.durationDays ? (course?.durationDays) : "not set"}</p>}
                         {isEditMode ?
                             <div>
                                 <label htmlFor="start">Start date:</label>
                                 {}
-                                <input type="date" id="start" name="trip-start" value={startDate? startDate: ''} min={getToday()}
+                                <input type="date" id="start" name="trip-start" value={startDate ? startDate : ''}
+                                       min={getToday()}
                                        max={getTwoYears()}
-                                       onChange={e => setStartDate((new Date(e.target.value)).toISOString().slice(0,10))}/>
+                                       onChange={e => setStartDate((new Date(e.target.value)).toISOString().slice(0, 10))}/>
                             </div>
                             :
                             <p>Start date: {course.startDate ? (course?.startDate.slice(0, 10)) : "not set"}</p>}
@@ -246,17 +259,17 @@ const Course = ({courseId}) => {
                         }
                     </div>
                 }
-                <button className="sign-up-button" disabled={userRole != "STUDENT"} onClick={() => {
-                    handleEnroll()
-                }}>Enroll
+                <button className="sign-up-button" disabled={userRole != "STUDENT"} onClick={
+                    userEnrolled ? () => {handleDisenroll()}:  () => {handleEnroll()}
+                    }>{userEnrolled ? "Disenroll" : "Enroll"}
                 </button>
-                {userRole != "STUDENT" && <button className="sign-up-button" onClick={() => {
+                {userRole && userRole != "STUDENT" && <button className="sign-up-button" onClick={() => {
                     handleDelete()
                 }}>Delete
                 </button>
                 }
 
-                {userRole != "STUDENT" && !isEditMode &&
+                {userRole && userRole != "STUDENT" && !isEditMode &&
                     <div className="w-50 bg-warning logout text-center p-2 my-1"
                          style={{
                              "borderRadius": "30px",
@@ -265,12 +278,12 @@ const Course = ({courseId}) => {
                          }}
                          onClick={handleEditButton}>
                         <span className={"btn btn-warning"} style={{"padding": "0px"}}
-                                >Edit
+                        >Edit
                         </span>
                     </div>
                 }
 
-                {userRole != "STUDENT" && isEditMode &&
+                {userRole && userRole != "STUDENT" && isEditMode &&
                     <div className="bg-success w-50 logout text-center p-2 my-1"
                          style={{
                              "borderRadius": "30px",
@@ -284,7 +297,7 @@ const Course = ({courseId}) => {
                         </span>
                     </div>
                 }
-                {userRole != "STUDENT" && isEditMode &&
+                {userRole && userRole != "STUDENT" && isEditMode &&
                     <div className="bg-danger w-50 logout text-center p-2 my-1"
                          style={{
                              "borderRadius": "30px",
@@ -294,7 +307,7 @@ const Course = ({courseId}) => {
 
                          onClick={handleCancel}>
                         <span className={"btn btn-danger"} style={{"padding": "0px"}}
-                               >Cancel
+                        >Cancel
                         </span>
                     </div>
                 }
@@ -330,7 +343,7 @@ const Course = ({courseId}) => {
 
                 </div>}
                 {(activeTab === 'comments' && !isEditMode) && <div className={"mb-3"}>
-                    {userRole === "STUDENT" &&
+                    {userRole && userRole === "STUDENT" &&
                         <div className="d-flex flex-row">
                         <div className="d-flex text-center justify-content-center align-items-center"><label>You may leave your course review:</label></div>
                         <div className="mx-3 d-flex flex-column w-75">
@@ -396,7 +409,7 @@ const Course = ({courseId}) => {
                     <div id="accordion">
                         {console.log(topics)}
                         {topics.map((item, index) => (
-                            <Collapse key={index} label={item.label} id={index} courseId={courseId} topicId={item.topicId}>
+                            <Collapse key={index} label={item.label} id={index} courseId={courseId} topicId={item.topicId} userRole={userRole}>
                                 <div>
                                     {item.description}
                                 </div>

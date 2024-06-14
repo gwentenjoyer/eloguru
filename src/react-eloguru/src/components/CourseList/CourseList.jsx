@@ -134,7 +134,7 @@ const CourseList = () => {
                                 showIcons
                             />
                             <div className={"ms-3"}>
-// todo: fix !
+{/*// todo: fix !*/}
                                 <input
                                     id="pageSizeInput"
                                     type="number"

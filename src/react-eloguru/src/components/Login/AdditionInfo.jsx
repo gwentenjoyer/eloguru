@@ -1,4 +1,4 @@
-import {Fragment, useState} from 'react';
+import {useState} from 'react';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import axios from "axios";
@@ -6,27 +6,24 @@ import {useNavigate} from "react-router-dom";
 
 // import '../../css/Login.css'
 export default function AdditionInfo() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordsMatch, setPasswordsMatch] = useState(true);
     const navigate = useNavigate();
     const [selectedOption, setSelectedOption] = useState("student");
+    const [country, setCountry] = useState("");
+    const [name, setName] = useState("");
+    const [phone, setPhone] = useState("");
 
-    const handleButtonClick = () => {
-        console.log(`The selected option is "${selectedOption}".`);
-    }
     const handleSubmit = (event) => {
         event.preventDefault();
 
-        if (password !== confirmPassword) {
-            setPasswordsMatch(false);
-            return;
-        }
+        // if (password !== confirmPassword) {
+        //     setPasswordsMatch(false);
+        //     return;
+        // }
         const logData = {
-            email,
-            password
+            // email,
+            // password
         }
+        //todo
         console.log(logData)
         // If passwords match, send the data to the server
         // Here you can implement your logic to send data to the server
@@ -45,8 +42,8 @@ export default function AdditionInfo() {
                 <Form.Control
                     // id={"lg-signup-email"}
                     // type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
                     placeholder="Enter your fullname" />
             </Form.Group>
 
@@ -55,8 +52,18 @@ export default function AdditionInfo() {
                 <Form.Control
                     placeholder="Enter your phone number"
                     // id={"lg-signup-pw"}
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                />
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="formBasicPassword">
+                <Form.Label>Phone:</Form.Label>
+                <Form.Control
+                    placeholder="Enter your phone number"
+                    // id={"lg-signup-pw"}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                 />
             </Form.Group>
 

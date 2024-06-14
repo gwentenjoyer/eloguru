@@ -38,6 +38,8 @@ public class AccountController {
     @PostMapping("signup")
     public ResponseEntity<?> saveAccount(@RequestParam(value = "role", required = true) @Valid String accountType,
                                           @Valid @RequestBody AccountInitDto accountInitDto) {
+        if (accountInitDto.password() == null)
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         try {
             emailService.sendEmail(accountInitDto.email(), "Account registration", UUID.randomUUID().toString());
 
@@ -124,6 +126,7 @@ public class AccountController {
     @PutMapping
     public ResponseEntity<CourseDto> updateAccount(Principal principal, @Valid @RequestBody AccountInitDto accountInitDto) {
         try {
+            System.out.println("here");
             if (principal.getName().equals(accountInitDto.email())) {
                 accountService.updateAccount(accountInitDto);
                 return new ResponseEntity<>(HttpStatus.OK);
@@ -131,6 +134,7 @@ public class AccountController {
             else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         catch (EntityNotFoundException e){
+            System.out.println(e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
@@ -172,6 +176,7 @@ public class AccountController {
             return new ResponseEntity<>(accountModel, HttpStatus.OK);
         }
         catch (EntityNotFoundException e){
+            System.out.println(e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }

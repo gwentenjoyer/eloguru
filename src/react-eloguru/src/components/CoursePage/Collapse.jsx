@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {Dropdown} from "react-bootstrap";
 
-function Collapse({ label, children, id, courseId, topicId }) {
+function Collapse({ label, children, id, courseId, topicId, userRole }) {
     const [isOpen, setIsOpen] = useState(false);
 
     const handleToggle = () => {
@@ -45,18 +45,20 @@ function Collapse({ label, children, id, courseId, topicId }) {
 
                 </h5>
                 </div>
-                <div className={"mx-3"}>
-                    <Dropdown>
-                        <Dropdown.Toggle variant="success" id="dropdown-basic">
-                            More
-                        </Dropdown.Toggle>
+                {userRole === "TEACHER"?
+                        <div className={"mx-3"}>
+                            <Dropdown>
+                                <Dropdown.Toggle variant="success" id="dropdown-basic">
+                                    More
+                                </Dropdown.Toggle>
 
-                        <Dropdown.Menu>
-                            <Dropdown.Item href="#/action-1" onClick={handleEditTheme}>Edit</Dropdown.Item>
-                            <Dropdown.Item href="#/action-2" onClick={handleDeleteTheme}>Delete</Dropdown.Item>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                </div>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item href="#/action-1" onClick={handleEditTheme}>Edit</Dropdown.Item>
+                                    <Dropdown.Item href="#/action-2" onClick={handleDeleteTheme}>Delete</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </div>
+                :<></>}
             </div>
             {isOpen && (
                 <div id={`collapse${id}`} className="collapse show" aria-labelledby={`heading${id}`}>

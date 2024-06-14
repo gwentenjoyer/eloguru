@@ -4,7 +4,7 @@ import Tabs from 'react-bootstrap/Tabs';
 import LoginForm from "./LoginForm";
 import SignupForm from "./SignupForm";
 import AdditionInfo from "./AdditionInfo";
-// import "../../css/Login.css"
+
 export default function ControlledTabsExample() {
     const [key, setKey] = useState('login');
 

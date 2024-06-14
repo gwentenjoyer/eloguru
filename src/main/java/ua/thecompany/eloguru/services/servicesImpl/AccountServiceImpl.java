@@ -77,8 +77,10 @@ public class AccountServiceImpl implements AccountService {
 
     private Account updateAccountFromAccountInitDto(AccountInitDto accountInitDto, Account account) {
         account.setEmail(accountInitDto.email());
-        account.setPhone(accountInitDto.phone());
-        account.setPwhash(passwordEncoder.encode(accountInitDto.password()));
+
+        if (accountInitDto.phone() != null)
+            account.setPhone(accountInitDto.phone());
+//        account.setPwhash(passwordEncoder.encode(accountInitDto.password()));
         if (accountInitDto.country() != null)
             account.setCountry(accountInitDto.country());
         if (accountInitDto.fullname() != null)

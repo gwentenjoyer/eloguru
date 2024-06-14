@@ -82,7 +82,8 @@
 /*}*/
 
 .brandname-first-e:hover{
-    color:  #ffc107
+    color:  var(--primary);
+    /*color:  #ffc107*/
 }
 
 

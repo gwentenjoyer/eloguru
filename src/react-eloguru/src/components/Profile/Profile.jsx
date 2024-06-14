@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from "react";
 import "../../css/profile.css";
-import Collapse from "../CoursePage/Collapse";
 import {useNavigate} from "react-router-dom";
 import CoursePreview from "./CoursePreview";
+import axios from "axios";
+import {Container} from "react-bootstrap";
 
 export default function Profile() {
 
@@ -16,23 +17,21 @@ export default function Profile() {
 
     const fetchCourse = async (id) => {
         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${id}`, {credentials: 'include'});
-        if (!response.ok){
+        if (!response.ok) {
             console.error("Failed to fetch data to get course")
             return;
         }
         const data = await response?.json();
-        // setUserInfo(data);
         return data;
     };
 
     const fetchUserCheck = async (id) => {
         const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
-        if (!response.ok){
+        if (!response.ok) {
             console.error("Failed to fetch data to get course")
             return;
         }
         const data = await response?.json();
-        // setUserInfo(data);
         return data;
     };
 
@@ -42,25 +41,23 @@ export default function Profile() {
                 setIsLoading(true);
                 try {
                     const [userInfoResponse, checkResponse] = await Promise.all([
-                        fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/getUserInfo`, { credentials: 'include' }),
+                        fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/getUserInfo`, {credentials: 'include'}),
                         fetchUserCheck()
                     ]);
 
-                    if (!userInfoResponse.ok){
+                    if (!userInfoResponse.ok) {
                         console.error("Failed to fetch data user")
                         navigate('/');
-                        // return;
                     }
 
                     const data = await userInfoResponse.json();
-                    console.log(data)
+                    console.log("userinfo", data)
                     setUserInfo(data);
                     console.log("asdfasdf", checkResponse)
                     setaccountId(checkResponse.userId);
                     setIsLoading(false);
                 } catch (error) {
                     console.error("Error fetching user info:", error);
-                    // setIsLoading(false);
                     navigate('/')
                 }
             };
@@ -78,6 +75,7 @@ export default function Profile() {
                 const filteredCourses = courseData.filter(course => course !== null && course.id !== undefined);
                 // setCourses(courseData.filter(course => course !== null)); // Filter out any null responses
                 setCourses(filteredCourses);
+                localStorage.setItem("")
             }
             if (userInfo && userInfo?.role == "STUDENT" && userInfo?.coursesId) {
                 const coursePromises = userInfo.coursesId.map(id => fetchCourse(id));
@@ -122,23 +120,6 @@ export default function Profile() {
     }
 
     const handleUpdateUserData = async () => {
-
-        // try {
-        //     const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/${accountId}`, { credentials: 'include' });
-        //     if (!response.ok){
-        //         console.error("Failed to fetch data user")
-        //         navigate('/');
-        //         // return;
-        //     }
-        //
-        //     const data = await response.json();
-        //     console.log(data)
-        //     setUserInfo(data);
-        //     setIsLoading(false);
-        // } catch (error) {
-        //     console.error("Error fetching user info:", error);
-        //     setIsLoading(false);
-        // }
         const payload = {
             "email": userInfo.email,
             // "password": "string",
@@ -147,27 +128,23 @@ export default function Profile() {
             "fullname": userInfo.fullname
         }
 
-        const res  = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/${accountId}`, {
-            credentials: 'include',
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-            // .then(async(t) => { let te = (await t.json); console.log(te)})
-            // .then(te => console.log(te))
-            // .then(window.location.reload())
-            .catch((error) => {
-                console.error('Error:', error);
-            });
-        const data = await res.json();
-        console.log(data);
+        axios.put(`${process.env.REACT_APP_SERVER_URL}/accounts`, payload, {withCredentials: true})
+            .then(async (res) => {
+                    console.log(res)
+                    if (res.status === 200) {
+                        setIsEditMode(false)
+                    }
+                    // res.json().then((data)=> {
+                    //     console.log(data)
+                    // });
+
+                }
+            ).catch((error) => console.error('Error:', error))
+
+
     }
 
     const handleCancelButton = (e) => {
-        // window.location.reload();
-        // e.preventDefault();
         handleEditButton();
     }
     const handleChange = async (event) => {
@@ -179,20 +156,19 @@ export default function Profile() {
     }
 
     const getCourses = async () => {
-        if (userInfo?.role == "TEACHER"){
+        if (userInfo?.role == "TEACHER") {
             console.log("tea")
             // for userInfo.tea
             userInfo.teachingCoursesId.forEach(() => <div>`${233}`</div>)
-        }
-        else if(userInfo?.role == "STUDENT"){
+        } else if (userInfo?.role == "STUDENT") {
             console.log("stu")
         }
     }
 
     return (
         <div className="container py-5">
-            <h1 className="display-6 mb-2 text-center">Мій профіль</h1>
-            <h2 className="mb-2 text-center">Власна інформація</h2>
+            <h1 className="display-6 mb-2 text-center">My profile</h1>
+            <h2 className="mb-2 text-center">Account information</h2>
             <div>
                 <div className="row g-5 max-size m-auto">
                     <div className="col-lg-6">
@@ -203,7 +179,7 @@ export default function Profile() {
                                         {
                                             <span className={"display-6 font-4"}
                                                   style={{"fontSize": "20px"}}>{isLoading ?
-                                                <div>Завантаження...</div> : ` ${userInfo?.role}`}</span>
+                                                <div>Loading...</div> : ` ${userInfo?.role}`}</span>
                                         }
                                     </h3>
                                     </div>
@@ -288,55 +264,32 @@ export default function Profile() {
                                         >
                                             {
                                                 isEditMode ?
-                                                    <>
-
-                                                        <div
-                                                            className="w-50 bg-warning logout text-center p-2 my-1 d-flex justify-content-center"
-                                                            style={{
-                                                                "borderRadius": "30px",
-                                                                "cursor": "pointer",
-                                                                "margin": "0 0.5rem "
-                                                            }}
-                                                            onClick={handleUpdateUserData}>
-                                                            <button className={"btn btn-warning, text-center"}
-                                                                    style={{"padding": "0px"}}
-                                                                    onClick={handleUpdateUserData}>Save
-                                                            </button>
-                                                        </div>
-                                                        <div
-                                                            className="d-flex justify-content-center w-50 bg-danger logout text-center p-2 my-1"
-
-                                                            style={{
-                                                                "borderRadius": "30px",
-                                                                "cursor": "pointer",
-                                                                "margin": "0 0.5rem "
-                                                            }}
-                                                            onClick={handleCancelButton}>
-                                                            <button
-                                                                className={isEditMode ? "btn-danger btn" : "btn-warning btn"}
+                                                    <Container className={"d-flex justify-content-center"}>
+                                                        <button className="w-50 bg-success logout text-center p-2 my-1"
                                                                 style={{
                                                                     "borderRadius": "30px",
                                                                     "cursor": "pointer",
-                                                                    "margin": "0 0.5rem "
+                                                                    "margin": "0 0.5rem ",
+                                                                    "color": "white",
+                                                                    borderColor: "transparent"
+                                                                }}
+                                                                onClick={handleUpdateUserData}>
+                                                            Save
+                                                        </button>
+                                                        <button className="bg-danger w-50 logout text-center p-2 my-1"
+                                                                style={{
+                                                                    "borderRadius": "30px",
+                                                                    "cursor": "pointer",
+                                                                    "margin": "0 0.5rem ",
+                                                                    borderColor: "transparent",
+                                                                    "color": "white"
                                                                 }}
 
-                                                                onClick={handleCancelButton}>{"Скасувати"}</button>
-                                                        </div>
-                                                        {/*<div*/}
-                                                        {/*    className="d-flex flex-row w-50 bg-danger logout text-center p-2 my-1"*/}
-                                                        {/*>*/}
-                                                        {/*    <button*/}
-                                                        {/*        className={isEditMode ? "btn-danger btn" : "btn-warning btn"}*/}
-                                                        {/*        style={{*/}
-                                                        {/*            "borderRadius": "30px",*/}
-                                                        {/*            "cursor": "pointer",*/}
-                                                        {/*            "margin": "0 0.5rem "*/}
-                                                        {/*        }}*/}
-
-                                                        {/*        onClick={handleCancelButton}>{"Скасувати"}</button>*/}
-                                                        {/*</div>*/}
-                                                    </>
-                                                    : <>
+                                                                onClick={handleCancelButton}>
+                                                            Discard
+                                                        </button>
+                                                    </Container>
+                                                    : <Container className={"d-flex justify-content-center"}>
                                                         <div className="w-50 bg-warning logout text-center p-2 my-1"
                                                              style={{
                                                                  "borderRadius": "30px",
@@ -345,22 +298,10 @@ export default function Profile() {
                                                              }}
                                                              onClick={handleEditButton}>
                                                             <button className={"btn btn-warning"} style={{"padding": "0px"}}
-                                                                    onClick={handleEditButton}>Edit
+                                                                    onClick={handleEditButton}>Edit profile
                                                             </button>
                                                         </div>
-                                                        <div className="bg-danger w-50 logout text-center p-2 my-1"
-                                                             style={{
-                                                                 "borderRadius": "30px",
-                                                                 "cursor": "pointer",
-                                                                 "margin": "0 0.5rem "
-                                                             }}
-
-                                                             onClick={handleLogoutButton}>
-                                                            <button className={"btn btn-danger"} style={{"padding": "0px"}}
-                                                                    onClick={handleLogoutButton}>Вихід
-                                                            </button>
-                                                        </div>
-                                                    </>
+                                                    </Container>
 
                                             }
                                         </div>
@@ -403,28 +344,32 @@ export default function Profile() {
                 {isLoading ?
                     <div>Loading...</div> :
                     <div className="mb-2 text-center ">
-                        {userInfo?.role != "ADMIN" && <h5>Courses you're {userInfo.role == "TEACHER"? "teaching": "studying"}:</h5>}
+                        {userInfo?.role != "ADMIN" && !isEditMode &&
+                            <h5>Courses you're {userInfo.role == "TEACHER" ? "teaching" : "studying"}:</h5>}
                         {
 
                             isEditMode ? <> </> :
-                                <div className="d-flex flex-column justify-content-center text-center align-items-center">
+                                <div
+                                    className="d-flex flex-column justify-content-center text-center align-items-center">
                                     {courses.length > 0 ? (
                                         courses.sort((a, b) => a.id - b.id).map((course, index) => (
-                                            <CoursePreview label={course.header} id={course.id} ></CoursePreview>
+                                            <CoursePreview label={course.header} id={course.id}></CoursePreview>
                                         ))
                                     ) : (
 
-                                        userInfo.role != "ADMIN" && (userInfo.role == "TEACHER"?<p>You don't teach any courses.</p>:
-                                     <p>You don't study any course. Go to <a href={'/courses'}>courses</a> to find one.</p>)
+                                        userInfo.role != "ADMIN" && (userInfo.role == "TEACHER" ?
+                                            <p>You don't teach any courses.</p> :
+                                            <p>You don't study any course. Go to <a href={'/courses'}>courses</a> to
+                                                find one.</p>)
 
 
-                                        )}
+                                    )}
                                 </div>
                         }
                     </div>
                 }
 
-                    </div>
-                    </div>
-                    );
-                }
+            </div>
+        </div>
+    );
+}

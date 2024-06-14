@@ -115,15 +115,16 @@ public class CourseController {
     }
 
     @PostMapping("/{courseId}/disenroll")
-    public ResponseEntity<CourseDto> disenrollToCourse(Principal principal, @PathVariable Long courseId, @RequestParam(value = "accountId", required = false) Long accountId) {
+    public ResponseEntity<CourseDto> disenrollToCourse(Principal principal, @PathVariable Long courseId) {
         try{
-            if (accountService.validateIdByEmail(principal.getName(), accountId)) {
-                disenroll(courseId, accountId);
-                return new ResponseEntity<>(HttpStatus.OK);
+            if (principal == null) {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
-            else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            disenroll(courseId, accountService.getStudentByAccountId(accountService.getIdByEmail(principal.getName())).id());
+            return new ResponseEntity<>(HttpStatus.OK);
         }
         catch(EntityNotFoundException e){
+            System.out.println(e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
