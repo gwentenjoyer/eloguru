@@ -72,3 +72,17 @@
     /*width: 320px;*/
     background: #f1f1f1;
 }
+
+.filter-submit {
+    background-color: transparent !important;
+    color: var(--primary) !important;
+    /*width: 33%!important;*/
+    /*opacity: 0%;*/
+    /*max-width: 200px;*/
+}
+
+.filter-submit:hover {
+    background-color: var(--main-blu) !important;
+    color: var(--light) !important;
+    border-color: var(--main-blu)!important;
+}

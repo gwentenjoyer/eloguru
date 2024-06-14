@@ -43,17 +43,18 @@
 /*}*/
 
 .lg-signup-submit {
-    background-color: transparent !important;
-    color: var(--primary) !important;
+    background-color: var(--main-blu) !important;
+    /*color: var(--primary) !important;*/
     width: 33%!important;
     /*opacity: 0%;*/
     /*max-width: 200px;*/
 }
 
 .lg-signup-submit:hover {
-    background-color: var(--main-blu) !important;
+    /*background-color: var(--main-blu) !important;*/
     color: var(--light) !important;
     border-color: var(--main-blu)!important;
+    filter: brightness(120%);
     /*opacity: 0%;*/
     /*width: 33%!important;*/
     /*max-width: 200px;*/

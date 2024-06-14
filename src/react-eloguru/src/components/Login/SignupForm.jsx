@@ -9,21 +9,31 @@ export default function SignupForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordsMatch, setPasswordsMatch] = useState(true);
+    const [passwordsDismatch, setPasswordsDismatch] = useState(false);
+    const [agreeMatch, setAgreeMatch] = useState(true);
     const navigate = useNavigate();
     const [selectedOption, setSelectedOption] = useState("student");
-    const [hasAgreed, setHasAgreed] = useState("student");
+    const [hasAgreed, setHasAgreed] = useState(false);
+    const [accExists, setAccExists] = useState(false);
+    const [succReg, setSuccReg] = useState(false);
 
-    const handleButtonClick = () => {
-        console.log(`The selected option is "${selectedOption}".`);
-    }
+
     const handleSubmit = (event) => {
         event.preventDefault();
 
+        setAccExists(false);
         if (password !== confirmPassword) {
-            setPasswordsMatch(false);
+            setPasswordsDismatch(true);
             return;
         }
+        else
+            setPasswordsDismatch(false);
+        if (hasAgreed === false) {
+            setAgreeMatch(false);
+            return;
+        }
+        else
+            setAgreeMatch(true);
         const logData = {
             email,
             password
@@ -31,21 +41,20 @@ export default function SignupForm() {
         console.log(logData)
         // If passwords match, send the data to the server
         // Here you can implement your logic to send data to the server
+
         axios.post(`${process.env.REACT_APP_SERVER_URL}/accounts/signup?role=${selectedOption}`, logData, {withCredentials: true})
             .then(res => {
-                    window.location.href = "/profile"
+                    // window.location.href = "/profile"
+                setSuccReg(true);
                     // navigate(`/profile`);
                 }
             )
+            .catch(e => {
+                if (e.code === "ERR_BAD_REQUEST")
+                    setAccExists(true);
+                console.log(e)
+            })
     };
-
-    const handleCheckChange = async (event) => {
-        // const {name, value, type, checked} = event.target;
-        // setState(prevState => ({
-        //     ...prevState,
-        //     [name]: type === "checkbox" ? checked : value
-        // }));
-    }
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -86,7 +95,7 @@ export default function SignupForm() {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                 />
-                {!passwordsMatch && <Form.Text className="text-danger">Passwords do not match</Form.Text>}
+                {passwordsDismatch && <Form.Text className="text-danger">Passwords do not match</Form.Text>}
             </Form.Group>
 
             {/*<Form.Group className="mb-3" controlId="formBasicCheckbox">*/}
@@ -129,7 +138,7 @@ export default function SignupForm() {
                             type="checkbox"
                             name="hasAgreed"
                             value={hasAgreed}
-                            onChange={handleCheckChange}
+                            onChange={() => {setHasAgreed(!hasAgreed)}}
                         />
                         I agree with {" "}
                         <Link to="null" className="formFieldTermsLink">
@@ -137,6 +146,12 @@ export default function SignupForm() {
                         </Link>
                     </label>
                 </div>
+            </Form.Group>
+            <Form.Group className="d-flex justify-content-center">
+
+                {!passwordsDismatch && !agreeMatch &&  <Form.Text className="text-danger">Please agree with Terms & Service </Form.Text>}
+                {accExists &&  <Form.Text className="text-danger">Account with this email already exists. Please, go to "Log in" tab</Form.Text>}
+                {succReg &&  <Form.Text className="text-white bg-success rounded p-1">Success! Please check your email to verify your account</Form.Text>}
             </Form.Group>
 
             <div className={"row justify-content-center my-3"}>

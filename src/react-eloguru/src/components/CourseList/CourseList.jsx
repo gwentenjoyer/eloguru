@@ -113,7 +113,7 @@ const CourseList = () => {
                     {/*>*/}
                     {/*    Enroll*/}
                     {/*</button>*/}
-                        <Button variant="primary" type="submit" className="btn-outline-warning lg-signup-submit w-75">
+                        <Button variant="primary" type="submit" className="btn-outline-warning filter-submit w-75">
                             Filter
                         </Button>
                     </div>
