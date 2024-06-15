@@ -13,7 +13,9 @@ import ua.thecompany.eloguru.dto.InitDto.AccountInitDto;
 //import ua.thecompany.eloguru.email.EmailService;
 import ua.thecompany.eloguru.email.EmailService;
 import ua.thecompany.eloguru.model.EnumeratedRole;
+import ua.thecompany.eloguru.repositories.AccountRepository;
 import ua.thecompany.eloguru.security.AuthService;
+import ua.thecompany.eloguru.security.AuthServiceImpl;
 import ua.thecompany.eloguru.services.AccountService;
 import ua.thecompany.eloguru.services.StudentService;
 import ua.thecompany.eloguru.services.TeacherService;
@@ -31,17 +33,17 @@ public class AccountController {
     private final AccountService accountService;
     private final TeacherService teacherService;
     private final StudentService studentService;
-    private final EmailService emailService;
     private final AuthService authService;
+    private final AuthServiceImpl service;
+//    private final AccountRepository accountRepository;
 //    private final EmailService emailService;
 
     @PostMapping("signup")
     public ResponseEntity<?> saveAccount(@RequestParam(value = "role", required = true) @Valid String accountType,
-                                          @Valid @RequestBody AccountInitDto accountInitDto) {
-        if (accountInitDto.password() == null)
+                                         @RequestBody AccountInitDto accountInitDto) {
+        if ((accountInitDto.password() == null) || (accountInitDto.email() == null))
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         try {
-            emailService.sendEmail(accountInitDto.email(), "Account registration", UUID.randomUUID().toString());
 
             if (accountType.equals(EnumeratedRole.TEACHER.toString())) {
                 teacherService.createTeacher(accountInitDto);
@@ -51,11 +53,24 @@ public class AccountController {
             }
             else
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
         catch (MessagingException e){
             return new ResponseEntity<>("Account with the email already exists", HttpStatus.CONFLICT);
         }
+    }
+
+//    @GetMapping("/activate")
+//    public ResponseEntity<?> activate(@RequestParam(defaultValue = "") String activationCode) {
+//        service.activate(activationCode);
+//        return new ResponseEntity<>("activated", HttpStatus.OK);
+//    }
+
+    @PostMapping("/activate")
+    public ResponseEntity<?> activate(@RequestParam(defaultValue = "") String activationCode, @RequestBody AccountInitDto accountInitDto) {
+        service.accountPostregister(activationCode, accountInitDto);
+        return new ResponseEntity<>("activated", HttpStatus.OK);
     }
 
     @GetMapping(value="/{id}")
@@ -127,11 +142,11 @@ public class AccountController {
     public ResponseEntity<CourseDto> updateAccount(Principal principal, @Valid @RequestBody AccountInitDto accountInitDto) {
         try {
             System.out.println("here");
-            if (principal.getName().equals(accountInitDto.email())) {
-                accountService.updateAccount(accountInitDto);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-            else return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            if (principal == null)
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            accountService.updateAccount(accountInitDto, accountService.getIdByEmail(principal.getName()));
+            return new ResponseEntity<>(HttpStatus.OK);
+//            }
         }
         catch (EntityNotFoundException e){
             System.out.println(e);

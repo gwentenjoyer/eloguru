@@ -41,6 +41,11 @@ public class JwtServiceImpl implements JwtService {
         return generateToken(new HashMap<>(), userDetails);
     }
 
+
+    public String generateRefreshToken(UserDetails userDetails) {
+        return generateRefreshToken(new HashMap<>(), userDetails);
+    }
+
     @Override
     public String generateToken(
             Map<String, Object> extraClaims,
@@ -56,6 +61,20 @@ public class JwtServiceImpl implements JwtService {
                 .compact();
     }
 
+    public String generateRefreshToken(
+            Map<String, Object> extraClaims,
+            UserDetails userDetails
+    ) {
+        return Jwts
+                .builder()
+                .setClaims(extraClaims)
+                .setSubject(userDetails.getUsername())
+                .claim("Token", "Refresh")
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + 144000000)) // 10000 * 60 * 24 * 10
+                .signWith(getSignInKey(), SignatureAlgorithm.HS256)
+                .compact();
+    }
 
     @Override
     public boolean isTokenGetSign(String token) {
@@ -96,6 +115,18 @@ public class JwtServiceImpl implements JwtService {
         response.setHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
     }
 
+    public String getRefreshTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if ("refreshToken".equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null;
+    }
+
     @Override
     public void deleteJwtCookies(HttpServletResponse response) {
         ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", "")
@@ -106,6 +137,13 @@ public class JwtServiceImpl implements JwtService {
                 .build();
 
         response.setHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", "")
+                .httpOnly(true)
+                .secure(false)
+                .maxAge(0)
+                .path("/")
+                .build();
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
     }
 
 

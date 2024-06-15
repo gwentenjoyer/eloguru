@@ -34,6 +34,54 @@ export default function AdditionInfo() {
                 }
             )
     };
+    //
+    // const [state, setState] = useState({
+    //     name: "",
+    //     surname: "",
+    //     age: "",
+    //     categoryIds: 0
+    // })
+    // const [searchParams] = useSearchParams();
+    // const [isActive, setIsActive] = useState(false);
+    //
+    // useEffect(() => {
+    //         const fetchActivateCodeInfo = async () => {
+    //             try {
+    //                 await axios(`${process.env.REACT_APP_SERVER_URL}/activate?activationCode=` + searchParams.get("activationCode"), {withCredentials: true});
+    //             } catch (e) {
+    //                 setIsActive(true);
+    //             }
+    //         }
+    //         fetchActivateCodeInfo()
+    //     }, // eslint-disable-next-line
+    //     []);
+    //
+    //
+    // const handleChange = async (event) => {
+    //     const value = event.target.type === 'number' ? parseInt(event.target.value) : event.target.value;
+    //     setState({
+    //         ...state,
+    //         [event.target.name]: value
+    //     });
+    // }
+    // const handleChangeOption = async (event) => {
+    //     const value = event.target.id === 'categoryIds' ? [parseInt(event.target.value)] : event.target.value;
+    //     setState({
+    //         ...state,
+    //         [event.target.name]: value
+    //     });
+    // }
+    // const handleSubmit = async (event) => {
+    //     event.preventDefault();
+    //     if (state.age !== "" && state.lastname !== "" && state.categoryIds !== 0 && state.firstname !== "") {
+    //         await axios.post(`${process.env.REACT_APP_SERVER_URL}/activate?activationCode=` + searchParams.get("activationCode"), state, {withCredentials: true})
+    //             .then(res => {
+    //                     window.location.href = "/profile"
+    //                 }
+    //             );
+    //         //TODO: зробити переадресацію || виключити її і зробити кнопку?
+    //     }
+    // }
 
     return (
         <Form onSubmit={handleSubmit}>
@@ -67,38 +115,8 @@ export default function AdditionInfo() {
                 />
             </Form.Group>
 
-            <Form.Group>
-                <Form.Label>Register as:</Form.Label>
 
-                <div className="d-flex flex-row mb-3">
-                    <div className={"me-2"}>
-
-                        <input
-                            type="radio"
-                            id="student"
-                            name="student"
-                            value="student"
-                            checked={selectedOption === "student"}
-                            onChange={() => setSelectedOption("student")}
-                        />
-                        <label htmlFor="student"className={"mx-1"}>Student</label>
-                    </div>
-                    <div className={"me-2"}>
-
-                        <input
-                            type="radio"
-                            id="teacher"
-                            name="teacher"
-                            value="teacher"
-                            checked={selectedOption === "teacher"}
-                            onChange={() => setSelectedOption("teacher")}
-                        />
-                        <label htmlFor="teacher" className={"mx-1"}>Teacher</label>
-                    </div>
-
-                </div>
-            </Form.Group>
-            <div className={"row justify-content-center"}>
+            <div className={"row justify-content-center mt-4"}>
 
                 <Button variant="primary" type="submit" className="justify-content-evenly lg-signup-submit">
                     Create account
@@ -107,3 +125,4 @@ export default function AdditionInfo() {
         </Form>
     );
 }
+

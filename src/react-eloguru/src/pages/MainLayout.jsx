@@ -8,7 +8,6 @@ export default function MainPage(){
         <>
             <Slider/>
             <AboutUs/>
-            {/*<AboutCourses/>*/}
         </>
     );
 }

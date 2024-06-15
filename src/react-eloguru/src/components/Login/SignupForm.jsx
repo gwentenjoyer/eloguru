@@ -87,7 +87,7 @@ export default function SignupForm() {
                 />
             </Form.Group>
 
-            <Form.Group className="mb-4" controlId="formBasicConfirmPassword">
+            <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
                 <Form.Label>Confirm Password:</Form.Label>
                 <Form.Control
                     type="password"
@@ -96,6 +96,38 @@ export default function SignupForm() {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                 />
                 {passwordsDismatch && <Form.Text className="text-danger">Passwords do not match</Form.Text>}
+            </Form.Group>
+
+            <Form.Group className={"mb-4"}>
+                <Form.Label>Register as:</Form.Label>
+
+                <div className="d-flex flex-row mb-3">
+                    <div className={"me-2"}>
+
+                        <input
+                            type="radio"
+                            id="student"
+                            name="student"
+                            value="student"
+                            checked={selectedOption === "student"}
+                            onChange={() => setSelectedOption("student")}
+                        />
+                        <label htmlFor="student"className={"mx-1"}>Student</label>
+                    </div>
+                    <div className={"me-2"}>
+
+                        <input
+                            type="radio"
+                            id="teacher"
+                            name="teacher"
+                            value="teacher"
+                            checked={selectedOption === "teacher"}
+                            onChange={() => setSelectedOption("teacher")}
+                        />
+                        <label htmlFor="teacher" className={"mx-1"}>Teacher</label>
+                    </div>
+
+                </div>
             </Form.Group>
 
             {/*<Form.Group className="mb-3" controlId="formBasicCheckbox">*/}

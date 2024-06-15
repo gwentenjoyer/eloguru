@@ -75,6 +75,16 @@ public class AccountServiceImpl implements AccountService {
         return accountRepository.save(updateAccountFromAccountInitDto(accountInitDto, account));
     }
 
+    @Override
+    @Transactional
+//    @CachePut
+    public Account updateAccount(AccountInitDto accountInitDto, Long accountId) {
+        Optional<Account> optionalAccount = accountRepository.findById(accountId);
+        if (!optionalAccount.isPresent()) throw new EntityNotFoundException("Can't find account to update");
+        Account account = optionalAccount.get();
+        return accountRepository.save(updateAccountFromAccountInitDto(accountInitDto, account));
+    }
+
     private Account updateAccountFromAccountInitDto(AccountInitDto accountInitDto, Account account) {
         account.setEmail(accountInitDto.email());
 

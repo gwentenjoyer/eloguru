@@ -4,16 +4,13 @@ import Layout from "./components/RootLayout/RootLayout";
 import MainLayout from "./pages/MainLayout";
 import RequireAuth from "./hooks/getAuth";
 import Profile from './components/Profile/Profile'
-import Course from './components/CoursePage/Course'
 import './index.css';
 import CourseList from "./components/CourseList/CourseList";
 import CourseWrapper from "./components/CourseList/CourseWrapper";
-import Cookies from 'js-cookie';
-import React, { useEffect, useState } from 'react';
 import CreateCourse from "./components/CreateCourse/CreateCourse";
 import ErrorPage from "./components/RootLayout/ErrorPage";
-import AboutUs from "./components/MainPage/AboutUs";
 import AboutPage from "./components/MainPage/AboutPage";
+import RegisterActive from "./pages/RegisterActive";
 
 const router = createBrowserRouter([
     {
@@ -39,6 +36,11 @@ const router = createBrowserRouter([
             {
                 path: "courses",
                 element: <CourseList/>
+            },
+            {
+                path: "registerActive",
+                element: <RegisterActive/>
+
             },
             {
                 path: "profile",

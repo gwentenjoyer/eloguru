@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface AccountRepository extends BaseRepository<Account, Long> {
     Optional<Account> findByEmail(String email);
     boolean existsByEmail(String email);
+    Optional<Account> findByActivationCode(String activationCode);
+
 }

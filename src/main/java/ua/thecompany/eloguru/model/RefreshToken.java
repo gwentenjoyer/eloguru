@@ -20,6 +20,6 @@ public class RefreshToken extends BaseEntity {
 
     @OneToOne
     @JoinColumn(name = "account_id")
-    private Account user;
+    private Account account;
 
 }
