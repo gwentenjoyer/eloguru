@@ -52,4 +52,7 @@ public class Course extends BaseEntity{
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "course", cascade = CascadeType.ALL)
     private List<Topic> topics = new ArrayList<>();
+
+    @Column(name="photo")
+    private String photo;
 }

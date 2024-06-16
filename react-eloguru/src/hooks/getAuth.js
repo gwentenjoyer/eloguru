@@ -8,7 +8,7 @@ export default function RequireAuth({url}) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(`${process.env.REACT_BASE_URL}/${url}`,{credentials: 'include'});
+            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/${url}`,{credentials: 'include'});
             if (response.status === 200 && !response.redirected) {
                 setIsOk(true);
             // } else if (await getRefreshTokens.js() === true) {
@@ -21,7 +21,8 @@ export default function RequireAuth({url}) {
     }, [url]);
 
     if (isFinal) {
-        window.location.href = "login";
+        // window.location.href = "login";
+        console.log("that's bad auth")
     }
     if (isOk === null) {
         return <div>Loading...</div>;

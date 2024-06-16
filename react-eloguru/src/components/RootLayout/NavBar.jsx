@@ -27,7 +27,7 @@ export default function NavBar() {
     };
 
     const handleLogout = async () => {
-         fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/logout`, {
+         fetch(`${process.env.REACT_APP_BASE_URL}/accounts/logout`, {
             credentials: 'include',
             method: 'POST',
         })
@@ -43,7 +43,7 @@ export default function NavBar() {
     useEffect(() => {
             const fetchUserInfo = async () => {
                 try {
-                    const data = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
+                    const data = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/check`, {credentials: 'include'});
                     // const data = await response?.json();
                     // if (!response?.redirected) {
                     //     setUserInfo(data);
@@ -102,7 +102,7 @@ export default function NavBar() {
                             <div className="navbar-nav p-lg-0">
                                 <div className="d-flex align-items-center m-1">
 
-                                    <NavLink className={"nav-item nav-link"} to="/courses">Courses</NavLink>
+                                    <NavLink className={"nav-item nav-link"} to="/course">Courses</NavLink>
                                 </div>
                                 <div className="d-flex align-items-center m-1">
                                     <NavLink className={"nav-item nav-link"} to="/about">About</NavLink>
@@ -134,7 +134,7 @@ export default function NavBar() {
                     {/*<ModalTriggerButton/>*/}
                     <>
                         {userInfoData?.role == "teacher" &&
-                            <Button variant="warning" className="m-2" onClick={() => navigate(`/CreateCourse`)}>
+                            <Button variant="warning" className="m-2" onClick={() => navigate(`/createCourse`)}>
                                 Create
                             </Button>
                         }

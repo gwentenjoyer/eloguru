@@ -18,7 +18,7 @@ export default function Footer() {
                     <div className="col-lg-4 col-md-6">
                         <h4 className="text-light mb-4 font-6">Popular links</h4>
                         <Link className="btn btn-link" to="/about">About</Link>
-                        <Link className="btn btn-link" to="/courses">Courses</Link>
+                        <Link className="btn btn-link" to="/course">Courses</Link>
                     </div>
                 </div>
             </div>

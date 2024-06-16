@@ -2,6 +2,8 @@ package ua.thecompany.eloguru.dto.InitDto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 import ua.thecompany.eloguru.model.EnumeratedCategories;
 
 import java.io.Serializable;
@@ -11,4 +13,5 @@ public record CourseInitDto(@NotBlank(message = "Cannot be blank!") String heade
                             EnumeratedCategories categories,
                             String description,
                             @Positive Integer durationDays,
-                            Date startDate) implements Serializable {}
+                            @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) Date startDate,
+                            MultipartFile photo) implements Serializable {}

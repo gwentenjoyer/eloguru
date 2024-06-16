@@ -4,6 +4,11 @@ import Collapse from "./Collapse";
 import Comment from "./Comment";
 import axios from "axios";
 import Rating from '@mui/material/Rating';
+import {useNavigate} from "react-router-dom";
+import Modal from "react-bootstrap/Modal";
+import Button from "react-bootstrap/Button";
+import DataAdminPage from "../CreateCourse/DataAdminPage";
+import DeleteCourseVerify from "./DeleteCourseVerify";
 
 const Course = ({courseId}) => {
 
@@ -13,6 +18,7 @@ const Course = ({courseId}) => {
     const [course, setCourse] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const [isEditMode, setIsEditMode] = useState(false);
+    const [verifyDelete, setVerifyDelete] = useState(false);
     const [userRole, setUserRole] = useState('');
 
 
@@ -25,13 +31,14 @@ const Course = ({courseId}) => {
     const [comment, setComment] = useState('');
     const [commentRate, setCommentRate] = useState('');
     const [userEnrolled, setUserEnrolled] = useState(localcourses ? JSON.parse(localcourses).includes(courseId): false);
+    const navigate = useNavigate();
 
 
     useEffect(() => {
             const fetchUserInfo = async () => {
                 try {
                     const [courseResponse, topicsResponse] = await Promise.all([
-                        fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}`, { credentials: 'include' }),
+                        fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}`, { credentials: 'include' }),
                         fetchTopics()
                     ]);
 
@@ -62,14 +69,14 @@ const Course = ({courseId}) => {
         []);
 
     const fetchTopics = async () => {
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}/topics`, {credentials: 'include'});
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics`, {credentials: 'include'});
         console.log(response)
         return response;
     }
 
     const getUserRole = async () => {
         // return JSON.parse(localStorage.getItem("account")).role;
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/check`, {credentials: 'include'});
 
         if (response.status == 200){
             setUserRole((await response.json()).role.toString().toUpperCase());
@@ -77,8 +84,8 @@ const Course = ({courseId}) => {
     }
 
     const handleEnroll = async () => {
-        // const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}/enroll`, {withCredentials: true});
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}/enroll`, {credentials: 'include', method: "POST"});
+        // const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/enroll`, {withCredentials: true});
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/enroll`, {credentials: 'include', method: "POST"});
 
         if (!response.status === 200){
             console.log(response)
@@ -90,7 +97,7 @@ const Course = ({courseId}) => {
     };
 
     const handleDisenroll = async () => {
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}/disenroll`, {credentials: 'include', method: "POST"});
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/disenroll`, {credentials: 'include', method: "POST"});
         console.log("another", response)
         if (response.status !== 200){
             console.log(response)
@@ -119,7 +126,7 @@ const Course = ({courseId}) => {
             rating: commentRate
         }
         try {
-            const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/feedbacks`, {
+            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/feedbacks`, {
                 credentials: 'include',
                 method: "POST",
                 headers: {
@@ -144,18 +151,7 @@ const Course = ({courseId}) => {
         setIsEditMode();
     }
 
-    const handleDelete = async () => {
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}/delete`, {credentials: 'include', method: "POST"});
 
-        if (!response.status === 200){
-            console.log(response)
-            console.error("Failed to enroll")
-        }
-        console.log("deleted")
-        // navigate('/');
-        // window.location.href = "/"
-
-    };
 
     const handleUpdate = async () => {
         const courseData = {
@@ -167,7 +163,7 @@ const Course = ({courseId}) => {
         };
         console.log(courseData);
         try {
-            const response = await axios.put(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}`, courseData, { withCredentials: true });
+            const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}`, courseData, { withCredentials: true });
             if (response.status === 200) {
                 // setSuccess(true);
                 // setCourseName('');
@@ -264,10 +260,16 @@ const Course = ({courseId}) => {
                     }>{userEnrolled ? "Disenroll" : "Enroll"}
                 </button>
                 {userRole && userRole != "STUDENT" && <button className="sign-up-button" onClick={() => {
-                    handleDelete()
+                    setVerifyDelete(true)
                 }}>Delete
                 </button>
+
+
                 }
+                <DeleteCourseVerify
+                    show={verifyDelete}
+                    onHide={() => setVerifyDelete(false)}
+                />
 
                 {userRole && userRole != "STUDENT" && !isEditMode &&
                     <div className="w-50 bg-warning logout text-center p-2 my-1"

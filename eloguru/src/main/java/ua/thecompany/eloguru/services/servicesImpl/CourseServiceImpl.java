@@ -6,11 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 import ua.thecompany.eloguru.dto.CourseDto;
 import ua.thecompany.eloguru.dto.FeedbackDto;
 import ua.thecompany.eloguru.dto.InitDto.CourseInitDto;
@@ -25,10 +28,12 @@ import ua.thecompany.eloguru.services.FeedbackService;
 import ua.thecompany.eloguru.services.TeacherService;
 import ua.thecompany.eloguru.services.TopicService;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
 
 @Service
 @Slf4j
@@ -45,8 +50,13 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     @Transactional
-    public void createCourse(CourseInitDto courseInitDto, Long teacherAccountId) {
+    public void createCourse(CourseInitDto courseInitDto, Long teacherAccountId) throws IOException {
         Course course = courseMapper.courseInitDtoToCourseModel(courseInitDto);
+        MultipartFile photo = courseInitDto.photo();
+        if (photo != null){
+            String photoPath = savePhoto(photo);
+            course.setPhoto(photoPath);
+        }
         course.setTeacher(teacherService.getTeacherModelById(teacherAccountId));
         var res = courseRepository.save(course);
         log.info("Created new course with id: " + res.getId());
@@ -106,7 +116,7 @@ public class CourseServiceImpl implements CourseService {
         if (retrievedCourse.isPresent()) {
             Course course = retrievedCourse.get();
 
-            return courseMapper.courseModelToCourseDto(courseRepository.save(updateCourseFromCourseInitDto(courseMapper.courseDtoToCourseInitDto(courseDto), course)));
+            return courseMapper.courseModelToCourseDto(courseRepository.save(updateCourseFromCourseDto(courseDto, course)));
         } else {
             throw new EntityNotFoundException();
         }
@@ -119,6 +129,35 @@ public class CourseServiceImpl implements CourseService {
     public void deleteCourseById(Long id) {
         log.info("Deleting course with id: " + id);
         courseRepository.deleteById(id);
+    }
+
+    private String savePhoto(MultipartFile photo) throws IOException {
+        Resource resource = new FileSystemResource("target/classes/static/coursesPhotos");
+////        Resource resource = new FileSystemResource("static/coursesPhotos");
+        try {
+            String photoOriginalName = UUID.randomUUID().toString() + photo.getOriginalFilename();
+            if (photoOriginalName == null) {
+                throw new IOException("File name is invalid");
+            }
+
+            // Ensure the directory exists
+            Path photoFolderPath = Paths.get(resource.getFile().getAbsolutePath());
+            if (!Files.exists(photoFolderPath)) {
+                Files.createDirectories(photoFolderPath);
+            }
+
+            // Define the destination file path
+            Path destinationFilePath = photoFolderPath.resolve(photoOriginalName);
+
+            // Transfer the file
+            Files.copy(photo.getInputStream(), destinationFilePath);
+            return photoOriginalName;
+        } catch (IOException e) {
+            // Log the error
+            System.err.println("Error saving photo: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     @Override
@@ -182,6 +221,20 @@ public class CourseServiceImpl implements CourseService {
             course.setStartDate(courseInitDto.startDate());
         if (courseInitDto.categories() != null)
             course.setCategories(courseInitDto.categories());
+        return course;
+    }
+
+    private Course updateCourseFromCourseDto(CourseDto courseDto, Course course) {
+        if (courseDto.header() != null)
+            course.setHeader(courseDto.header());
+        if (courseDto.description() != null)
+            course.setDescription(courseDto.description());
+        if (courseDto.durationDays() != null)
+            course.setDurationDays(courseDto.durationDays());
+        if (courseDto.startDate() != null)
+            course.setStartDate(courseDto.startDate());
+        if (courseDto.categories() != null)
+            course.setCategories(courseDto.categories());
         return course;
     }
 

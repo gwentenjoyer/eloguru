@@ -10,7 +10,7 @@ function CourseComponent({ item }) {
 
     // const handleClick = (event) => {
     //     const id = event.currentTarget.id;
-    //     window.location.href = `${process.env.REACT_APP_SERVER_URL}/courses/${id}`;
+    //     window.location.href = `${process.env.REACT_APP_BASE_URL}/courses/${id}`;
     //
     //     // console.log(`The div with id "${id}" was clicked.`);
     // };
@@ -25,7 +25,7 @@ function CourseComponent({ item }) {
     return (
         <div className="card m-1 d-flex flex-column align-items-center h-100 productInstance" id={item.id} onClick={handleClick}>
             <div className="d-flex justify-content-center photo-cont">
-                <img src="/logo512.png" className="card-img-top" alt="phone_photo"/>
+                <img src={item?.photo ? `coursesPhotos/${item.photo}` : "emptyPhotoCourse.png"} className="card-img-top" alt="phone_photo"/>
 
             </div>
             <div className="card-body d-flex flex-column align-items-center">

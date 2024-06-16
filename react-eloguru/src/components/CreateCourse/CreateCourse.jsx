@@ -11,33 +11,80 @@ const CreateCourse = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState(false);
     const navigate = useNavigate();
+    const [selectedFile, setSelectedFile] = useState(null);
+
+    const handleFileChange = (event) => {
+        setSelectedFile(event.target.files[0]);
+    };
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
-        const courseData = {
-            header: courseName,
-            description,
-            startDate,
-            durationDays,
-            categories: category
-        };
-console.log(courseData);
-        try {
-            const response = await axios.post(`${process.env.REACT_APP_SERVER_URL}/courses/create`, courseData, { withCredentials: true });
-            if (response.status === 201) {
-                setSuccess(true);
-                setCourseName('');
-                setDescription('');
-                setCategory('');
-                setStartDate('');
-                setDurationDays('');
-                // Optionally navigate to another page or show a success message
-                navigate('/courses');
-            }
-        } catch (error) {
-            console.error('Error creating course:', error);
-            setError('Failed to create course. Please try again.');
+
+        // const courseData = new FormData({
+        //     header: courseName,
+        //     description,
+        //     startDate,
+        //     durationDays,
+        //     categories: category
+        // });
+
+        const courseData = new FormData();
+        courseData.append('header', courseName);
+        courseData.append('description', description);
+        courseData.append('startDate', startDate);
+        courseData.append('durationDays', durationDays);
+        courseData.append('categories', category);
+
+        // const formData = new FormData();
+        // formData.append(...courseData);
+        // formData.
+        courseData.append('photo', selectedFile);
+
+        // console.log(courseData.values);
+        for (const pair of courseData.entries()) {
+            console.log(pair[0] + ': ' + pair[1]);
         }
+        axios.post(`${process.env.REACT_APP_BASE_URL}/courses/create`, courseData, {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+            withCredentials: true
+        })
+            .then((response) => {
+                console.log(response.data);
+                if (response.status === 201) {
+                    setSuccess(true);
+                    setCourseName('');
+                    setDescription('');
+                    setCategory('');
+                    setStartDate('');
+                    setDurationDays('');
+                    // Optionally navigate to another page or show a success message
+                    navigate('/course');
+                }
+            })
+            .catch((error) => {
+                console.error('Error creating course:', error);
+                setError('Failed to create course. Please try again.');
+            });
+
+    //     try {
+    //         const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/courses/create`, courseData, { withCredentials: true });
+    //         if (response.status === 201) {
+    //             setSuccess(true);
+    //             setCourseName('');
+    //             setDescription('');
+    //             setCategory('');
+    //             setStartDate('');
+    //             setDurationDays('');
+    //             // Optionally navigate to another page or show a success message
+    //             navigate('/courses');
+    //         }
+    //     } catch (error) {
+    //         console.error('Error creating course:', error);
+    //         setError('Failed to create course. Please try again.');
+    //     }
     };
 
     const getToday = () => {
@@ -76,7 +123,7 @@ console.log(courseData);
                 <div>
                     <label>Duration days:</label>
                     <input
-                        type="text"
+                        type="number"
                         value={durationDays}
                         onChange={(e) => setDurationDays(e.target.value)}
                         required
@@ -100,7 +147,14 @@ console.log(courseData);
                         required
                     ></textarea>
                 </div>
-                <button type="submit">Create Course</button>
+                <div>
+                    <label>Course photo:</label>
+                    <input
+                        type="file"
+                        onChange={handleFileChange}
+                    />
+                </div>
+                <button type="submit">Create course</button>
             </form>
         </div>
     );

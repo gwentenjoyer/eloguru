@@ -9,7 +9,7 @@ function Collapse({ label, children, id, courseId, topicId, userRole }) {
     };
 
     const handleDeleteTheme = async () => {
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}/topics/${topicId}/delete`, {credentials: 'include', method: "POST"});
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}/delete`, {credentials: 'include', method: "POST"});
 
         if (!response.status === 200){
             console.log(response)
@@ -19,7 +19,7 @@ function Collapse({ label, children, id, courseId, topicId, userRole }) {
     }
 
     const handleEditTheme = async () => {
-        // const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${courseId}/topics/${topicId}`, {credentials: 'include', method: "PUT"});
+        // const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}`, {credentials: 'include', method: "PUT"});
         const response = {status: 200}
         if (!response.status === 200){
             console.log(response)

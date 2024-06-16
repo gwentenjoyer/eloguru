@@ -11,6 +11,8 @@ import CreateCourse from "./components/CreateCourse/CreateCourse";
 import ErrorPage from "./components/RootLayout/ErrorPage";
 import AboutPage from "./components/MainPage/AboutPage";
 import RegisterActive from "./pages/RegisterActive";
+import DataAdminPage from "./components/CreateCourse/DataAdminPage";
+import AdminPage from "./pages/adminPage";
 
 const router = createBrowserRouter([
     {
@@ -34,13 +36,33 @@ const router = createBrowserRouter([
                 element: <CourseWrapper />
             },
             {
-                path: "courses",
+                path: "course",
                 element: <CourseList/>
             },
             {
                 path: "activate",
                 element: <RegisterActive/>
 
+            },
+            {
+                path: "admin",
+                element: <RequireAuth url={"admin"}/>,
+                children: [
+                    {
+                        path: "",
+                        element: <AdminPage/>
+                    },
+                    {
+                        path: "",
+                        element: <RequireAuth url={"admin/data"}/>,
+                        children: [
+                            {
+                                path: "data",
+                                element: <DataAdminPage/>,
+                            }
+                        ]
+                    },
+                ]
             },
             {
                 path: "profile",

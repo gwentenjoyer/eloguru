@@ -9,11 +9,12 @@ import ua.thecompany.eloguru.dto.InitDto.CourseInitDto;
 import ua.thecompany.eloguru.dto.InitDto.TopicInitDto;
 import ua.thecompany.eloguru.model.Course;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
 public interface CourseService {
-    void createCourse(CourseInitDto courseInitDto, Long teacherId);
+    void createCourse(CourseInitDto courseInitDto, Long teacherId) throws IOException;
 
     Page<CourseDto> getCourses(@PageableDefault Pageable pageable);
 

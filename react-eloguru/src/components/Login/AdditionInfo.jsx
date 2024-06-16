@@ -21,7 +21,7 @@ export default function AdditionInfo() {
     useEffect(() => {
             const fetchActivateCodeInfo = async () => {
                 try {
-                    await axios(`${process.env.REACT_APP_SERVER_URL}/accounts/activate?activationCode=` + searchParams.get("activationCode"), {withCredentials: true});
+                    await axios(`${process.env.REACT_APP_BASE_URL}/accounts/activate?activationCode=` + searchParams.get("activationCode"), {withCredentials: true});
                 } catch (e) {
                     setIsActive(true);
                 }
@@ -43,7 +43,7 @@ export default function AdditionInfo() {
         event.preventDefault();
         console.log(state)
         if (state.fullname !== "" && state.country !== "" && state.phone !== "") {
-            await axios.post(`${process.env.REACT_APP_SERVER_URL}/accounts/activate?activationCode=${searchParams.get("activationCode")}`, state, {withCredentials: true})
+            await axios.post(`${process.env.REACT_APP_BASE_URL}/accounts/activate?activationCode=${searchParams.get("activationCode")}`, state, {withCredentials: true})
                 .then(res => {
                     // window.location.href = "/profile"
                     navigate(`/profile`);

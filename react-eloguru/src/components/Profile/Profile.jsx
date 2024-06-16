@@ -16,7 +16,7 @@ export default function Profile() {
     const [accountId, setaccountId] = useState([]);
 
     const fetchCourse = async (id) => {
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/courses/${id}`, {credentials: 'include'});
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${id}`, {credentials: 'include'});
         if (!response.ok) {
             console.error("Failed to fetch data to get course")
             return;
@@ -26,7 +26,7 @@ export default function Profile() {
     };
 
     const fetchUserCheck = async (id) => {
-        const response = await fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/check`, {credentials: 'include'});
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/check`, {credentials: 'include'});
         if (!response.ok) {
             console.error("Failed to fetch data to get course")
             return;
@@ -36,12 +36,12 @@ export default function Profile() {
     };
 
     useEffect(() => {
-            const apiUrl = process.env.REACT_APP_SERVER_URL;
+            const apiUrl = process.env.REACT_APP_BASE_URL;
             const fetchUserInfo = async () => {
                 setIsLoading(true);
                 try {
                     const [userInfoResponse, checkResponse] = await Promise.all([
-                        fetch(`${process.env.REACT_APP_SERVER_URL}/accounts/getUserInfo`, {credentials: 'include'}),
+                        fetch(`${process.env.REACT_APP_BASE_URL}/accounts/getUserInfo`, {credentials: 'include'}),
                         fetchUserCheck()
                     ]);
 
@@ -75,7 +75,6 @@ export default function Profile() {
                 const filteredCourses = courseData.filter(course => course !== null && course.id !== undefined);
                 // setCourses(courseData.filter(course => course !== null)); // Filter out any null responses
                 setCourses(filteredCourses);
-                localStorage.setItem("")
             }
             if (userInfo && userInfo?.role == "STUDENT" && userInfo?.coursesId) {
                 const coursePromises = userInfo.coursesId.map(id => fetchCourse(id));
@@ -128,7 +127,7 @@ export default function Profile() {
             "fullname": userInfo.fullname
         }
 
-        axios.put(`${process.env.REACT_APP_SERVER_URL}/accounts`, payload, {withCredentials: true})
+        axios.put(`${process.env.REACT_APP_BASE_URL}/accounts`, payload, {withCredentials: true})
             .then(async (res) => {
                     console.log(res)
                     if (res.status === 200) {
@@ -359,7 +358,7 @@ export default function Profile() {
 
                                         userInfo.role != "ADMIN" && (userInfo.role == "TEACHER" ?
                                             <p>You don't teach any courses.</p> :
-                                            <p>You don't study any course. Go to <a href={'/courses'}>courses</a> to
+                                            <p>You don't study any course. Go to <a href={'/course'}>courses</a> to
                                                 find one.</p>)
 
 

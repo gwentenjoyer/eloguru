@@ -2,6 +2,7 @@ package ua.thecompany.eloguru.controllers;
 
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -16,6 +17,7 @@ import ua.thecompany.eloguru.services.AccountService;
 import ua.thecompany.eloguru.services.CourseService;
 import ua.thecompany.eloguru.services.StudentService;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 
@@ -27,15 +29,23 @@ public class CourseController {
     private final CourseService courseService;
     private final StudentService studentService;
     private final AccountService accountService;
-//TODO: validation by student/teacher id not account id
+
     @PostMapping("/create")
-    public ResponseEntity<CourseDto> createCourse(Principal principal, @Valid @RequestBody CourseInitDto courseInitDto) {
+    public ResponseEntity<?> createCourse(Principal principal, @Valid @RequestBody @ModelAttribute  CourseInitDto courseInitDto) {
         try {
+            System.out.println(principal);
+            if (principal == null)
+                return new ResponseEntity<>("Please log in", HttpStatus.BAD_REQUEST);
             courseService.createCourse(courseInitDto, accountService.getTeacherByAccountId(accountService.getIdByEmail(principal.getName())).id());
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
         catch (EntityNotFoundException e){
             System.out.println(e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        catch (IOException ioe){
+//            log.info("Retrieving all courses");
+            System.out.println(ioe);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }

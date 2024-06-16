@@ -27,8 +27,10 @@ RUN if [ ! -f ".mvn/wrapper/maven-wrapper.jar" ]; then \
         mvn -N io.takari:maven:0.7.7:wrapper; \
     fi
 
-RUN mvn clean package -DskipTests
+RUN mvn install
+#RUN mvn clean package -DskipTests
 
 EXPOSE 8080
 
-CMD ["java", "-jar", "/app/Eloguru/target/eloguru-1.0.0.jar"]
+#CMD ["java", "-jar", "/app/Eloguru/target/eloguru-1.0.0.jar"]
+CMD [ "./mvnw", "spring-boot:run" ]

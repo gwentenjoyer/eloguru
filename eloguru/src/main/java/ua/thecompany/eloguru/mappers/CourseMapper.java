@@ -17,12 +17,13 @@ public interface CourseMapper {
     @Mapping(target = "teacher.id", source = "teacherId")
     Course courseDtoToCourseModel(CourseDto courseInitDto);
 
-    CourseInitDto courseDtoToCourseInitDto(CourseDto courseInitDto);
+//    CourseInitDto courseDtoToCourseInitDto(CourseDto courseInitDto);
 
     @Mapping(target = "teacherId", source = "teacher.id")
     @Mapping(target = "topics", source = "topics", qualifiedByName = "topicToId")
     CourseDto courseModelToCourseDto(Course course);
 
+    @Mapping(target = "photo", ignore = true)
     Course courseInitDtoToCourseModel(CourseInitDto courseInitDto);
 
 //    Course updateCourseModelViaCourseInitDto(CourseInitDto courseInitDto, @MappingTarget Course course);

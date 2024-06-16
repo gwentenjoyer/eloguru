@@ -6,7 +6,7 @@ import ua.thecompany.eloguru.dto.InitDto.AccountInitDto;
 import ua.thecompany.eloguru.dto.TeacherDto;
 import ua.thecompany.eloguru.model.Teacher;
 
-@Mapper(componentModel = "spring", uses = CourseMapper.class)
+@Mapper(componentModel = "spring", uses = {CourseMapper.class})
 public interface TeacherMapper {
 //    @Mapping(target = "accountId", source = "account.id")
     @Mapping(target = "id", source = "id")

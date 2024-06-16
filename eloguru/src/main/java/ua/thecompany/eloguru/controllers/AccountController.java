@@ -222,7 +222,6 @@ public class AccountController {
         if(accRole == EnumeratedRole.TEACHER.toString()){
             var teacher = accountService.getTeacherByAccountId(acc.id());
             return new ResponseEntity<>(teacher, HttpStatus.OK);
-
         }
         else if(accRole == EnumeratedRole.STUDENT.toString()){
             var student = accountService.getStudentByAccountId(acc.id());

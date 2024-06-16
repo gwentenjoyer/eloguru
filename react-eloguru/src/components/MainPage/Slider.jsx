@@ -23,7 +23,7 @@ export default function Slider(){
                                 <div className={"col-lg-7"}>
                                     <h1 className={"display-2 text-light mb-5 animate__bounce"}>Learn new things</h1>
 
-                                    <Link to="/courses" className={"btn btn-light no-radius py-sm-3 px-sm-5 ms-3 bg-primary-yellow"}>Go to courses</Link>
+                                    <Link to="/course" className={"btn btn-light no-radius py-sm-3 px-sm-5 ms-3 bg-primary-yellow"}>Go to courses</Link>
                                 </div>
                             </div>
                         </div>
@@ -42,7 +42,7 @@ export default function Slider(){
                                 <div className={"col-lg-7"}>
                                     <h1 className={"display-2 text-light mb-5 slideInDown animate__slideInDown"}>Improve your skills</h1>
 
-                                    <Link to="/courses" className={"btn btn-light no-radius py-sm-3 px-sm-5 ms-3 bg-primary-yellow"}>Go to courses</Link>
+                                    <Link to="/course" className={"btn btn-light no-radius py-sm-3 px-sm-5 ms-3 bg-primary-yellow"}>Go to courses</Link>
                                 </div>
                             </div>
                         </div>
@@ -61,7 +61,7 @@ export default function Slider(){
                                 <div className={"col-lg-7"}>
                                     <h1 className={"display-2 text-light mb-5 slideInDown animate__slideInDown"}>Start your career right now</h1>
 
-                                    <Link to="/courses" className={"btn btn-light no-radius py-sm-3 px-sm-5 ms-3 bg-primary-yellow"}>Go to courses</Link>
+                                    <Link to="/course" className={"btn btn-light no-radius py-sm-3 px-sm-5 ms-3 bg-primary-yellow"}>Go to courses</Link>
                                 </div>
                             </div>
                         </div>
