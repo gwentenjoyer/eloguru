@@ -20,6 +20,7 @@ public interface JwtService {
     boolean isTokenGetSign(String token);
     String getAccessTokenFromCookie(HttpServletRequest request);
     void setJwtCookies(HttpServletResponse response, String accessToken);
+    void setJwtCookies(HttpServletResponse response, String accessToken, String refreshToken);
     boolean isTokenValid(String token, UserDetails userDetails);
     void deleteJwtCookies(HttpServletResponse response);
 }

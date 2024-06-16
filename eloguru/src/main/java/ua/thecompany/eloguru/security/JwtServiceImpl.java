@@ -115,6 +115,23 @@ public class JwtServiceImpl implements JwtService {
         response.setHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
     }
 
+    public void setJwtCookies(HttpServletResponse response, String accessToken, String refreshToken) {
+        ResponseCookie accessTokenCookie = ResponseCookie.from("accessToken", accessToken)
+                .httpOnly(true)
+                .secure(false)
+                .maxAge(600000)
+                .path("/")
+                .build();
+        ResponseCookie refreshTokenCookie = ResponseCookie.from("refreshToken", refreshToken)
+                .httpOnly(true)
+                .secure(false)
+                .maxAge(14400000)
+                .path("/")
+                .build();
+        response.setHeader(HttpHeaders.SET_COOKIE, accessTokenCookie.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, refreshTokenCookie.toString());
+    }
+
     public String getRefreshTokenFromCookie(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {

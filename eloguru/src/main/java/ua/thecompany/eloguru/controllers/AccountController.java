@@ -2,6 +2,7 @@ package ua.thecompany.eloguru.controllers;
 
 import jakarta.mail.MessagingException;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -10,10 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.thecompany.eloguru.dto.*;
 import ua.thecompany.eloguru.dto.InitDto.AccountInitDto;
-//import ua.thecompany.eloguru.email.EmailService;
-import ua.thecompany.eloguru.email.EmailService;
 import ua.thecompany.eloguru.model.EnumeratedRole;
-import ua.thecompany.eloguru.repositories.AccountRepository;
 import ua.thecompany.eloguru.security.AuthService;
 import ua.thecompany.eloguru.security.AuthServiceImpl;
 import ua.thecompany.eloguru.services.AccountService;
@@ -24,7 +22,6 @@ import java.security.Principal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @RequiredArgsConstructor
 @RestController
@@ -68,10 +65,17 @@ public class AccountController {
 //    }
 
     @PostMapping("/activate")
-    public ResponseEntity<?> activate(@RequestParam(defaultValue = "") String activationCode, @RequestBody AccountInitDto accountInitDto) {
-        service.accountPostregister(activationCode, accountInitDto);
+    public ResponseEntity<?> activate(@RequestParam(required = true, defaultValue = "") String activationCode,
+                                      @RequestBody AccountInitDto accountInitDto, HttpServletResponse response) {
+        service.accountPostregister(activationCode, accountInitDto, response);
         return new ResponseEntity<>("activated", HttpStatus.OK);
     }
+
+    @GetMapping("/activate")
+    public ResponseEntity<String> activate(@RequestParam(defaultValue = "") String activationCode) {
+        return ResponseEntity.ok(service.activate(activationCode));
+    }
+
 
     @GetMapping(value="/{id}")
     public ResponseEntity<AccountDto> getAccountById(@PathVariable Long id){
@@ -136,6 +140,18 @@ public class AccountController {
             return new ResponseEntity<>(res, HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/refreshToken")
+    public ResponseEntity<?> refreshToken(
+            HttpServletRequest request, HttpServletResponse response
+    ) {
+        var isTokenValid = service.refreshToken(request, response);
+        if (isTokenValid != null) {
+            return ResponseEntity.ok(isTokenValid);
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
     }
 
     @PutMapping

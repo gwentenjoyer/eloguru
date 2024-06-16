@@ -1,10 +1,10 @@
 package ua.thecompany.eloguru.security;
 
 import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -46,7 +46,6 @@ public class AuthServiceImpl implements AuthService {
         account.setPwhash(passwordEncoder.encode(request.password()));
         account.setRole(role);
         account.setActive(false);
-
         var savedUser = accountRepository.save(account);
         var jwtToken = jwtService.generateToken(account);
         var refreshToken = jwtService.generateRefreshToken(account);
@@ -55,6 +54,13 @@ public class AuthServiceImpl implements AuthService {
         emailService.sendEmail(request.email(), "Account registration", UUID.randomUUID().toString());
 
         return savedUser;
+    }
+
+    @Transactional
+    public String activate(String activationCode) {
+        var user = accountRepository.findByActivationCode(activationCode)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!"));
+        return user.getEmail();
     }
 
     private void saveRefreshToken(Account account, String refreshToken) {
@@ -84,12 +90,39 @@ public class AuthServiceImpl implements AuthService {
         if(!user.isActive()){
             throw new MessagingException("Please verify account or contact administrator");
         }
+
+
         var jwtToken = jwtService.generateToken(user);
-        updateToken(user, jwtToken);
         var refreshToken = jwtService.generateRefreshToken(user);
+        updateToken(user, jwtToken);
+        jwtService.setJwtCookies(response, jwtToken, refreshToken);
+
+
+        updateRefreshToken(user, refreshToken);
         refreshTokenRepository.updateRefreshTokenById(user.getId(), refreshToken);
         jwtService.setJwtCookies(response, jwtToken);
 //        return ResponseEntity.ok(new String("Authentication successful"));
+    }
+
+    private void updateRefreshToken(Account user, String refreshToken) {
+        refreshTokenRepository.updateRefreshTokenById(user.getId(), refreshToken);
+    }
+
+    @Transactional
+    public String refreshToken(HttpServletRequest request, HttpServletResponse response) {
+        var refreshToken = jwtService.getRefreshTokenFromCookie(request);
+        if (refreshToken != null && jwtService.isTokenGetSign(refreshToken) && refreshTokenRepository.findRefreshTokenByRefreshToken(refreshToken)) {
+            var user = accountRepository.findByEmail(jwtService.extractUsername(refreshToken))
+                    .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!"));
+            var jwtToken = jwtService.generateToken(user);
+            var newRefreshToken = jwtService.generateRefreshToken(user);
+            updateToken(user, jwtToken);
+            updateRefreshToken(user, newRefreshToken);
+            jwtService.setJwtCookies(response, jwtToken, newRefreshToken);
+            return "new Tokens";
+        } else {
+            return null;
+        }
     }
 
 //    @Transactional
@@ -101,13 +134,18 @@ public class AuthServiceImpl implements AuthService {
 //    }
 
     @Transactional
-    public void accountPostregister(String activationCode, AccountInitDto accountInitDto) {
+    public void accountPostregister(String activationCode, AccountInitDto accountInitDto, HttpServletResponse response) {
         var user = accountRepository.findByActivationCode(activationCode)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!"));
         user.setActivationCode(null);
         user.setActive(true);
-
         accountService.updateAccount(accountInitDto, user.getId());
+
+        var jwtToken = jwtService.generateToken(user);
+        updateToken(user, jwtToken);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        refreshTokenRepository.updateRefreshTokenById(user.getId(), refreshToken);
+        jwtService.setJwtCookies(response, jwtToken);
     }
 
     @Override

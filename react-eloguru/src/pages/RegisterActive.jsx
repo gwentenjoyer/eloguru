@@ -15,7 +15,7 @@ export default function RegisterActive() {
                     <div
                         className={"d-flex flex-column justify-content-center align-items-center mb-3"}
                     >
-                        <h2 className={"text-center about-text mb-4"}>The final registration stage</h2>
+                        <h2 className={"text-center about-text mb-4"}>One more step...</h2>
                     </div>
                     <div
                         // className="modal-dialog modal-lg "

@@ -54,7 +54,6 @@ public class AccountServiceImpl implements AccountService {
 
     }
 
-
     @Override
     @Transactional
 //    @Cacheable
@@ -70,7 +69,7 @@ public class AccountServiceImpl implements AccountService {
 //    @CachePut
     public Account updateAccount(AccountInitDto accountInitDto) {
         Optional<Account> optionalAccount = accountRepository.findByEmail(accountInitDto.email());
-        if (!optionalAccount.isPresent()) throw new EntityNotFoundException("Can't find account to update");
+        if (optionalAccount.isEmpty()) throw new EntityNotFoundException("Can't find account to update");
         Account account = optionalAccount.get();
         return accountRepository.save(updateAccountFromAccountInitDto(accountInitDto, account));
     }
@@ -80,14 +79,14 @@ public class AccountServiceImpl implements AccountService {
 //    @CachePut
     public Account updateAccount(AccountInitDto accountInitDto, Long accountId) {
         Optional<Account> optionalAccount = accountRepository.findById(accountId);
-        if (!optionalAccount.isPresent()) throw new EntityNotFoundException("Can't find account to update");
+        if (optionalAccount.isEmpty()) throw new EntityNotFoundException("Can't find account to update");
         Account account = optionalAccount.get();
         return accountRepository.save(updateAccountFromAccountInitDto(accountInitDto, account));
     }
 
     private Account updateAccountFromAccountInitDto(AccountInitDto accountInitDto, Account account) {
-        account.setEmail(accountInitDto.email());
-
+        if (accountInitDto.email() != null)
+            account.setEmail(accountInitDto.email());
         if (accountInitDto.phone() != null)
             account.setPhone(accountInitDto.phone());
 //        account.setPwhash(passwordEncoder.encode(accountInitDto.password()));
