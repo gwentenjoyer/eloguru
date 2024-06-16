@@ -10,19 +10,13 @@ export default function AdminPage() {
                         to="data"
                         className="pageSwitcherItem1 text-center"
                     >
-                        Адміністрування користувачів
+                        Administrate users
                     </NavLink>
                     <NavLink
-                        to="teachersManagement"
+                        to="course"
                         className="pageSwitcherItem1 text-center"
                     >
-                        Адміністрування вчителів
-                    </NavLink>
-                    <NavLink
-                        to="cars"
-                        className="pageSwitcherItem1 text-center"
-                    >
-                        Адміністрування транспорту
+                        Administrate courses
                     </NavLink>
                 </div>
             </div>

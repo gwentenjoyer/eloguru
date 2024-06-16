@@ -6,6 +6,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -95,8 +98,8 @@ public class AccountController {
     }
 
     @GetMapping("/list")
-    public ResponseEntity<ArrayList<AccountDto>> getAccounts() {
-        ArrayList<AccountDto> accountDtos = (ArrayList<AccountDto>) accountService.getAccounts();
+    public ResponseEntity<Page<AccountDto>> getAccounts(@PageableDefault Pageable pageable) {
+        Page<AccountDto> accountDtos = accountService.getAccounts(pageable);
         return new ResponseEntity<>(accountDtos, HttpStatus.OK);
     }
 
@@ -168,6 +171,27 @@ public class AccountController {
             System.out.println(e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<CourseDto> updateAccountRoleById(@RequestParam(required = true) String statusActive,
+                                                           @PathVariable Long id) {
+        try {
+            System.out.println("here");
+            accountService.updateAccountRoleById(id, Boolean.parseBoolean(statusActive));
+            return new ResponseEntity<>(HttpStatus.OK);
+//            }
+        }
+        catch (EntityNotFoundException e){
+            System.out.println(e);
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/forceDelete/{id}")
+    public ResponseEntity<AccountDto> deleteAccountById(@PathVariable Long id){
+        accountService.forceDeleteAccountById(id);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @GetMapping(value="/teacher/{id}")

@@ -29,6 +29,8 @@ public interface CourseMapper {
 //    Course updateCourseModelViaCourseInitDto(CourseInitDto courseInitDto, @MappingTarget Course course);
     @Named("courseToId")
     default Long courseToId(Course course) {
+        if (!course.isActive())
+            return -1l;
         return course.getId();
 }
 }

@@ -47,7 +47,7 @@ export default function Profile() {
 
                     if (!userInfoResponse.ok) {
                         console.error("Failed to fetch data user")
-                        navigate('/');
+                        // navigate('/');
                     }
 
                     const data = await userInfoResponse.json();
@@ -58,35 +58,37 @@ export default function Profile() {
                     setIsLoading(false);
                 } catch (error) {
                     console.error("Error fetching user info:", error);
-                    navigate('/')
+                    // navigate('/')
+                    window.location.href = "/"
                 }
             };
+            const fetchAllCourses = async () => {
+                if (userInfo && userInfo?.role == "TEACHER" && userInfo?.teachingCoursesId) {
+                    console.log(userInfo?.teachingCoursesId)
+                    // TODO: crush if course deleted
+                    const coursePromises = userInfo?.teachingCoursesId.map(id =>  id !== -1 && fetchCourse(id));
+                    const courseData = await Promise.all(coursePromises);
+                    const filteredCourses = courseData.filter(course => course !== null && course.id !== undefined);
+                    // setCourses(courseData.filter(course => course !== null)); // Filter out any null responses
+                    setCourses(filteredCourses);
+                }
+                if (userInfo && userInfo?.role == "STUDENT" && userInfo?.coursesId) {
+                    const coursePromises = userInfo.coursesId.map(id => id !== -1 && fetchCourse(id));
+                    const courseData = await Promise.all(coursePromises);
+                    const filteredCourses = courseData.filter(course => course !== null && course.id !== undefined);
+                    // setCourses(courseData.filter(course => course !== null)); // Filter out any null responses
+                    setCourses(filteredCourses);
+                }
+            };
+
             fetchUserInfo();
+            fetchAllCourses();
         },
         []);
 
-    useEffect(() => {
-        const fetchAllCourses = async () => {
-            if (userInfo && userInfo?.role == "TEACHER" && userInfo?.teachingCoursesId) {
-                console.log(userInfo?.teachingCoursesId)
-                // TODO: crush if course deleted
-                const coursePromises = userInfo?.teachingCoursesId.map(id => fetchCourse(id));
-                const courseData = await Promise.all(coursePromises);
-                const filteredCourses = courseData.filter(course => course !== null && course.id !== undefined);
-                // setCourses(courseData.filter(course => course !== null)); // Filter out any null responses
-                setCourses(filteredCourses);
-            }
-            if (userInfo && userInfo?.role == "STUDENT" && userInfo?.coursesId) {
-                const coursePromises = userInfo.coursesId.map(id => fetchCourse(id));
-                const courseData = await Promise.all(coursePromises);
-                const filteredCourses = courseData.filter(course => course !== null && course.id !== undefined);
-                // setCourses(courseData.filter(course => course !== null)); // Filter out any null responses
-                setCourses(filteredCourses);
-            }
-        };
-
-        fetchAllCourses();
-    }, [userInfo]);
+    // useEffect(() => {
+    //
+    // }, [userInfo]);
 
     const handleEditButton = () => {
         setIsEditMode(!isEditMode);
@@ -231,13 +233,14 @@ export default function Profile() {
                                     <div className="card-body"><h3 className="lead">Phone</h3>
                                         {isLoading ? <div>Loading...</div> :
                                             isEditMode ?
-                                                <input type="text" id="phone" className="userDataInput"
+                                                <input type="telNo" id="phone" className="userDataInput"
                                                        style={{
                                                            "width": "100%",
                                                            "background": "#FFFF0044",
                                                            "color": "black",
                                                            "borderColor": "white"
                                                        }}
+                                                       pattern="\+[0-9]{10}"
                                                        placeholder="Edit phone:" name="phone"
                                                        value={userInfo?.phone} onChange={handleChange}
                                                 />

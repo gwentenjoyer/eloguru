@@ -139,7 +139,11 @@ export default function NavBar() {
                             </Button>
                         }
 
-
+                        {/*{userInfoData?.role == "teacher" &&*/}
+                            <Button variant="warning" className="m-2" onClick={() => navigate(`/admin/data`)}>
+                                Administration
+                            </Button>
+                        {/*}*/}
 
                         {/*{ checkAccessToken()?*/}
 

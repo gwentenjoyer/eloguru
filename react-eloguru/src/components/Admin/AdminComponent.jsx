@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from "react";
 import "../../css/AdminComponent.css"
 import axios from "axios";
+import {useNavigate} from "react-router-dom";
 
 export default function AdminComponent() {
 
@@ -12,24 +13,26 @@ export default function AdminComponent() {
         page: 0,
         maxPage: 1
     });
+    const navigate = useNavigate();
 
-    // const fetchUsersData = async (pageInfo) => {
-    //     try {
-    //         const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/allUser?sort=Id&page=` + pageInfo.page, {withCredentials: true});
-    //         if (response.status === 200) {
-    //             setUsers(prevUsers => response.data);
-    //             setPageInfo(prevState => ({...prevState, maxPage: response.data.totalPages}));
-    //             setIsLoading(false);
-    //         }
-    //     } catch (e) {
-    //         console.error(e);
-    //     }
-    // };
-    // useEffect(() => {
-    //         fetchUsersData(pageInfo);
-    //     },
-    //     // eslint-disable-next-line
-    //     [pageInfo.page]);
+    const fetchUsersData = async (pageInfo) => {
+        try {
+            const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/accounts/list?sort=Id&page=` + pageInfo.page, {withCredentials: true});
+            if (response.status === 200) {
+                setUsers(prevUsers => response.data);
+                setPageInfo(prevState => ({...prevState, maxPage: response.data.totalPages}));
+                setIsLoading(false);
+            }
+        } catch (e) {
+            console.error(e);
+        }
+    };
+
+    useEffect(() => {
+            fetchUsersData(pageInfo);
+        },
+        // eslint-disable-next-line
+        [pageInfo.page]);
 
     const handleButtonNextClick = () => {
         if (pageInfo.maxPage - 1 === pageInfo.page) {
@@ -60,6 +63,11 @@ export default function AdminComponent() {
             ...prevState,
             [userId]: {...prevState[userId], [name]: value}
         }));
+        // console.log("test", users)
+        // setUsers(prevState => ({
+        //     ...prevState,
+        //     [userId]: {...prevState[userId], [name]: value}
+        // }));
     }
 
     useEffect(() => {
@@ -69,13 +77,9 @@ export default function AdminComponent() {
         setIsEditMode(!isEditMode);
     }
     const updateUser = (userId, userChanges) => {
-        fetch(`${process.env.REACT_APP_BASE_URL}/allUser/${userId}`, {
+        fetch(`${process.env.REACT_APP_BASE_URL}/accounts/${userId}?statusActive=${userChanges.active}`, {
             credentials: 'include',
             method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(userChanges)
         })
             .then()
             .catch((error) => {
@@ -83,35 +87,32 @@ export default function AdminComponent() {
             });
     }
     const handleSaveButton = () => {
-        // eslint-disable-next-line
-        // Object.keys(userChanges).map(user => {
-        //     if (user.role === undefined) {
-        //         userChanges[user].role = document.getElementsByName('role')[user - 1].value;
-        //     }
-        //     if (user.active === undefined) {
-        //         userChanges[user].active = document.getElementsByName('active')[user - 1].value;
-        //     }
-        // })
         const updatedUsers = Object.keys(userChanges).map(userId => {
             const updatedUser = {...userChanges[userId]};
-            if (updatedUser.role === undefined) {
-                updatedUser.role = document.getElementsByName('role')[userId - 1].value;
-            }
             if (updatedUser.active === undefined) {
                 updatedUser.active = document.getElementsByName('active')[userId - 1].value;
             }
             return updateUser(userId, updatedUser);
         });
-        // console.log(userChanges)
-        // const updatePromises = Object.keys(userChanges).map(user => {
-        //     return updateUser(user, userChanges[user]);
-        // });
+
         try {
-            Promise.all(updatedUsers);
-            // Promise.all(updatePromises);
+            Promise.all(updatedUsers).then(()=> {
+                setIsEditMode(false);
+                const temp = pageInfo.page;
+                setPageInfo(prevState => ({
+                    page: 0,
+                }))
+                setPageInfo(prevState => ({
+                    page: temp,
+                }))
+                window.location.reload();
+                // navigate(0)
+
+
+            });
         } catch (error) {
         }
-        window.location.reload();
+        // window.location.reload();
     }
 
     return (
@@ -119,7 +120,7 @@ export default function AdminComponent() {
             <div style={{"paddingLeft": "18%"}}>
                 <button className={isEditMode ? "btn-success btn" : "btn-success btn d-none"}
                         style={{"padding": "1% 4%", "marginBottom": "10px", "float": "left"}}
-                        onClick={handleSaveButton}>Зберегти
+                        onClick={handleSaveButton}>Save
                 </button>
             </div>
             <div style={{"paddingLeft": "18%"}}>
@@ -136,12 +137,12 @@ export default function AdminComponent() {
                     <tr>
                         <th>№</th>
                         <th>E-mail</th>
-                        <th>Стан</th>
-                        <th>Роль</th>
+                        <th>Status</th>
+                        <th>Role</th>
                     </tr>
                     </thead>
                     {
-                        isLoading === true ? <p>Завантаження...</p>
+                        isLoading === true ? <p>Loading...</p>
                             :
                             <tbody className="tbody">
                             {users.content.map((user, index) => (
@@ -154,22 +155,11 @@ export default function AdminComponent() {
                                             "borderBottom": "1px solid #445366"
                                         }} onChange={handleChangeInfo(user.id)}
                                                               value={userChanges[user.id]?.active || user.active}>
-                                            <option value="true">Активний</option>
-                                            <option value="false">Неактивний</option>
+                                            <option value="true">Active</option>
+                                            <option value="false">Disabled</option>
                                         </select>
-                                        : user.active ? 'Активний' : 'Неактивний'}</td>
-                                    <td>{isEditMode ? <select name={"role"} id={"role"} style={{
-                                        "border": "none",
-                                        "outline": "none",
-                                        "borderBottom": "1px solid #445366"
-                                    }} onChange={handleChangeInfo(user.id)}
-                                                              value={userChanges[user.id]?.role || user.role}>
-                                        <option value="USER">Користувач</option>
-                                        <option value="STUDENT">Студент</option>
-                                        <option value="THEORY_TEACHER">Викладач теорії</option>
-                                        <option value="PRACTICAL_TEACHER">Викладач практики</option>
-                                        <option value="ADMIN">Адміністратор</option>
-                                    </select> : user.role}</td>
+                                        : user.active ? 'Active' : 'Disabled'}</td>
+                                    <td>{user.role}</td>
                                 </tr>
                             ))}
                             </tbody>

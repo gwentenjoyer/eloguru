@@ -3,6 +3,9 @@ package ua.thecompany.eloguru.services.servicesImpl;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,6 +22,7 @@ import ua.thecompany.eloguru.repositories.StudentRepository;
 import ua.thecompany.eloguru.repositories.TeacherRepository;
 import ua.thecompany.eloguru.services.AccountService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -48,10 +52,9 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
 //    @Cacheable
-    public List<AccountDto> getAccounts() {
+    public Page<AccountDto> getAccounts(@PageableDefault Pageable pageable) {
         log.info("Retrieving all accounts");
-        return accountRepository.findByActive(true).stream().map(entity -> accountMapper.accountModelToAccountDto(entity)).collect(Collectors.toList());
-
+        return accountRepository.findAll(pageable).map(accountMapper::accountModelToAccountDto);
     }
 
     @Override
@@ -99,12 +102,30 @@ public class AccountServiceImpl implements AccountService {
         return account;
     }
 
+    public void updateAccountRoleById(Long accountId, Boolean statusActive){
+        Optional<Account> optionalAccount = accountRepository.findById(accountId);
+        if (optionalAccount.isEmpty()) throw new EntityNotFoundException("Can't find account to update");
+        Account account = optionalAccount.get();
+        account.setActive(statusActive);
+        accountRepository.save( account);
+        log.info("Account with id " + accountId + " has updated status to " + statusActive);
+    }
+
+
     @Override
     @Transactional
 //    @CacheEvict
     public void deleteAccountById(Long id) {
         accountRepository.deleteById(id);
         log.info("Account with id " + id + " successfully DELETED.");
+    }
+
+    @Override
+    @Transactional
+//    @CacheEvict
+    public void forceDeleteAccountById(Long id) {
+        accountRepository.forceDeleteById(id);
+        log.info("Account with id " + id + " fully successfully DELETED.");
     }
 
     @Override
