@@ -95,7 +95,7 @@ public class CourseServiceImpl implements CourseService {
         Optional<Course> retrievedCourse = courseRepository.findByIdAndActive(id, true);
         if (retrievedCourse.isPresent()) {
             Course course = retrievedCourse.get();
-            Course res = courseRepository.save(updateCourseFromCourseInitDto(courseInitDto, course));
+            Course res = courseRepository.save(updateCourseFromCourseDto(courseMapper.courseInitDtoToCourseDto(courseInitDto), course));
             ArrayList<FeedbackDto> feedbackDtos = (ArrayList<FeedbackDto>) feedbackService.getFeedbacks(id);
             if (!feedbackDtos.isEmpty())
                 res.setRating(String.valueOf(feedbackDtos.stream()
@@ -140,16 +140,13 @@ public class CourseServiceImpl implements CourseService {
                 throw new IOException("File name is invalid");
             }
 
-            // Ensure the directory exists
             Path photoFolderPath = Paths.get(resource.getFile().getAbsolutePath());
             if (!Files.exists(photoFolderPath)) {
                 Files.createDirectories(photoFolderPath);
             }
 
-            // Define the destination file path
             Path destinationFilePath = photoFolderPath.resolve(photoOriginalName);
 
-            // Transfer the file
             Files.copy(photo.getInputStream(), destinationFilePath);
             return photoOriginalName;
         } catch (IOException e) {
@@ -208,20 +205,6 @@ public class CourseServiceImpl implements CourseService {
     public Course getCourseModel(Long id) throws EntityNotFoundException {
         return courseRepository.findByIdAndActive(id, true)
                 .orElseThrow(() -> new EntityNotFoundException("Could not found course with id " + id));
-    }
-
-    private Course updateCourseFromCourseInitDto(CourseInitDto courseInitDto, Course course) {
-        if (courseInitDto.header() != null)
-            course.setHeader(courseInitDto.header());
-        if (courseInitDto.description() != null)
-            course.setDescription(courseInitDto.description());
-        if (courseInitDto.durationDays() != null)
-            course.setDurationDays(courseInitDto.durationDays());
-        if (courseInitDto.startDate() != null)
-            course.setStartDate(courseInitDto.startDate());
-        if (courseInitDto.categories() != null)
-            course.setCategories(courseInitDto.categories());
-        return course;
     }
 
     private Course updateCourseFromCourseDto(CourseDto courseDto, Course course) {

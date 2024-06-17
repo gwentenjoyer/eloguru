@@ -101,7 +101,6 @@ public class AuthServiceImpl implements AuthService {
         updateRefreshToken(user, refreshToken);
         refreshTokenRepository.updateRefreshTokenById(user.getId(), refreshToken);
         jwtService.setJwtCookies(response, jwtToken);
-//        return ResponseEntity.ok(new String("Authentication successful"));
     }
 
     private void updateRefreshToken(Account user, String refreshToken) {
@@ -124,14 +123,6 @@ public class AuthServiceImpl implements AuthService {
             return null;
         }
     }
-
-//    @Transactional
-//    public void activate(String activationCode) {
-//        var user = accountRepository.findByActivationCode(activationCode)
-//                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!"));
-//
-////        return AuthenticationResponse.builder().message("User found").build();
-//    }
 
     @Transactional
     public void accountPostregister(String activationCode, AccountInitDto accountInitDto, HttpServletResponse response) {

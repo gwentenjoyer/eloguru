@@ -95,7 +95,6 @@ public class CourseController {
     @PutMapping("{id}")
     public ResponseEntity<CourseDto> updateCourse(Principal principal, @Valid @RequestBody CourseInitDto courseInitDto, @PathVariable Long id) {
         try {
-//            if (true || courseService.isAccountOwnsCourse(id, accountService.getIdByEmail(principal.getName()))) {
             if (true || courseService.isTeacherOwnsCourse(id, accountService.getTeacherByAccountId(accountService.getIdByEmail(principal.getName())).id())) {
 
                 courseService.updateCourse(courseInitDto, id);
@@ -144,13 +143,6 @@ public class CourseController {
         courseService.force_delete();
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-//    @PostMapping("/{courseId}/delete")
-//    public ResponseEntity<CourseDto> deleteCourse(Principal principal, @PathVariable Long courseId) {
-//        courseService.force_delete();
-//        return new ResponseEntity<>(HttpStatus.OK);
-//    }
-
 
     private void enroll(Long courseId, Long studentAccountId) {
         courseService.enrollToCourse(courseId, studentAccountId);

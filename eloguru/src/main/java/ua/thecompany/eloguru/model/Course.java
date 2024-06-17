@@ -23,11 +23,6 @@ public class Course extends BaseEntity{
     @JoinColumn(name = "teacher_id", nullable = false)
     private Teacher teacher;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "teacher_id", nullable = false)
-//    private Teacher teacherAccountId;
-
-
     @Column(name="header")
     private String header;
 

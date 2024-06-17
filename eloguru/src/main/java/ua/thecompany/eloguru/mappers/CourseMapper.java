@@ -19,6 +19,9 @@ public interface CourseMapper {
 
 //    CourseInitDto courseDtoToCourseInitDto(CourseDto courseInitDto);
 
+    @Mapping(target = "photo", ignore = true)
+    CourseDto courseInitDtoToCourseDto(CourseInitDto     courseInitDto);
+
     @Mapping(target = "teacherId", source = "teacher.id")
     @Mapping(target = "topics", source = "topics", qualifiedByName = "topicToId")
     CourseDto courseModelToCourseDto(Course course);
