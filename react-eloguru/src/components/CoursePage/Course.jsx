@@ -118,7 +118,6 @@ const Course = ({courseId}) => {
 
     }
 
-
     const handleCommentSave = async () => {
         const payload = {
             courseId,
@@ -145,13 +144,10 @@ const Course = ({courseId}) => {
         }
     }
 
-
     const handleCancel = () => {
         setActiveTab('info')
         setIsEditMode();
     }
-
-
 
     const handleUpdate = async () => {
         const courseData = {

@@ -41,4 +41,5 @@ public interface CourseService {
     boolean isTeacherOwnsCourse(Long courseId, Long teacherId);
 
     List<Long> getCourseTopicsIds(Long courseId);
+
 }

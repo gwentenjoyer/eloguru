@@ -9,9 +9,11 @@ import org.springframework.web.bind.annotation.*;
 import ua.thecompany.eloguru.dto.CourseDto;
 import ua.thecompany.eloguru.dto.InitDto.TopicInitDto;
 import ua.thecompany.eloguru.dto.TopicDto;
+import ua.thecompany.eloguru.services.AccountService;
 import ua.thecompany.eloguru.services.CourseService;
 import ua.thecompany.eloguru.services.TopicService;
 
+import java.security.Principal;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -21,6 +23,8 @@ public class TopicController {
     private final CourseService courseService;
     private final TopicService topicService;
     private final CourseController courseController;
+    private final AccountService accountService;
+
 
     @GetMapping("/{topicId}")
     public ResponseEntity<TopicDto> getTopic(@PathVariable Long courseId, @PathVariable Long topicId) {
@@ -88,5 +92,43 @@ public class TopicController {
             }
         }
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/{topicId}/save_topic_progress")
+    public ResponseEntity<?> saveCompletedTopic(Principal principal, @PathVariable Long courseId, @PathVariable Long topicId) {
+        try{
+            if (principal == null) throw new EntityNotFoundException("Empty principal");
+            topicService.saveCompletedTopic(courseId, topicId,
+                    accountService.getStudentByAccountId(accountService.getIdByEmail(principal.getName())).id());
+            return new ResponseEntity<>(HttpStatus.CREATED);
+        }
+        catch(EntityNotFoundException e){
+            return new ResponseEntity<>(e,HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PostMapping("/{topicId}/remove_topic_progress")
+    public ResponseEntity<?> removeCompletedTopic(Principal principal, @PathVariable Long courseId, @PathVariable Long topicId) {
+        try {
+            if (principal == null) throw new EntityNotFoundException("Empty principal");
+            topicService.removeCompletedTopic(courseId, topicId,
+                    accountService.getStudentByAccountId(accountService.getIdByEmail(principal.getName())).id());
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        catch(EntityNotFoundException e){
+            return new ResponseEntity<>(e,HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("/{topicId}/completed")
+    public ResponseEntity<?> getCompletedTopics(Principal principal, @PathVariable Long courseId, @PathVariable Long topicId) {
+        try {
+            if (principal == null) throw new EntityNotFoundException("Empty principal");
+            return new ResponseEntity<>(topicService.getProgress(courseId, topicId,
+                    accountService.getStudentByAccountId(accountService.getIdByEmail(principal.getName())).id()),HttpStatus.OK);
+        }
+        catch(EntityNotFoundException e){
+            return new ResponseEntity<>(e,HttpStatus.NOT_FOUND);
+        }
     }
 }
