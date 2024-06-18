@@ -182,6 +182,10 @@ public class CourseServiceImpl implements CourseService {
     public void enrollToCourse(Long courseId, Long studentAccountId) throws EntityNotFoundException {
         Student student = studentRepository.findByIdAndActive(studentAccountId, true).orElseThrow(() -> new EntityNotFoundException("Could not find student with id: " + studentAccountId));
         Course course = courseRepository.findByIdAndActive(courseId, true).orElseThrow(() -> new EntityNotFoundException("Could not find course with id: " + courseId));
+        if (course.getStudents().contains(student)){
+            log.info("Student " + student.getId() + " already enrolled to course " + courseId);
+            return;
+        }
         course.getStudents().add(student);
         courseRepository.save(course);
         log.info("Added student with id: " + studentAccountId + " to course with id: " + courseId);
