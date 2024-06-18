@@ -58,7 +58,7 @@ function Collapse({ label, children, id, courseId, topicId, userRole }) {
     };
 
     const handleEditTheme = async () => {
-        const response = { status: 200 };
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}`, {credentials: 'include', method: "PUT"});
         if (response.status !== 200) {
             console.log(response);
             console.error("Failed to edit");
