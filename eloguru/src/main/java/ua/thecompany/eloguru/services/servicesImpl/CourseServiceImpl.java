@@ -21,14 +21,16 @@ import ua.thecompany.eloguru.dto.InitDto.TopicInitDto;
 import ua.thecompany.eloguru.mappers.CourseMapper;
 import ua.thecompany.eloguru.mappers.TopicMapper;
 import ua.thecompany.eloguru.model.Course;
+import ua.thecompany.eloguru.model.Student;
+import ua.thecompany.eloguru.model.StudentCourseProgress;
 import ua.thecompany.eloguru.repositories.CourseRepository;
+import ua.thecompany.eloguru.repositories.StudentCourseProgressRepository;
 import ua.thecompany.eloguru.repositories.StudentRepository;
 import ua.thecompany.eloguru.services.CourseService;
 import ua.thecompany.eloguru.services.FeedbackService;
 import ua.thecompany.eloguru.services.TeacherService;
 import ua.thecompany.eloguru.services.TopicService;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -43,6 +45,7 @@ public class CourseServiceImpl implements CourseService {
     private final TeacherService teacherService;
 
     private CourseRepository courseRepository;
+    private StudentCourseProgressRepository studentCourseProgressRepository;
     private CourseMapper courseMapper;
     private final TopicMapper topicMapper;
     private final TopicService topicService;
@@ -177,10 +180,18 @@ public class CourseServiceImpl implements CourseService {
     @Override
     @Transactional
     public void enrollToCourse(Long courseId, Long studentAccountId) throws EntityNotFoundException {
+        Student student = studentRepository.findByIdAndActive(studentAccountId, true).orElseThrow(() -> new EntityNotFoundException("Could not find student with id: " + studentAccountId));
         Course course = courseRepository.findByIdAndActive(courseId, true).orElseThrow(() -> new EntityNotFoundException("Could not find course with id: " + courseId));
-        course.getStudents().add(studentRepository.findByIdAndActive(studentAccountId, true).orElseThrow(() -> new EntityNotFoundException("Could not find student with id: " + studentAccountId)));
+        course.getStudents().add(student);
         courseRepository.save(course);
         log.info("Added student with id: " + studentAccountId + " to course with id: " + courseId);
+        StudentCourseProgress studentCourseProgress = StudentCourseProgress.builder()
+                .student(student)
+                .course(course)
+                .isCompleted(false)
+                .progressPercentage(0.0)
+                .build();
+        studentCourseProgressRepository.save(studentCourseProgress);
     }
     @Override
     @Transactional
@@ -241,6 +252,5 @@ public class CourseServiceImpl implements CourseService {
         System.out.println(courseRepository.selectTopicsByCourseId(courseId));
         return new ArrayList<Long>(courseRepository.selectTopicsByCourseId(courseId));
     }
-
 
 }

@@ -42,16 +42,18 @@ public class AuthServiceImpl implements AuthService {
         if(accountRepository.existsByEmail(request.email())){
             throw new MessagingException("User with this email is already exist");
         }
+        String token = UUID.randomUUID().toString();
         Account account = accountMapper.accountInitDtoToAccountModel(request);
         account.setPwhash(passwordEncoder.encode(request.password()));
         account.setRole(role);
         account.setActive(false);
+        account.setActivationCode(token);
         var savedUser = accountRepository.save(account);
         var jwtToken = jwtService.generateToken(account);
         var refreshToken = jwtService.generateRefreshToken(account);
         saveRefreshToken(account, refreshToken);
         saveUserToken(savedUser, jwtToken);
-        emailService.sendEmail(request.email(), "Account registration", UUID.randomUUID().toString());
+        emailService.sendEmail(request.email(), "Account registration", token);
 
         return savedUser;
     }

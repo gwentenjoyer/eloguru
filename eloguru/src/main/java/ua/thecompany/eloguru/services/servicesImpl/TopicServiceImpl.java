@@ -6,9 +6,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.thecompany.eloguru.dto.InitDto.TopicInitDto;
+import ua.thecompany.eloguru.dto.StudentCourseProgressDto;
 import ua.thecompany.eloguru.dto.TopicDto;
+import ua.thecompany.eloguru.exceptions.VerifyAccountException;
+import ua.thecompany.eloguru.mappers.StudentCourseProgressMapper;
 import ua.thecompany.eloguru.mappers.TopicMapper;
+import ua.thecompany.eloguru.model.StudentCourseProgress;
 import ua.thecompany.eloguru.model.Topic;
+import ua.thecompany.eloguru.repositories.StudentCourseProgressRepository;
 import ua.thecompany.eloguru.repositories.TopicRepository;
 import ua.thecompany.eloguru.services.TopicService;
 
@@ -22,6 +27,8 @@ public class TopicServiceImpl implements TopicService {
 
     private TopicRepository topicRepository;
     private TopicMapper topicMapper;
+    private StudentCourseProgressRepository studentCourseProgressRepository;
+    private StudentCourseProgressMapper studentCourseProgressMapper;
 
     @Override
     @Transactional
@@ -75,5 +82,43 @@ public class TopicServiceImpl implements TopicService {
     public void deleteTopicById(Long id) {
         log.info("Deleting topic with id: " + id);
         topicRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void saveCompletedTopic(Long courseId, Long topicId, Long studentId) {
+        StudentCourseProgress progress = studentCourseProgressRepository.findByStudentId(studentId)
+                .orElseThrow(() -> new RuntimeException("Student in progress not found"));
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new RuntimeException("Topic not found"));
+        if (studentCourseProgressRepository.isTopicCompleted(progress.getStudent().getId(), topic.getId()))
+            throw new VerifyAccountException("Topic already complete");
+        progress.getCompletedTopics().add(topic);
+        progress.updateProgress();
+        studentCourseProgressRepository.save(progress);
+    }
+
+    @Override
+    @Transactional
+    public StudentCourseProgressDto getProgress(Long courseId, Long topicId, Long studentId) {
+        StudentCourseProgress progress = studentCourseProgressRepository.findByStudentId(studentId)
+                .orElseThrow(() -> new RuntimeException("Student in progress not found"));
+        return studentCourseProgressMapper.toDTO(progress);
+    }
+
+    @Override
+    @Transactional
+    public void removeCompletedTopic(Long courseId, Long topicId, Long studentId) {
+        StudentCourseProgress progress = studentCourseProgressRepository.findByStudentId(studentId)
+                .orElseThrow(() -> new RuntimeException("Student in progress not found"));
+        Topic topic = topicRepository.findById(topicId)
+                .orElseThrow(() -> new RuntimeException("Topic not found"));
+        if (studentCourseProgressRepository.isTopicCompleted(progress.getStudent().getId(), topic.getId())) {
+            progress.getCompletedTopics().remove(topic);
+            progress.updateProgress();
+            studentCourseProgressRepository.save(progress);
+        } else {
+            throw new RuntimeException("Topic is not completed or does not exist in the progress record");
+        }
     }
 }
