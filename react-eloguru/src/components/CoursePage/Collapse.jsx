@@ -1,48 +1,101 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Dropdown} from "react-bootstrap";
 
 function Collapse({ label, children, id, courseId, topicId, userRole }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [isCompleted, setIsCompleted] = useState(false);
 
     const handleToggle = () => {
         setIsOpen(!isOpen);
     };
 
-    const handleDeleteTheme = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}/delete`, {credentials: 'include', method: "POST"});
-
-        if (!response.status === 200){
-            console.log(response)
-            console.error("Failed to enroll")
+    const saveTopics = async () => {
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}/save_topic_progress`,
+            {
+                credentials: 'include',
+                method: "POST"
+            });
+        if (response.status !== 201) {
+            console.error("Failed to save data about topics");
         }
-        console.log("deleted")
-    }
+        setIsCompleted(true);
+    };
+
+    const removeTopics = async () => {
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}/remove_topic_progress`,
+            {
+                credentials: 'include',
+                method: "POST"
+            });
+        if (response.status !== 204) {
+            console.error("Failed to remove data about topics");
+        }
+        setIsCompleted(false);
+    };
+
+    const getCompletedTopics = async () => {
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}/completed`,
+            {
+                credentials: 'include'
+            }
+        );
+        if (response.ok) {
+            const data = await response.json();
+            let isTopicsComplete = data.completedTopicIds.includes(topicId);
+            setIsCompleted(isTopicsComplete);
+        } else {
+            console.error("Failed to fetch completed topics");
+        }
+    };
+
+    const handleDeleteTheme = async () => {
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}/delete`, { credentials: 'include', method: "POST" });
+        if (response.status !== 200) {
+            console.log(response);
+            console.error("Failed to delete");
+        }
+        console.log("deleted");
+    };
 
     const handleEditTheme = async () => {
-        // const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}`, {credentials: 'include', method: "PUT"});
-        const response = {status: 200}
-        if (!response.status === 200){
-            console.log(response)
-            console.error("Failed to enroll")
+        const response = { status: 200 };
+        if (response.status !== 200) {
+            console.log(response);
+            console.error("Failed to edit");
         }
-        console.log("edited")
-    }
+        console.log("edited");
+    };
+
+    useEffect(() => {
+        getCompletedTopics();
+    }, [courseId, topicId]);
 
     return (
         <div className="card">
-            <div className="card-header d-flex flex-row justify-content-between" id={`heading${id}`}>
+            <div className="card-header flex-row justify-content-between" id={`heading${id}`}>
                 <div className={"mx-3"}>
-
-                <h5 className="mb-0"
+                { isCompleted &&
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" onClick={removeTopics} color={"blue"} height="24" fill="currentColor" className="bi bi-check-square" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                        <path d="M10.97 4.97a.75.75 0 0 1 1.071 1.05l-3.992 4.99a.75.75 0 0 1-1.08.02L4.324 8.384a.75.75 0 1 1 1.06-1.06l2.094 2.093 3.473-4.425z"/>
+                    </svg>
+                }
+                { !isCompleted &&
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" onClick={saveTopics} color={"blue"} height="24" fill="currentColor" className="bi bi-square" viewBox="0 0 16 16">
+                        <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2z"/>
+                    </svg>
+                }
+                <h5 className="mb-0 d-inline"
+                    style={{"cursor":"pointer"}}
                     onClick={handleToggle}>
                     <button
                         className="btn btn-link text-dark"
                         aria-expanded={isOpen}
+                        style={{"paddingRight":"91%"}}
                         aria-controls={`collapse${id}`}
                     >
                         {label}
                     </button>
-
                 </h5>
                 </div>
                 {userRole === "TEACHER"?

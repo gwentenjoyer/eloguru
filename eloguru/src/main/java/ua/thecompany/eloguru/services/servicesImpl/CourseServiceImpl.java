@@ -31,7 +31,6 @@ import ua.thecompany.eloguru.services.FeedbackService;
 import ua.thecompany.eloguru.services.TeacherService;
 import ua.thecompany.eloguru.services.TopicService;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -253,6 +252,5 @@ public class CourseServiceImpl implements CourseService {
         System.out.println(courseRepository.selectTopicsByCourseId(courseId));
         return new ArrayList<Long>(courseRepository.selectTopicsByCourseId(courseId));
     }
-
 
 }
