@@ -45,5 +45,8 @@ public class StudentCourseProgress {
         if (this.progressPercentage >= 100) {
             this.isCompleted = true;
         }
+        else {
+            this.isCompleted = false;
+        }
     }
 }

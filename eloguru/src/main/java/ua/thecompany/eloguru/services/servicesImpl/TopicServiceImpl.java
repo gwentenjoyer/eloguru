@@ -87,11 +87,11 @@ public class TopicServiceImpl implements TopicService {
     @Override
     @Transactional
     public void saveCompletedTopic(Long courseId, Long topicId, Long studentId) {
-        StudentCourseProgress progress = studentCourseProgressRepository.findByStudentId(studentId)
+        StudentCourseProgress progress = studentCourseProgressRepository.findByStudentIdAndCourseId(studentId, courseId)
                 .orElseThrow(() -> new RuntimeException("Student in progress not found"));
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new RuntimeException("Topic not found"));
-        if (studentCourseProgressRepository.isTopicCompleted(progress.getStudent().getId(), topic.getId()))
+        if (studentCourseProgressRepository.isTopicCompleted(progress.getId(), topic.getId()))
             throw new VerifyAccountException("Topic already complete");
         progress.getCompletedTopics().add(topic);
         progress.updateProgress();
@@ -101,7 +101,7 @@ public class TopicServiceImpl implements TopicService {
     @Override
     @Transactional
     public StudentCourseProgressDto getProgress(Long courseId, Long topicId, Long studentId) {
-        StudentCourseProgress progress = studentCourseProgressRepository.findByStudentId(studentId)
+        StudentCourseProgress progress = studentCourseProgressRepository.findByStudentIdAndCourseId(studentId, courseId)
                 .orElseThrow(() -> new RuntimeException("Student in progress not found"));
         return studentCourseProgressMapper.toDTO(progress);
     }
@@ -109,11 +109,11 @@ public class TopicServiceImpl implements TopicService {
     @Override
     @Transactional
     public void removeCompletedTopic(Long courseId, Long topicId, Long studentId) {
-        StudentCourseProgress progress = studentCourseProgressRepository.findByStudentId(studentId)
+        StudentCourseProgress progress = studentCourseProgressRepository.findByStudentIdAndCourseId(studentId, courseId)
                 .orElseThrow(() -> new RuntimeException("Student in progress not found"));
         Topic topic = topicRepository.findById(topicId)
                 .orElseThrow(() -> new RuntimeException("Topic not found"));
-        if (studentCourseProgressRepository.isTopicCompleted(progress.getStudent().getId(), topic.getId())) {
+        if (studentCourseProgressRepository.isTopicCompleted(progress.getId(), topic.getId())) {
             progress.getCompletedTopics().remove(topic);
             progress.updateProgress();
             studentCourseProgressRepository.save(progress);

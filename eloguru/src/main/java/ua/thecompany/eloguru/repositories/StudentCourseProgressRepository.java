@@ -10,7 +10,7 @@ import java.util.Optional;
 
 @Repository
 public interface StudentCourseProgressRepository extends JpaRepository<StudentCourseProgress, Long> {
-	Optional<StudentCourseProgress> findByStudentId(Long id);
+	Optional<StudentCourseProgress> findByStudentIdAndCourseId(Long studentId, Long courseId);
 
 	@Query("SELECT CASE WHEN COUNT(p) > 0 THEN true ELSE false END " +
 			"FROM StudentCourseProgress p " +
