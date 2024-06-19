@@ -9,6 +9,8 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import DataAdminPage from "../CreateCourse/DataAdminPage";
 import DeleteCourseVerify from "./DeleteCourseVerify";
+import LoginModal from "../Login/LoginModal";
+import TopicCreateModal from "../TopicCreate/TopicCreateModal";
 
 const Course = ({courseId}) => {
 
@@ -20,6 +22,7 @@ const Course = ({courseId}) => {
     const [isEditMode, setIsEditMode] = useState(false);
     const [verifyDelete, setVerifyDelete] = useState(false);
     const [userRole, setUserRole] = useState('');
+    const [topicModalShow, setTopicModalShow] = React.useState(false);
 
 
     const [courseName, setCourseName] = useState('');
@@ -321,14 +324,23 @@ const Course = ({courseId}) => {
                 {!isEditMode &&
                     <button onClick={() => {
                         setDescription("");
-                        setActiveTab('comments')}}
+                        setActiveTab('comments')
+                    }}
                             className={activeTab === 'comments' ? 'active' : ''}>Comments
                     </button>
                 }
                 <button onClick={() => setActiveTab('themes')}
                         className={activeTab === 'themes' ? 'active' : ''}>Themes
                 </button>
+                <button onClick={() => setTopicModalShow(true)}
+                        className={activeTab === 'addtopic' ? 'active' : ''}>Add topic
+                </button>
+
             </div>
+            <TopicCreateModal
+                S                    show={topicModalShow}
+                onHide={() => setTopicModalShow(false)}
+            />
             <div className="course-content">
                 {activeTab === 'info' && !isEditMode && <div>{(course?.description)}
 
@@ -409,7 +421,6 @@ const Course = ({courseId}) => {
                 }
                 {activeTab === 'themes' && <div>
                     <div id="accordion">
-                        {console.log(topics)}
                         {topics.map((item, index) => (
                             <Collapse key={index} label={item.label} id={index} courseId={courseId} topicId={item.topicId} userRole={userRole}>
                                 <div>
