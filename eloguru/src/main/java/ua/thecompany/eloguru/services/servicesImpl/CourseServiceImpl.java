@@ -69,9 +69,20 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     @Transactional
-    public Page<CourseDto> getCourses(@PageableDefault Pageable pageable) {
-        log.info("Retrieving all courses");
-        return courseRepository.findAll(pageable).map(courseMapper::courseModelToCourseDto);
+    public Page<CourseDto> getCourses(Pageable pageable, String sortBy, String order) {
+        Page<Course> coursesPage;
+        if ("rating".equalsIgnoreCase(sortBy)) {
+            coursesPage = "desc".equalsIgnoreCase(order) ?
+                    courseRepository.findAllByOrderByRatingDesc(pageable) :
+                    courseRepository.findAllByOrderByRatingAsc(pageable);
+        } else if ("durationDays".equalsIgnoreCase(sortBy)) {
+            coursesPage = "desc".equalsIgnoreCase(order) ?
+                    courseRepository.findAllByOrderByDurationDaysDesc(pageable) :
+                    courseRepository.findAllByOrderByDurationDaysAsc(pageable);
+        } else {
+            coursesPage = courseRepository.findAll(pageable);
+        }
+        return coursesPage.map(courseMapper::courseModelToCourseDto);
     }
 
     @Override

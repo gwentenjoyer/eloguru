@@ -17,7 +17,7 @@ import java.util.List;
 public interface CourseService {
     void createCourse(CourseInitDto courseInitDto, Long teacherId) throws IOException;
 
-    Page<CourseDto> getCourses(@PageableDefault Pageable pageable);
+    public Page<CourseDto> getCourses(Pageable pageable, String sortBy, String order);
 
     Page<CourseDto> searchCourseByHeader(@PageableDefault Pageable pageable, String header);
 
