@@ -58,6 +58,12 @@ public class TeacherServiceImpl implements TeacherService {
                 .orElseThrow(() -> new EntityNotFoundException("Could not found by id: "+ id)));
     }
 
+    @Override
+    @Transactional
+    public String getTeacherNameById(Long teacherId){
+        return getTeacherById(teacherId).fullname();
+    }
+
 
     @Override
     @Transactional

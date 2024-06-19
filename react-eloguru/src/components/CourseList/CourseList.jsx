@@ -6,10 +6,11 @@ import {useLocation} from "react-router-dom";
 import Button from "react-bootstrap/Button";
 
 const CourseList = () => {
+    const defaultPageSize = 3;
     const [firstPage, setFirstPage] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-    const [pageSize, setPageSize] = useState(3);
+    const [pageSize, setPageSize] = useState(defaultPageSize);
 
     const location  = useLocation();
 
@@ -142,11 +143,11 @@ const CourseList = () => {
                                     step={"1"}
                                     min={1}
                                     max={25}
-                                    placeholder={pageSize}
+                                    placeholder={"Size"}
                                     // width={"20px"}
                                     // maxLength="20px"
                                     // value={durationDays}
-                                    onChange={(e) => setPageSize(e.target.value)}
+                                    onChange={(e) => setPageSize(e.target.value || defaultPageSize)}
                                     title={"Items per page"}
                                 />
                                 {/*<label htmlFor="pageSizeInput" className={"ms-2 align-bottom"}>Items per page</label>*/}

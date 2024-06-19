@@ -1,10 +1,12 @@
 package ua.thecompany.eloguru.security;
 
+import jakarta.mail.AuthenticationFailedException;
 import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -76,9 +78,12 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public void authenticate(LoginRequest request, HttpServletResponse response) throws MessagingException {
+    public void authenticate(LoginRequest request, HttpServletResponse response) throws MessagingException, AuthorizationServiceException {
         var user = accountRepository.findByEmail(request.email())
                 .orElseThrow(() -> new MessagingException("Account not found!"));
+        if(!user.isActive()){
+            throw new MessagingException("Please verify account or contact administrator");
+        }
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
@@ -86,28 +91,31 @@ public class AuthServiceImpl implements AuthService {
                             request.password()
                     )
             );
-        }catch (BadCredentialsException e){
-            throw new MessagingException("Invalid password!");
         }
-        if(!user.isActive()){
-            throw new MessagingException("Please verify account or contact administrator");
+        catch (BadCredentialsException e){
+            throw new AuthorizationServiceException("Invalid password!");
         }
 
 
-        var jwtToken = jwtService.generateToken(user);
-        var refreshToken = jwtService.generateRefreshToken(user);
-        updateToken(user, jwtToken);
-        jwtService.setJwtCookies(response, jwtToken, refreshToken);
 
-
-        updateRefreshToken(user, refreshToken);
-        refreshTokenRepository.updateRefreshTokenById(user.getId(), refreshToken);
-        jwtService.setJwtCookies(response, jwtToken);
+        updateAllTokens(user, response);
     }
 
     private void updateRefreshToken(Account user, String refreshToken) {
         refreshTokenRepository.updateRefreshTokenById(user.getId(), refreshToken);
     }
+
+    @Transactional
+    public void updateAllTokens(Account user, HttpServletResponse response) {
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        updateToken(user, jwtToken);
+        jwtService.setJwtCookies(response, jwtToken, refreshToken);
+        updateRefreshToken(user, refreshToken);
+        refreshTokenRepository.updateRefreshTokenById(user.getId(), refreshToken);
+        jwtService.setJwtCookies(response, jwtToken);
+    }
+
 
     @Transactional
     public String refreshToken(HttpServletRequest request, HttpServletResponse response) {
@@ -132,13 +140,13 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found!"));
         user.setActivationCode(null);
         user.setActive(true);
-        accountService.updateAccount(accountInitDto, user.getId());
-
-        var jwtToken = jwtService.generateToken(user);
-        updateToken(user, jwtToken);
-        var refreshToken = jwtService.generateRefreshToken(user);
-        refreshTokenRepository.updateRefreshTokenById(user.getId(), refreshToken);
-        jwtService.setJwtCookies(response, jwtToken);
+        accountService.updateAccount(accountInitDto, user.getId(), response);
+        updateAllTokens(user, response);
+//        var jwtToken = jwtService.generateToken(user);
+//        updateToken(user, jwtToken);
+//        var refreshToken = jwtService.generateRefreshToken(user);
+//        refreshTokenRepository.updateRefreshTokenById(user.getId(), refreshToken);
+//        jwtService.setJwtCookies(response, jwtToken);
     }
 
     @Override

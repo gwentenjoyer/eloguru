@@ -32,6 +32,7 @@ const Course = ({courseId}) => {
     const [commentRate, setCommentRate] = useState('');
     const [userEnrolled, setUserEnrolled] = useState(localcourses ? JSON.parse(localcourses).includes(courseId): false);
     const navigate = useNavigate();
+    const [teacherName, setTeacherName] = useState('');
 
 
     useEffect(() => {
@@ -49,6 +50,8 @@ const Course = ({courseId}) => {
                     //TODO: не перекидає на ерор пейдж
                     const data = await courseResponse.json();
                     setCourse(data);
+                    const teacherNameRes = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/teacher/${data.teacherId}/getName`, { credentials: 'include' });
+                    setTeacherName(await teacherNameRes.text())
                     setTopics(await topicsResponse.json())
                     setCourseName(data?.header)
                     setDescription(data?.description)
@@ -210,6 +213,7 @@ const Course = ({courseId}) => {
                                     readOnly
                                     precision={0.5}
                             />}
+                        <p>Teacher: {teacherName}</p>
                         {
                             isEditMode ?
                                 <div>

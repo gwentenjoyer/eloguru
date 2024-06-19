@@ -99,11 +99,6 @@ public class CourseServiceImpl implements CourseService {
         if (retrievedCourse.isPresent()) {
             Course course = retrievedCourse.get();
             Course res = courseRepository.save(updateCourseFromCourseDto(courseMapper.courseInitDtoToCourseDto(courseInitDto), course));
-            ArrayList<FeedbackDto> feedbackDtos = (ArrayList<FeedbackDto>) feedbackService.getFeedbacks(id);
-            if (!feedbackDtos.isEmpty())
-                res.setRating(String.valueOf(feedbackDtos.stream()
-                        .mapToDouble(FeedbackDto::rating)
-                        .sum() / feedbackDtos.size()));
             return courseMapper.courseModelToCourseDto(res);
         } else {
             throw new EntityNotFoundException("Can't find course to update");

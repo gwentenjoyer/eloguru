@@ -1,6 +1,7 @@
 package ua.thecompany.eloguru.services.servicesImpl;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -11,15 +12,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ua.thecompany.eloguru.dto.AccountDto;
 import ua.thecompany.eloguru.dto.InitDto.AccountInitDto;
+import ua.thecompany.eloguru.dto.LoginRequest;
 import ua.thecompany.eloguru.dto.StudentDto;
 import ua.thecompany.eloguru.dto.TeacherDto;
 import ua.thecompany.eloguru.mappers.AccountMapper;
 import ua.thecompany.eloguru.mappers.StudentMapper;
 import ua.thecompany.eloguru.mappers.TeacherMapper;
 import ua.thecompany.eloguru.model.Account;
-import ua.thecompany.eloguru.repositories.AccountRepository;
-import ua.thecompany.eloguru.repositories.StudentRepository;
-import ua.thecompany.eloguru.repositories.TeacherRepository;
+import ua.thecompany.eloguru.repositories.*;
+import ua.thecompany.eloguru.security.AuthService;
+import ua.thecompany.eloguru.security.JwtServiceImpl;
 import ua.thecompany.eloguru.services.AccountService;
 
 import java.util.ArrayList;
@@ -41,6 +43,10 @@ public class AccountServiceImpl implements AccountService {
 
     private TeacherMapper teacherMapper;
     private StudentMapper studentMapper;
+    private final JwtServiceImpl jwtService;
+    private final TokenRepository tokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
+
 
     @Override
     @Transactional
@@ -80,15 +86,21 @@ public class AccountServiceImpl implements AccountService {
     @Override
     @Transactional
 //    @CachePut
-    public Account updateAccount(AccountInitDto accountInitDto, Long accountId) {
+    public Account updateAccount(AccountInitDto accountInitDto, Long accountId, HttpServletResponse response) {
         Optional<Account> optionalAccount = accountRepository.findById(accountId);
         if (optionalAccount.isEmpty()) throw new EntityNotFoundException("Can't find account to update");
         Account account = optionalAccount.get();
-        return accountRepository.save(updateAccountFromAccountInitDto(accountInitDto, account));
+        String oldEmail = account.getEmail();
+        Account updatedAccount = updateAccountFromAccountInitDto(accountInitDto, account);
+        if (!updatedAccount.getEmail().equals(oldEmail)) {
+            updateAllTokens(updatedAccount, response);
+        }
+        return accountRepository.save(updatedAccount);
     }
 
     private Account updateAccountFromAccountInitDto(AccountInitDto accountInitDto, Account account) {
-        if (accountInitDto.email() != null)
+        Optional<Account> optionalAccountNewEmail = accountRepository.findByEmail(accountInitDto.email());
+        if ((accountInitDto.email() != null) && (optionalAccountNewEmail.isEmpty()))
             account.setEmail(accountInitDto.email());
         if (accountInitDto.phone() != null)
             account.setPhone(accountInitDto.phone());
@@ -194,4 +206,23 @@ public class AccountServiceImpl implements AccountService {
                 .orElseThrow(() -> new EntityNotFoundException("Could not found by email: "+ email));
         return accountMapper.accountModelToAccountDto(userData);
     }
+
+    private void updateAllTokens(Account user, HttpServletResponse response) {
+        var jwtToken = jwtService.generateToken(user);
+        var refreshToken = jwtService.generateRefreshToken(user);
+        updateToken(user, jwtToken);
+        jwtService.setJwtCookies(response, jwtToken, refreshToken);
+        updateRefreshToken(user, refreshToken);
+        refreshTokenRepository.updateRefreshTokenById(user.getId(), refreshToken);
+        jwtService.setJwtCookies(response, jwtToken);
+    }
+
+    private void updateRefreshToken(Account user, String refreshToken) {
+        refreshTokenRepository.updateRefreshTokenById(user.getId(), refreshToken);
+    }
+
+    private void updateToken(Account user, String token) {
+        tokenRepository.updateTokenById(user.getId(), token);
+    }
+
 }

@@ -1,6 +1,7 @@
 package ua.thecompany.eloguru.services;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -23,7 +24,7 @@ public interface AccountService {
     AccountDto getAccountById(Long id);
 
     Account updateAccount(AccountInitDto accountInitDto);
-    Account updateAccount(AccountInitDto accountInitDto, Long accountId);
+    Account updateAccount(AccountInitDto accountInitDto, Long accountId, HttpServletResponse response);
     void updateAccountRoleById(Long accountId, Boolean statusActive);
 
 

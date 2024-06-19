@@ -11,4 +11,5 @@ public interface AuthService {
     Account register(AccountInitDto request, EnumeratedRole role) throws MessagingException;
     void authenticate(LoginRequest request, HttpServletResponse response)  throws MessagingException;
     void logout(HttpServletResponse response);
+    void updateAllTokens(Account user, HttpServletResponse response);
 }

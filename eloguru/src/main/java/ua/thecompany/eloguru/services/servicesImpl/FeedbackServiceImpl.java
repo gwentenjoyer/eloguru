@@ -9,10 +9,12 @@ import ua.thecompany.eloguru.dto.FeedbackDto;
 import ua.thecompany.eloguru.dto.InitDto.FeedbackInitDto;
 import ua.thecompany.eloguru.mappers.FeedbackMapper;
 import ua.thecompany.eloguru.model.Feedback;
+import ua.thecompany.eloguru.repositories.CourseRepository;
 import ua.thecompany.eloguru.repositories.FeedbackRepository;
 import ua.thecompany.eloguru.services.FeedbackService;
 import ua.thecompany.eloguru.services.StudentService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @AllArgsConstructor
 public class FeedbackServiceImpl implements FeedbackService {
+    private final CourseRepository courseRepository;
 
     private FeedbackRepository feedbackRepository;
     private FeedbackMapper feedbackMapper;
@@ -30,6 +33,15 @@ public class FeedbackServiceImpl implements FeedbackService {
     public void saveFeedback(FeedbackInitDto feedbackInitDto, Long ownerId) {
         Feedback feedback = feedbackMapper.feedbackInitDtoToFeedbackModel(feedbackInitDto);
         feedback.setOwner(studentService.getStudentModel(ownerId));
+        var saved = feedbackRepository.save(feedback);
+        var courseId = feedbackInitDto.courseId();
+        ArrayList<FeedbackDto> feedbackDtos = (ArrayList<FeedbackDto>) getFeedbacks(courseId);
+        if (!feedbackDtos.isEmpty())
+            courseRepository.findByIdAndActive(courseId, true)
+                    .orElseThrow(() -> new EntityNotFoundException("Could not course with id: "+ courseId + " to set feedback"))
+                    .setRating(String.valueOf(feedbackDtos.stream()
+                    .mapToDouble(FeedbackDto::rating)
+                    .sum() / feedbackDtos.size()));
         log.info("Feedback with id " + (feedbackRepository.save(feedback)).getId() + " successfully saved.");
     }
 

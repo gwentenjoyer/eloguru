@@ -146,12 +146,12 @@ export default function Profile() {
                 <div className="row g-5 max-size m-auto">
                     <div className="col-lg-6">
                         <div className="position-relative">
-                            <div className="p-2" style={{ borderRadius: "30px" }}>
+                            <div className="p-2" style={{borderRadius: "30px"}}>
                                 {!isEditMode && (
                                     <section className="node_category card d-inline-block w-100 mb-3">
                                         <div className="card-body">
                                             <h3 className="lead">You are:
-                                                <span className="display-6 font-4" style={{ fontSize: "20px" }}>
+                                                <span className="display-6 font-4" style={{fontSize: "20px"}}>
                                                     {isLoading ? <div>Loading...</div> : ` ${userInfo?.role}`}
                                                 </span>
                                             </h3>
@@ -178,7 +178,7 @@ export default function Profile() {
                                                 onChange={handleChange}
                                             />
                                         ) : (
-                                            <span className="display-6 font-4" style={{ fontSize: "26px" }}>
+                                            <span className="display-6 font-4" style={{fontSize: "26px"}}>
                                                 {isLoading ? <div>Loading...</div> : userInfo?.fullname}
                                             </span>
                                         )}
@@ -234,7 +234,31 @@ export default function Profile() {
                                         )}
                                     </div>
                                 </section>
-
+                                <section className="node_category card d-inline-block w-100 mb-3">
+                                    <div className="card-body">
+                                        <h3 className="lead">Country:</h3>
+                                        {isLoading ? <div>Loading...</div> : isEditMode ? (
+                                            <input
+                                                type="tel"
+                                                id="country"
+                                                className="userDataInput"
+                                                style={{
+                                                    width: "100%",
+                                                    background: "#FFFF0044",
+                                                    color: "black",
+                                                    borderColor: "white"
+                                                }}
+                                                pattern="\+[0-9]{10}"
+                                                placeholder="Edit country"
+                                                name="country"
+                                                value={userInfo?.country}
+                                                onChange={handleChange}
+                                            />
+                                        ) : (
+                                            <div>{userInfo?.country}</div>
+                                        )}
+                                    </div>
+                                </section>
                             </div>
                         </div>
                     </div>
@@ -243,7 +267,7 @@ export default function Profile() {
                             <div className="d-flex text-decoration-none text-black p-2">
                                 <div className="d-flex flex-column w-100">
                                     <section className="node_category card d-inline-block w-100 mb-3">
-                                        <div className="d-flex flex-row w-100" style={{ padding: "0 0.5rem " }}>
+                                        <div className="d-flex flex-row w-100" style={{padding: "0 0.5rem "}}>
                                             {isEditMode ? (
                                                 <Container className="d-flex justify-content-center">
                                                     <button

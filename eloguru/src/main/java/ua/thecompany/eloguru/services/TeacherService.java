@@ -24,5 +24,7 @@ public interface TeacherService {
 
     Long getTeacherId(Teacher teacher);
 
+    String getTeacherNameById(Long teacherId);
+
 //    Teacher getTeacherModelByAccoundId(Long id);
 }

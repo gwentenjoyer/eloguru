@@ -9,7 +9,6 @@ import ua.thecompany.eloguru.dto.ContentDto;
 import ua.thecompany.eloguru.dto.InitDto.ContentInitDto;
 import ua.thecompany.eloguru.mappers.ContentMapper;
 import ua.thecompany.eloguru.model.ContentObject;
-import ua.thecompany.eloguru.model.Feedback;
 import ua.thecompany.eloguru.repositories.ContentRepository;
 import ua.thecompany.eloguru.services.ContentService;
 

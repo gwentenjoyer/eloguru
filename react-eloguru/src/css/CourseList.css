@@ -57,7 +57,7 @@
 
 .filterDays{
     height: 26px;
-    width: 50px!important;
+    width: 62px!important;
 }
 
 #pageSizeInput {
@@ -85,4 +85,9 @@
     background-color: var(--main-blu) !important;
     color: var(--light) !important;
     border-color: var(--main-blu)!important;
+}
+
+.colapsium{
+    text-decoration: none!important;
+    border-bottom: none!important;
 }

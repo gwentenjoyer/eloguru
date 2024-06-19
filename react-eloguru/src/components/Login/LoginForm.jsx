@@ -7,10 +7,15 @@ import {useNavigate} from "react-router-dom";
 export default function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+
+    const [errCred, setErrCred] = useState(false);
+    const [errNotFound, setErrNotFound] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
+        setErrNotFound(false)
+        setErrCred(false)
         const logData = {
             email,
             password
@@ -38,7 +43,20 @@ export default function LoginForm() {
                 // setEmail(email);
                 //     navigate(`/profile`);
                 }
-        ).catch((err)=> console.error("cound not find account"))
+        ).catch((err)=> {
+            if (err.response && err.response.status === 404) {
+                console.error("Resource not found");
+                setErrNotFound(true)
+                // Handle 404 error here
+            } else if (err.response && err.response.status === 401) {
+                console.error("Unauthorized");
+                setErrCred(true)
+                // Handle 401 error here
+            } else {
+                console.error("An error occurred");
+                // Handle other errors here
+            }
+        })
     };
 
     return (
@@ -60,6 +78,10 @@ export default function LoginForm() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                 />
+            </Form.Group>
+            <Form.Group className="d-flex justify-content-center">
+                {errCred &&  <Form.Text className="text-white bg-danger rounded p-2 mt-2 mb-4">Invalid credentials. Please check your email or password</Form.Text>}
+                {errNotFound &&  <Form.Text className="text-white bg-danger rounded p-2 mt-2 mb-4">The account either does not exist or is not activated</Form.Text>}
             </Form.Group>
             <div className={"row justify-content-center"}>
 

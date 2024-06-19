@@ -79,7 +79,7 @@ export default function SignupForm() {
             </Form.Group> }
             { !succReg &&
             <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
-                <Form.Label>Confirm Password:</Form.Label>
+                <Form.Label>Confirm password:</Form.Label>
                 <Form.Control
                     type="password"
                     placeholder="Confirm your password"
@@ -137,7 +137,7 @@ export default function SignupForm() {
             <Form.Group className="d-flex justify-content-center">
                 {!passwordsDismatch && !agreeMatch &&  <Form.Text className="text-danger">Please agree with Terms & Service </Form.Text>}
                 {accExists &&  <Form.Text className="text-danger">Account with this email already exists. Please, go to "Log in" tab</Form.Text>}
-                {succReg &&  <Form.Text className="text-white bg-success rounded p-1">Success! Please check your email to verify your account</Form.Text>}
+                {succReg &&  <Form.Text className="text-white bg-success rounded p-3 m-3">Success! Please check your email to verify your account</Form.Text>}
             </Form.Group>
             { !succReg &&
                 <div className={"row justify-content-center my-3"}>

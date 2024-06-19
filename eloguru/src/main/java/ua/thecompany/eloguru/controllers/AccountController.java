@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AuthorizationServiceException;
 import org.springframework.web.bind.annotation.*;
 import ua.thecompany.eloguru.dto.*;
 import ua.thecompany.eloguru.dto.InitDto.AccountInitDto;
@@ -38,7 +39,7 @@ public class AccountController {
 //    private final AccountRepository accountRepository;
 //    private final EmailService emailService;
 
-    @PostMapping("signup")
+    @PostMapping("/signup")
     public ResponseEntity<?> saveAccount(@RequestParam(value = "role", required = true) @Valid String accountType,
                                          @RequestBody AccountInitDto accountInitDto) {
         if ((accountInitDto.password() == null) || (accountInitDto.email() == null))
@@ -111,7 +112,11 @@ public class AccountController {
         }
         catch (MessagingException e){
             System.out.println(e.getMessage());
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(), HttpStatus.NOT_FOUND);
+        }
+        catch (AuthorizationServiceException authe){
+            System.out.println(authe.getMessage());
+            return new ResponseEntity<>(authe.getMessage(), HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -158,12 +163,13 @@ public class AccountController {
     }
 
     @PutMapping
-    public ResponseEntity<CourseDto> updateAccount(Principal principal, @Valid @RequestBody AccountInitDto accountInitDto) {
+    public ResponseEntity<CourseDto> updateAccount(Principal principal,
+                                                   @Valid @RequestBody AccountInitDto accountInitDto,
+                                                   HttpServletResponse response) {
         try {
-            System.out.println("here");
             if (principal == null)
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            accountService.updateAccount(accountInitDto, accountService.getIdByEmail(principal.getName()));
+            accountService.updateAccount(accountInitDto, accountService.getIdByEmail(principal.getName()), response);
             return new ResponseEntity<>(HttpStatus.OK);
 //            }
         }
@@ -177,7 +183,6 @@ public class AccountController {
     public ResponseEntity<CourseDto> updateAccountRoleById(@RequestParam(required = true) String statusActive,
                                                            @PathVariable Long id) {
         try {
-            System.out.println("here");
             accountService.updateAccountRoleById(id, Boolean.parseBoolean(statusActive));
             return new ResponseEntity<>(HttpStatus.OK);
 //            }
@@ -198,6 +203,17 @@ public class AccountController {
     public ResponseEntity<TeacherDto> getTeacherById(@PathVariable Long id){
         try{
             TeacherDto accountModel = accountService.getTeacherById(id);
+            return new ResponseEntity<>(accountModel, HttpStatus.OK);
+        }
+        catch (EntityNotFoundException e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+    }
+
+    @GetMapping(value="/teacher/{id}/getName")
+    public ResponseEntity<String> getTeacherNameById(@PathVariable Long id){
+        try{
+            String accountModel = teacherService.getTeacherNameById(id);
             return new ResponseEntity<>(accountModel, HttpStatus.OK);
         }
         catch (EntityNotFoundException e){
