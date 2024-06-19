@@ -24,4 +24,9 @@ public interface CourseRepository extends BaseRepository<Course, Long> {
     @Query("select t.id from  #{#entityName} c join c.topics t where c.id = :courseId")
     List<Long> selectTopicsByCourseId(@Param("courseId") Long courseId);
 
+    Page<Course> findAllByOrderByRatingAsc(Pageable pageable);
+    Page<Course> findAllByOrderByRatingDesc(Pageable pageable);
+    Page<Course> findAllByOrderByDurationDaysAsc(Pageable pageable);
+    Page<Course> findAllByOrderByDurationDaysDesc(Pageable pageable);
+
 }

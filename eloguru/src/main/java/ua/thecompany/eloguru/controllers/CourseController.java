@@ -56,13 +56,17 @@ public class CourseController {
     }
 
     @GetMapping
-    public ResponseEntity<Page<CourseDto>> getCourses(@PageableDefault Pageable pageable, @RequestParam(value = "label", required = false) String searchQuery) {
+    public ResponseEntity<Page<CourseDto>> getCourses(
+                        @PageableDefault Pageable pageable,
+                        @RequestParam(value = "label", required = false) String searchQuery,
+                        @RequestParam(value = "sortBy", required = false) String sortBy,
+                        @RequestParam(value = "order", required = false) String order) {
         if (searchQuery != null && !searchQuery.isEmpty()) {
             Page<CourseDto> coursesList = courseService.searchCourseByHeader(pageable, searchQuery);
             return new ResponseEntity<>(coursesList, HttpStatus.OK);
         }
         else {
-            Page<CourseDto> coursesList = courseService.getCourses(pageable);
+            Page<CourseDto> coursesList = courseService.getCourses(pageable, sortBy, order);
             return new ResponseEntity<>(coursesList, HttpStatus.OK);
         }
     }

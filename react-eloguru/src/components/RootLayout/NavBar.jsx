@@ -4,7 +4,7 @@ import {NavLink, Link} from "react-router-dom";
 import "../../css/Navbar.css"
 import LoginModal from '../Login/LoginModal'
 // import getRefreshTokens.js from "../hooks/getRefreshTokens.js";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import Cookies from "js-cookie";
 import getRefreshTokens from "../../hooks/getRefreshTokens";
 import axios from "axios";
@@ -17,6 +17,7 @@ export default function NavBar() {
     const [userInfoData, setUserInfoData] = useState(302);
     const [isLoading, setIsLoading] = useState(true);
     const [modalShow, setModalShow] = React.useState(false);
+    const [searchParams] = useSearchParams();
 
     const navigate = useNavigate();
 
@@ -56,13 +57,6 @@ export default function NavBar() {
                     // }
                     // console.log(await data.json())
                     if (!data.ok) {
-                        if (data.status === 401) {
-                            console.log("Unauthorized. Please log in.");
-                        } else if (data.status === 400) {
-                            console.log("Bad request.");
-                        } else {
-                            console.log("An error occurred:", data.statusText);
-                        }
                         return;
                     }
 
@@ -71,18 +65,19 @@ export default function NavBar() {
                     // } else if (await getRefreshTokens() === true) {
                     //     setUserInfo(data);
                         setUserInfoData(await data.json())
-                        console.log(userInfoData.role)
                     }
                     if (await data.text() === "admin") {
                         setIsLoading(false);
                     }
                 }
                 catch {
-                    console.log("unlogined")
                 }
             };
             fetchUserInfo();
-        }, []);
+        if (searchParams.get('login') === 'true') {
+                setModalShow(true);
+            }
+        }, [searchParams]);
 
     return (
         <header>
