@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ua.thecompany.eloguru.dto.CourseDto;
 import ua.thecompany.eloguru.dto.InitDto.CourseInitDto;
 import ua.thecompany.eloguru.dto.InitDto.TopicInitDto;
+import ua.thecompany.eloguru.dto.TopicDto;
 import ua.thecompany.eloguru.model.Course;
 
 import java.io.IOException;
@@ -26,7 +27,7 @@ public interface CourseService {
 
     void deleteCourseById(Long id);
 
-    CourseDto addTopic(CourseDto courseDto, TopicInitDto topicInitDto);
+    TopicDto addTopic(Long courseId, TopicInitDto topicInitDto);
 
     void force_delete();
 

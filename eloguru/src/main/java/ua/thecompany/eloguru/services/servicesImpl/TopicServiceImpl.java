@@ -32,9 +32,9 @@ public class TopicServiceImpl implements TopicService {
 
     @Override
     @Transactional
-    public TopicDto createTopic(TopicInitDto topicInitDto) {
+    public Topic createTopic(TopicInitDto topicInitDto) {
         log.info("Creating new topic named: " + topicInitDto.label());
-        return topicMapper.topicModelToTopicDto(topicRepository.save(topicMapper.topicInitDtoToTopicModel(topicInitDto)));
+        return topicRepository.save(topicMapper.topicInitDtoToTopicModel(topicInitDto));
     }
 
     @Override

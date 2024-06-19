@@ -40,19 +40,14 @@ public class TopicController {
     }
 
     @PostMapping("/create")
-    public ResponseEntity<CourseDto> createTopic(@Valid @RequestBody TopicInitDto topicInitDto, @PathVariable Long courseId) {
-        ResponseEntity<CourseDto> responseEntity = courseController.getCourse(courseId);
-        if (HttpStatus.OK == responseEntity.getStatusCode()){
-            try{
-                TopicInitDto topic = new TopicInitDto(topicInitDto.label(), courseId, topicInitDto.description());
-                courseService.addTopic(responseEntity.getBody(), topic);
-                return new ResponseEntity<>(HttpStatus.OK);
-            }
-            catch(EntityNotFoundException e){
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
+    public ResponseEntity<TopicDto> createTopic(@Valid @RequestBody TopicInitDto topicInitDto, @PathVariable Long courseId) {
+        try{
+            TopicInitDto topic = new TopicInitDto(topicInitDto.label(), courseId, topicInitDto.description());
+            return new ResponseEntity<>(courseService.addTopic(courseId, topic), HttpStatus.CREATED);
         }
-        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        catch(EntityNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 

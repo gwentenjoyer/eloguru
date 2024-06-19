@@ -337,8 +337,7 @@ const Course = ({courseId}) => {
                 </button>
 
             </div>
-            <TopicCreateModal
-                S                    show={topicModalShow}
+            <TopicCreateModal show={topicModalShow} courseId={courseId}
                 onHide={() => setTopicModalShow(false)}
             />
             <div className="course-content">

@@ -18,11 +18,13 @@ import ua.thecompany.eloguru.dto.CourseDto;
 import ua.thecompany.eloguru.dto.FeedbackDto;
 import ua.thecompany.eloguru.dto.InitDto.CourseInitDto;
 import ua.thecompany.eloguru.dto.InitDto.TopicInitDto;
+import ua.thecompany.eloguru.dto.TopicDto;
 import ua.thecompany.eloguru.mappers.CourseMapper;
 import ua.thecompany.eloguru.mappers.TopicMapper;
 import ua.thecompany.eloguru.model.Course;
 import ua.thecompany.eloguru.model.Student;
 import ua.thecompany.eloguru.model.StudentCourseProgress;
+import ua.thecompany.eloguru.model.Topic;
 import ua.thecompany.eloguru.repositories.CourseRepository;
 import ua.thecompany.eloguru.repositories.StudentCourseProgressRepository;
 import ua.thecompany.eloguru.repositories.StudentRepository;
@@ -157,13 +159,14 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     @Transactional
-    public CourseDto addTopic(CourseDto courseDto, TopicInitDto topicInitDto) {
-        Course course = courseMapper.courseDtoToCourseModel(courseDto);
+    public TopicDto addTopic(Long courseId, TopicInitDto topicInitDto){
+        Course course = courseRepository.findByIdAndActive(courseId, true).orElseThrow(() -> new EntityNotFoundException("Could not find course with id: " + courseId));
         if (course.getTopics() == null) {
             course.setTopics(new ArrayList<>());
         }
-        course.getTopics().add(topicMapper.topicDtoToTopicModel(topicService.createTopic(topicInitDto)));
-        return updateCourse(courseMapper.courseModelToCourseDto(course), courseDto.id());
+        Topic topic = topicService.createTopic(topicInitDto);
+        course.getTopics().add(topic);
+        return topicMapper.topicModelToTopicDto(topic);
     }
 
     @Override

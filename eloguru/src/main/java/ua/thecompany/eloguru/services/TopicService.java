@@ -10,7 +10,7 @@ import java.util.List;
 
 @Service
 public interface TopicService {
-    TopicDto createTopic(TopicInitDto topicInitDto);
+    Topic createTopic(TopicInitDto topicInitDto);
 
     List<TopicDto> getTopics();
 
