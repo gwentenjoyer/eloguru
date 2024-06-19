@@ -23,6 +23,16 @@ export default function Profile() {
         return data;
     };
 
+    const fetchCourseProgress = async (id) => {
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${id}/getProgress`, { credentials: 'include' });
+        if (!response.ok) {
+            console.error("Failed to fetch data to get course");
+            return;
+        }
+        const data = await response.json();
+        return data;
+    };
+
     const fetchUserCheck = async () => {
         const response = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/check`, { credentials: 'include' });
         if (!response.ok) {

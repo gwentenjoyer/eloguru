@@ -1,6 +1,7 @@
 package ua.thecompany.eloguru.controllers;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.NoResultException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -98,7 +99,7 @@ public class TopicController {
             return new ResponseEntity<>(HttpStatus.CREATED);
         }
         catch(EntityNotFoundException e){
-            return new ResponseEntity<>(e,HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
     }
 
@@ -111,7 +112,7 @@ public class TopicController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         catch(EntityNotFoundException e){
-            return new ResponseEntity<>(e,HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
         }
     }
 
@@ -123,7 +124,10 @@ public class TopicController {
                     accountService.getStudentByAccountId(accountService.getIdByEmail(principal.getName())).id()),HttpStatus.OK);
         }
         catch(EntityNotFoundException e){
-            return new ResponseEntity<>(e,HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+        }
+        catch(NoResultException e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.NO_CONTENT);
         }
     }
 }

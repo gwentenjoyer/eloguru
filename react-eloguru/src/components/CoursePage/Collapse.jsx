@@ -39,11 +39,16 @@ function Collapse({ label, children, id, courseId, topicId, userRole }) {
                 credentials: 'include'
             }
         );
-        if (response.ok) {
+        console.log("response", response)
+        if (response.status == 200) {
             const data = await response.json();
             let isTopicsComplete = data.completedTopicIds.includes(topicId);
             setIsCompleted(isTopicsComplete);
-        } else {
+        }
+        else if (response.status == 204){
+            setIsCompleted(false)
+            }
+        else {
             console.error("Failed to fetch completed topics");
         }
     };

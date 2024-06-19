@@ -14,7 +14,7 @@ export default function TopicCreateModal(props) {
             centered
         >
             <Modal.Body>
-                <TopicCreate/>
+                <TopicCreate courseId={props.courseId}/>
             </Modal.Body>
             {/*<Modal.Footer className={"justify-content-evenly"}>*/}
             {/*    <Button onClick={props.onHide}>Close</Button>*/}

@@ -52,6 +52,7 @@ const Course = ({courseId}) => {
 
                     //TODO: не перекидає на ерор пейдж
                     const data = await courseResponse.json();
+                    console.log("course data", data)
                     setCourse(data);
                     const teacherNameRes = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/teacher/${data.teacherId}/getName`, { credentials: 'include' });
                     setTeacherName(await teacherNameRes.text())
@@ -208,7 +209,7 @@ const Course = ({courseId}) => {
                                 value={courseName}
                                 onChange={(e) => setCourseName(e.target.value)}
                             />
-                            : <h1>{(course?.header)}</h1>}
+                            : <h1>{course?.header}</h1>}
                         {!isEditMode &&
                             <Rating className={"mt-2 mb-2"}
                                     name="simple-controlled"

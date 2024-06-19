@@ -12,7 +12,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ua.thecompany.eloguru.dto.CourseDto;
 import ua.thecompany.eloguru.dto.InitDto.CourseInitDto;
+import ua.thecompany.eloguru.dto.StudentCourseProgressDto;
+import ua.thecompany.eloguru.mappers.StudentCourseProgressMapper;
 import ua.thecompany.eloguru.model.EnumeratedRole;
+import ua.thecompany.eloguru.repositories.StudentCourseProgressRepository;
 import ua.thecompany.eloguru.services.AccountService;
 import ua.thecompany.eloguru.services.CourseService;
 import ua.thecompany.eloguru.services.StudentService;
@@ -29,6 +32,8 @@ public class CourseController {
     private final CourseService courseService;
     private final StudentService studentService;
     private final AccountService accountService;
+    private final StudentCourseProgressRepository studentCourseProgressRepository;
+    private final StudentCourseProgressMapper studentCourseProgressMapper;
 
     @PostMapping("/create")
     public ResponseEntity<?> createCourse(Principal principal, @Valid @RequestBody @ModelAttribute  CourseInitDto courseInitDto) {
@@ -76,6 +81,20 @@ public class CourseController {
     public ResponseEntity<List<Long>> getCourseTopicsIds(@PathVariable Long id) {
         try {
             return new ResponseEntity<>(courseService.getCourseTopicsIds(id), HttpStatus.OK);
+        }
+        catch (EntityNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @GetMapping("{id}/getProgress")
+    public ResponseEntity<StudentCourseProgressDto> getCourseProgress(Principal principal, @PathVariable Long courseId) {
+        if (principal == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        try {
+            var progress = studentCourseProgressRepository.findByStudentIdAndCourseId(accountService.getStudentByAccountId(
+                    accountService.getIdByEmail(principal.getName())).id(), courseId)
+                    .orElseThrow(() -> new EntityNotFoundException("Cannot find progress for student"));
+            return new ResponseEntity<>(studentCourseProgressMapper.toDTO(progress), HttpStatus.OK);
         }
         catch (EntityNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);

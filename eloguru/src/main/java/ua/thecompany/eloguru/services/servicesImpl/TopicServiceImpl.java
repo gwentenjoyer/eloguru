@@ -1,6 +1,7 @@
 package ua.thecompany.eloguru.services.servicesImpl;
 
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.NoResultException;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -11,9 +12,13 @@ import ua.thecompany.eloguru.dto.TopicDto;
 import ua.thecompany.eloguru.exceptions.VerifyAccountException;
 import ua.thecompany.eloguru.mappers.StudentCourseProgressMapper;
 import ua.thecompany.eloguru.mappers.TopicMapper;
+import ua.thecompany.eloguru.model.Course;
+import ua.thecompany.eloguru.model.Student;
 import ua.thecompany.eloguru.model.StudentCourseProgress;
 import ua.thecompany.eloguru.model.Topic;
+import ua.thecompany.eloguru.repositories.CourseRepository;
 import ua.thecompany.eloguru.repositories.StudentCourseProgressRepository;
+import ua.thecompany.eloguru.repositories.StudentRepository;
 import ua.thecompany.eloguru.repositories.TopicRepository;
 import ua.thecompany.eloguru.services.TopicService;
 
@@ -24,6 +29,8 @@ import java.util.stream.Collectors;
 @Slf4j
 @AllArgsConstructor
 public class TopicServiceImpl implements TopicService {
+    private final StudentRepository studentRepository;
+    private final CourseRepository courseRepository;
 
     private TopicRepository topicRepository;
     private TopicMapper topicMapper;
@@ -101,6 +108,12 @@ public class TopicServiceImpl implements TopicService {
     @Override
     @Transactional
     public StudentCourseProgressDto getProgress(Long courseId, Long topicId, Long studentId) {
+        Course course =  courseRepository.findByIdAndActive(courseId, true)
+                .orElseThrow(() -> new EntityNotFoundException("Not found course for progress"));
+        Student student = studentRepository.findByIdAndActive(studentId, true)
+                .orElseThrow(() -> new EntityNotFoundException("Not found student for progress"));
+        if (!course.getStudents().contains(student))
+            throw new NoResultException("Not found student for progress");
         StudentCourseProgress progress = studentCourseProgressRepository.findByStudentIdAndCourseId(studentId, courseId)
                 .orElseThrow(() -> new RuntimeException("Student in progress not found"));
         return studentCourseProgressMapper.toDTO(progress);

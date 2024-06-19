@@ -146,8 +146,7 @@ const CreateCourse = () => {
                                                 value={startDate?.slice(0,10) || getToday()}
                                                 min={getToday()}
                                                 max={getTwoYears()} onChange={e => {
-                                                    console.log("cal", (new Date(e.target.value)).toISOString().slice(0,10));
-                                                setStartDate((new Date(e.target.value)).toISOString())
+                                                    setStartDate((new Date(e.target.value)).toISOString())
                                             }}/>
                                         </Form.Group>
 
