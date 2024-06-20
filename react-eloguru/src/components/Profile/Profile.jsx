@@ -55,7 +55,7 @@ export default function Profile() {
 
                 if (!userInfoResponse.ok) {
                     console.error("Failed to fetch user data");
-                    window.location.href = "/";
+                    window.location.href = "/?login=true";
                 }
 
                 const data = await userInfoResponse.json();
@@ -64,7 +64,7 @@ export default function Profile() {
                 setIsLoading(false);
             } catch (error) {
                 console.error("Error fetching user info:", error);
-                window.location.href = "/";
+                window.location.href = "/?login=true";
             }
         };
 
