@@ -1,10 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import '../../css/CourseDetailPage.css';
 import Collapse from "./Collapse";
 import Comment from "./Comment";
 import axios from "axios";
 import Rating from '@mui/material/Rating';
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import DataAdminPage from "../CreateCourse/DataAdminPage";
@@ -12,105 +12,97 @@ import DeleteCourseVerify from "./DeleteCourseVerify";
 import LoginModal from "../Login/LoginModal";
 import TopicCreateModal from "../TopicCreate/TopicCreateModal";
 
-const Course = ({courseId}) => {
-
+const Course = ({ courseId }) => {
     const localcourses = localStorage.getItem("studentEnrolled");
     const [activeTab, setActiveTab] = useState('info');
-    const [topics, setTopics] = useState('info');
+    const [topics, setTopics] = useState([]);
     const [course, setCourse] = useState();
     const [isLoading, setIsLoading] = useState(true);
     const [isEditMode, setIsEditMode] = useState(false);
     const [verifyDelete, setVerifyDelete] = useState(false);
     const [userRole, setUserRole] = useState('');
-    const [topicModalShow, setTopicModalShow] = React.useState(false);
-
+    const [topicModalShow, setTopicModalShow] = useState(false);
 
     const [courseName, setCourseName] = useState('');
     const [description, setDescription] = useState('');
     const [durationDays, setDurationDays] = useState('');
     const [startDate, setStartDate] = useState('');
     const [category, setCategory] = useState('');
-    const [rating, setRating] = useState('');
     const [comment, setComment] = useState('');
     const [commentRate, setCommentRate] = useState('');
-    const [userEnrolled, setUserEnrolled] = useState(localcourses ? JSON.parse(localcourses).includes(courseId): false);
+    const [userEnrolled, setUserEnrolled] = useState(localcourses ? JSON.parse(localcourses).includes(courseId) : false);
     const navigate = useNavigate();
     const [teacherName, setTeacherName] = useState('');
-
+    const [triggerFetch, setTriggerFetch] = useState(false);
 
     useEffect(() => {
-            const fetchUserInfo = async () => {
-                try {
-                    const [courseResponse, topicsResponse] = await Promise.all([
-                        fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}`, { credentials: 'include' }),
-                        fetchTopics()
-                    ]);
+        const fetchUserInfo = async () => {
+            try {
+                const [courseResponse, topicsResponse] = await Promise.all([
+                    fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}`, { credentials: 'include' }),
+                    fetchTopics()
+                ]);
 
-                    if (!courseResponse.ok) {
-                        throw new Error(`Failed to fetch course data: ${courseResponse.statusText}`);
-                    }
-
-                    //TODO: не перекидає на ерор пейдж
-                    const data = await courseResponse.json();
-                    console.log("course data", data)
-                    setCourse(data);
-                    const teacherNameRes = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/teacher/${data.teacherId}/getName`, { credentials: 'include' });
-                    setTeacherName(await teacherNameRes.text())
-                    setTopics(await topicsResponse.json())
-                    setCourseName(data?.header)
-                    setDescription(data?.description)
-                    setDurationDays(data?.durationDays)
-                    setStartDate(data?.startDate? data?.startDate?.slice(0, 10): '')
-                    setCategory(data?.categories)
-                    await getUserRole();
-                    setIsLoading(false);
-
-                } catch (error) {
-                    console.error("Error fetching course and topics:", error);
-                    throw error;
+                if (!courseResponse.ok) {
+                    throw new Error(`Failed to fetch course data: ${courseResponse.statusText}`);
                 }
-            };
 
-            fetchUserInfo();
-        },
-        []);
+                const data = await courseResponse.json();
+                console.log("course data", data)
+                setCourse(data);
+                const teacherNameRes = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/teacher/${data.teacherId}/getName`, { credentials: 'include' });
+                setTeacherName(await teacherNameRes.text())
+                setTopics(await topicsResponse.json())
+                setCourseName(data?.header)
+                setDescription(data?.description)
+                setDurationDays(data?.durationDays)
+                setStartDate(data?.startDate ? data?.startDate?.slice(0, 10) : '')
+                setCategory(data?.categories)
+                await getUserRole();
+                setIsLoading(false);
+
+            } catch (error) {
+                console.error("Error fetching course and topics:", error);
+                throw error;
+            }
+        };
+
+        fetchUserInfo();
+    }, [courseId, triggerFetch]);
 
     const fetchTopics = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics`, {credentials: 'include'});
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics`, { credentials: 'include' });
         console.log(response)
         return response;
     }
 
     const getUserRole = async () => {
-        // return JSON.parse(localStorage.getItem("account")).role;
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/check`, {credentials: 'include'});
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/check`, { credentials: 'include' });
 
-        if (response.status == 200){
+        if (response.status == 200) {
             setUserRole((await response.json()).role.toString().toUpperCase());
         }
     }
 
     const handleEnroll = async () => {
-        // const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/enroll`, {withCredentials: true});
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/enroll`, {credentials: 'include', method: "POST"});
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/enroll`, { credentials: 'include', method: "POST" });
 
-        if (!response.status === 200){
+        if (!response.status === 200) {
             console.log(response)
             console.error("Failed to enroll")
         }
         console.log("enrolled")
         setUserEnrolled(true);
-
     };
 
     const handleDisenroll = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/disenroll`, {credentials: 'include', method: "POST"});
+        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/disenroll`, { credentials: 'include', method: "POST" });
         console.log("another", response)
-        if (response.status !== 200){
+        if (response.status !== 200) {
             console.log(response)
             console.error("Failed to disenroll")
         }
-        if (response.status === 200){
+        if (response.status === 200) {
             console.log("disenrolled")
             setUserEnrolled(false);
         }
@@ -122,7 +114,8 @@ const Course = ({courseId}) => {
     }
 
     const handleCommentCancel = () => {
-
+        setComment("");
+        setCommentRate(null);
     }
 
     const handleCommentSave = async () => {
@@ -140,11 +133,11 @@ const Course = ({courseId}) => {
                 },
                 body: JSON.stringify(payload)
             });
-            if (response.status === 201) {
+            if (response.status === 201 || response.status === 200) {
                 setComment("");
                 setCommentRate(null);
-                console.log("successfully created comment")
-                // window.location.href=`/course/${courseId}`
+                console.log("successfully created comment");
+                setTriggerFetch(prev => !prev); // Toggle the state to trigger useEffect
             }
         } catch (error) {
             console.error('Error creating feedback:', error);
@@ -153,7 +146,7 @@ const Course = ({courseId}) => {
 
     const handleCancel = () => {
         setActiveTab('info')
-        setIsEditMode();
+        setIsEditMode(false);
     }
 
     const handleUpdate = async () => {
@@ -168,26 +161,18 @@ const Course = ({courseId}) => {
         try {
             const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}`, courseData, { withCredentials: true });
             if (response.status === 200) {
-                // setSuccess(true);
-                // setCourseName('');
-                // setDescription('');
-                // setCategory('');
-                // setStartDate('');
-                // setDurationDays('');
-                // Optionally navigate to another page or show a success message
-                // navigate('/courses');
-                console.log("success")
-                window.location.href=`/course/${courseId}`
+                const updatedCourse = await response.json();
+                setCourse(updatedCourse);
+                setIsEditMode(false);
+                console.log("success");
             }
         } catch (error) {
-            console.error('Error creating course:', error);
-            // setError('Failed to create course. Please try again.');
+            console.error('Error updating course:', error);
         }
     };
 
     const getToday = () => {
-        return (new Date()).toISOString()
-            .slice(0, 10)
+        return (new Date()).toISOString().slice(0, 10)
     }
 
     const getTwoYears = () => {
@@ -221,25 +206,21 @@ const Course = ({courseId}) => {
                         {
                             isEditMode ?
                                 <div>
-
                                     <label htmlFor="start">Start date:</label>
-
                                     <input
                                         type="text"
                                         value={durationDays}
                                         onChange={(e) => setDurationDays(e.target.value)}
                                     />
-
                                 </div>
                                 : <p>Days: {course.durationDays ? (course?.durationDays) : "not set"}</p>}
                         {isEditMode ?
                             <div>
                                 <label htmlFor="start">Start date:</label>
-                                {}
                                 <input type="date" id="start" name="trip-start" value={startDate ? startDate : ''}
                                        min={getToday()}
                                        max={getTwoYears()}
-                                       onChange={e => setStartDate((new Date(e.target.value)).toISOString().slice(0, 10))}/>
+                                       onChange={e => setStartDate((new Date(e.target.value)).toISOString().slice(0, 10))} />
                             </div>
                             :
                             <p>Start date: {course.startDate ? (course?.startDate.slice(0, 10)) : "not set"}</p>}
@@ -260,21 +241,18 @@ const Course = ({courseId}) => {
                     </div>
                 }
                 <button className="sign-up-button" disabled={userRole != "STUDENT"} onClick={
-                    userEnrolled ? () => {handleDisenroll()}:  () => {handleEnroll()}
-                    }>{userEnrolled ? "Disenroll" : "Enroll"}
+                    userEnrolled ? () => { handleDisenroll() } : () => { handleEnroll() }
+                }>{userEnrolled ? "Disenroll" : "Enroll"}
                 </button>
                 {userRole && userRole != "STUDENT" && <button className="sign-up-button" onClick={() => {
                     setVerifyDelete(true)
                 }}>Delete
                 </button>
-
-
                 }
                 <DeleteCourseVerify
                     show={verifyDelete}
                     onHide={() => setVerifyDelete(false)}
                 />
-
                 {userRole && userRole != "STUDENT" && !isEditMode &&
                     <div className="w-50 bg-warning logout text-center p-2 my-1"
                          style={{
@@ -283,12 +261,11 @@ const Course = ({courseId}) => {
                              "margin": "0 0.5rem "
                          }}
                          onClick={handleEditButton}>
-                        <span className={"btn btn-warning"} style={{"padding": "0px"}}
+                        <span className={"btn btn-warning"} style={{ "padding": "0px" }}
                         >Edit
                         </span>
                     </div>
                 }
-
                 {userRole && userRole != "STUDENT" && isEditMode &&
                     <div className="bg-success w-50 logout text-center p-2 my-1"
                          style={{
@@ -296,9 +273,8 @@ const Course = ({courseId}) => {
                              "cursor": "pointer",
                              "margin": "0 0.5rem "
                          }}
-
                          onClick={handleUpdate}>
-                        <span className={"btn btn-success"} style={{"padding": "0px"}}
+                        <span className={"btn btn-success"} style={{ "padding": "0px" }}
                         >Save
                         </span>
                     </div>
@@ -310,14 +286,12 @@ const Course = ({courseId}) => {
                              "cursor": "pointer",
                              "margin": "0 0.5rem "
                          }}
-
                          onClick={handleCancel}>
-                        <span className={"btn btn-danger"} style={{"padding": "0px"}}
+                        <span className={"btn btn-danger"} style={{ "padding": "0px" }}
                         >Cancel
                         </span>
                     </div>
                 }
-
             </div>
             <div className="course-tabs">
                 <button onClick={() => setActiveTab('info')} className={activeTab === 'info' ? 'active' : ''}>Info
@@ -336,15 +310,15 @@ const Course = ({courseId}) => {
                 <button onClick={() => setTopicModalShow(true)}
                         className={activeTab === 'addtopic' ? 'active' : ''}>Add topic
                 </button>
-
             </div>
             <TopicCreateModal show={topicModalShow} courseId={courseId}
-                onHide={() => setTopicModalShow(false)}
+                              onHide={() => setTopicModalShow(false)}
+                              onCreate={(newTopic) => {
+                                  setTopics(prevTopics => [...prevTopics, newTopic]);
+                              }}
             />
             <div className="course-content">
-                {activeTab === 'info' && !isEditMode && <div>{(course?.description)}
-
-                </div>}
+                {activeTab === 'info' && !isEditMode && <div>{(course?.description)}</div>}
                 {activeTab === 'info' && isEditMode && <div>
                     <div>
                         <label>Description:</label>
@@ -354,68 +328,58 @@ const Course = ({courseId}) => {
                             required
                         ></textarea>
                     </div>
-
                 </div>}
                 {(activeTab === 'comments' && !isEditMode) && <div className={"mb-3"}>
                     {userRole && userRole === "STUDENT" &&
                         <div className="d-flex flex-row">
-                        <div className="d-flex text-center justify-content-center align-items-center"><label>You may leave your course review:</label></div>
-                        <div className="mx-3 d-flex flex-column w-75">
-                            <div>
-
-                                <Rating
-                                    name="simple-controlled"
-                                    value={commentRate}
-                                    onChange={(event, newValue) => {setCommentRate(newValue)}}
-
-                                />
-
-                            </div>
-                         <div>
-
-                            <textarea
-                                className={"w-100"}
-                                value={comment}
-                                onChange={(e) => setComment(e.target.value)}
-                                required
-                            ></textarea>
-                         </div>
-                            <div className="d-flex flex-row justify-content-end">
-                                <div className="bg-success w-50 logout text-center p-2 my-1"
-                                     style={{
-                                         "borderRadius": "30px",
-                                         "cursor": "pointer",
-                                         "margin": "0 0.5rem "
-                                     }}
-
-                                     onClick={handleCommentSave}>
-                                                    <span className={"btn btn-success"} style={{"padding": "0px"}}
-                                                    >Save
-                                                    </span>
+                            <div className="d-flex text-center justify-content-center align-items-center"><label>You may leave your course review:</label></div>
+                            <div className="mx-3 d-flex flex-column w-75">
+                                <div>
+                                    <Rating
+                                        name="simple-controlled"
+                                        value={commentRate}
+                                        onChange={(event, newValue) => { setCommentRate(newValue) }}
+                                    />
                                 </div>
+                                <div>
+                                    <textarea
+                                        className={"w-100"}
+                                        value={comment}
+                                        onChange={(e) => setComment(e.target.value)}
+                                        required
+                                    ></textarea>
+                                </div>
+                                <div className="d-flex flex-row justify-content-end">
+                                    <div className="bg-success w-50 logout text-center p-2 my-1"
+                                         style={{
+                                             "borderRadius": "30px",
+                                             "cursor": "pointer",
+                                             "margin": "0 0.5rem "
+                                         }}
+                                         onClick={handleCommentSave}>
+                                        <span className={"btn btn-success"} style={{ "padding": "0px" }}
+                                        >Save
+                                        </span>
+                                    </div>
                                     <div className="bg-danger w-50 logout text-center p-2 my-1"
                                          style={{
                                              "borderRadius": "30px",
                                              "cursor": "pointer",
                                              "margin": "0 0.5rem "
                                          }}
-
                                          onClick={handleCommentCancel}>
-                                                    <span className={"btn btn-danger"} style={{"padding": "0px"}}
-                                                    >Cancel
-                                                    </span>
+                                        <span className={"btn btn-danger"} style={{ "padding": "0px" }}
+                                        >Cancel
+                                        </span>
                                     </div>
+                                </div>
                             </div>
-                        </div>
-
-                    </div>}
+                        </div>}
                     <div></div>
                     <div id="comment-container">
                         {course?.feedbacks.map((item, index) => (
-                            <Comment name={item.fullname} text={item.text} rate={item.rating}>
-                            </Comment>
+                            <Comment key={index} name={item.fullname} text={item.text} rate={item.rating} />
                         ))}
-
                     </div>
                 </div>
                 }
@@ -429,7 +393,6 @@ const Course = ({courseId}) => {
                             </Collapse>
                         ))}
                     </div>
-
                 </div>
                 }
             </div>
