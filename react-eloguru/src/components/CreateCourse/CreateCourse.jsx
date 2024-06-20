@@ -43,7 +43,7 @@ const CreateCourse = () => {
         // const formData = new FormData();
         // formData.append(...courseData);
         // formData.
-        courseData.append('photo', selectedFile);
+        selectedFile && courseData.append('photo', selectedFile);
 
         // console.log(courseData.values);
         for (const pair of courseData.entries()) {
