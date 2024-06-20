@@ -13,7 +13,6 @@ import LoginModal from "../Login/LoginModal";
 import TopicCreateModal from "../TopicCreate/TopicCreateModal";
 
 const Course = ({ courseId }) => {
-    const localcourses = localStorage.getItem("studentEnrolled");
     const [activeTab, setActiveTab] = useState('info');
     const [topics, setTopics] = useState([]);
     const [course, setCourse] = useState();
@@ -30,10 +29,27 @@ const Course = ({ courseId }) => {
     const [category, setCategory] = useState('');
     const [comment, setComment] = useState('');
     const [commentRate, setCommentRate] = useState('');
-    const [userEnrolled, setUserEnrolled] = useState(localcourses ? JSON.parse(localcourses).includes(courseId) : false);
+    const [userEnrolled, setUserEnrolled] = useState(false);
     const navigate = useNavigate();
     const [teacherName, setTeacherName] = useState('');
     const [triggerFetch, setTriggerFetch] = useState(false);
+
+    const fetchEnrollmentStatus = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/checkEnroll`, {
+                credentials: 'include'
+            });
+            if (response.ok) {
+                const isEnrolled = await response.json();
+                console.log("enrolstat", isEnrolled)
+                setUserEnrolled(isEnrolled);
+            } else {
+                console.error('Failed to fetch enrollment status');
+            }
+        } catch (error) {
+            console.error('Error fetching enrollment status:', error);
+        }
+    };
 
     useEffect(() => {
         const fetchUserInfo = async () => {
@@ -58,7 +74,9 @@ const Course = ({ courseId }) => {
                 setDurationDays(data?.durationDays)
                 setStartDate(data?.startDate ? data?.startDate?.slice(0, 10) : '')
                 setCategory(data?.categories)
-                await getUserRole();
+                const role = await getUserRole();
+                if (role === "STUDENT")
+                    await fetchEnrollmentStatus();
                 setIsLoading(false);
 
             } catch (error) {
@@ -78,10 +96,12 @@ const Course = ({ courseId }) => {
 
     const getUserRole = async () => {
         const response = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/check`, { credentials: 'include' });
-
+        let role = '';
         if (response.status == 200) {
-            setUserRole((await response.json()).role.toString().toUpperCase());
+            role = (await response.json()).role.toString().toUpperCase();
+            setUserRole(role);
         }
+        return role;
     }
 
     const handleEnroll = async () => {

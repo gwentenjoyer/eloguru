@@ -34,6 +34,7 @@ public interface CourseService {
     TopicDto addTopic(Long courseId, TopicInitDto topicInitDto);
 
     ResponseEntity<StudentCourseProgressDto> getCourseProgress(Principal principal, @PathVariable Long courseId);
+    ResponseEntity<Boolean> checkEnrollToCourse(Principal principal, Long courseId);
 
 
     void force_delete();

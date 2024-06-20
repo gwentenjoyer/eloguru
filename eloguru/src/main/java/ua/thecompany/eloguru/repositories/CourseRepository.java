@@ -29,4 +29,6 @@ public interface CourseRepository extends BaseRepository<Course, Long> {
     Page<Course> findAllByOrderByDurationDaysAsc(Pageable pageable);
     Page<Course> findAllByOrderByDurationDaysDesc(Pageable pageable);
 
+    @Query("select count(e) > 0 from Course c join c.students e where c.id = :courseId and e.id = :studentId")
+    boolean isUserEnrolledInCourse(@Param("courseId") Long courseId, @Param("studentId") Long studentId);
 }

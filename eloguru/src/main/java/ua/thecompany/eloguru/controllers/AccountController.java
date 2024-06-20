@@ -268,6 +268,9 @@ public class AccountController {
             return new ResponseEntity<>(student, HttpStatus.OK);
 
         }
+        else if(accRole == EnumeratedRole.ADMIN.toString()){
+            return new ResponseEntity<>(accountService.getAccountById(1l), HttpStatus.OK);
+        }
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 }

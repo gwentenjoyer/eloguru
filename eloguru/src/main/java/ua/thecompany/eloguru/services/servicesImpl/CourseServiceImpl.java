@@ -26,15 +26,13 @@ import ua.thecompany.eloguru.dto.TopicDto;
 import ua.thecompany.eloguru.mappers.CourseMapper;
 import ua.thecompany.eloguru.mappers.StudentCourseProgressMapper;
 import ua.thecompany.eloguru.mappers.TopicMapper;
-import ua.thecompany.eloguru.model.Course;
-import ua.thecompany.eloguru.model.Student;
-import ua.thecompany.eloguru.model.StudentCourseProgress;
-import ua.thecompany.eloguru.model.Topic;
+import ua.thecompany.eloguru.model.*;
 import ua.thecompany.eloguru.repositories.CourseRepository;
 import ua.thecompany.eloguru.repositories.StudentCourseProgressRepository;
 import ua.thecompany.eloguru.repositories.StudentRepository;
 import ua.thecompany.eloguru.services.*;
 
+import javax.security.sasl.AuthenticationException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -233,6 +231,25 @@ public class CourseServiceImpl implements CourseService {
         course.getStudents().remove(studentRepository.findByIdAndActive(studentAccountId, true).orElseThrow(() -> new EntityNotFoundException("Could not find student with id: " + studentAccountId)));
         courseRepository.save(course);
         log.info("Disrolled student with id: " + studentAccountId + " from course with id: " + courseId);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<Boolean> checkEnrollToCourse(Principal principal, Long courseId) {
+        try{
+            if (principal == null)
+                throw new AuthenticationException("Empty principal");
+            if (accountService.getUserRole(principal.getName()) != EnumeratedRole.STUDENT.toString())
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+            return new ResponseEntity<Boolean>(courseRepository.isUserEnrolledInCourse(courseId,
+                    accountService.getStudentByAccountId(accountService.getIdByEmail(principal.getName())).id()), HttpStatus.OK);
+        }
+        catch(AuthenticationException e){
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+        catch(EntityNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
 

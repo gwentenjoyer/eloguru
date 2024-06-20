@@ -20,6 +20,7 @@ import ua.thecompany.eloguru.services.AccountService;
 import ua.thecompany.eloguru.services.CourseService;
 import ua.thecompany.eloguru.services.StudentService;
 
+import javax.security.sasl.AuthenticationException;
 import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
@@ -125,12 +126,15 @@ public class CourseController {
     public ResponseEntity<CourseDto> enrollToCourse(Principal principal, @PathVariable Long courseId) {
             try{
                 if (principal == null)
-                    throw new EntityNotFoundException("Empty principal");
+                    throw new AuthenticationException("Empty principal");
                 if (accountService.getUserRole(principal.getName()) != EnumeratedRole.STUDENT.toString())
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 enroll(courseId,
                         accountService.getStudentByAccountId(accountService.getIdByEmail(principal.getName())).id());
                 return new ResponseEntity<>(HttpStatus.OK);
+            }
+            catch(AuthenticationException e){
+                return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
             }
             catch(EntityNotFoundException e){
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -147,9 +151,13 @@ public class CourseController {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         catch(EntityNotFoundException e){
-            System.out.println(e);
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/{courseId}/checkEnroll")
+    public ResponseEntity<Boolean> checkEnrollToCourse(Principal principal, @PathVariable Long courseId) {
+        return courseService.checkEnrollToCourse(principal, courseId);
     }
 
     @DeleteMapping("/force_delete")

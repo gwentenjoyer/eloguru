@@ -6,7 +6,6 @@ function CoursePreview({ label, id, progress, isCompleted=false}) {
     const handleToggle = () => {
         navigate(`/course/${id}`);
     };
-    console.log("hereis", isCompleted, progress);
     return (
         <div className="card w-50 m-1">
             <div

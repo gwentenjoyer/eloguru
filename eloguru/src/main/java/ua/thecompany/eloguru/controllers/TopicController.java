@@ -112,7 +112,11 @@ public class TopicController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         catch(EntityNotFoundException e){
+            return new ResponseEntity<>(e.getMessage(),HttpStatus.UNAUTHORIZED);
+        }
+        catch (RuntimeException e){
             return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+//            System.out.println(e.getMessage());
         }
     }
 
