@@ -11,15 +11,20 @@ import org.springframework.core.io.Resource;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 import ua.thecompany.eloguru.dto.CourseDto;
 import ua.thecompany.eloguru.dto.FeedbackDto;
 import ua.thecompany.eloguru.dto.InitDto.CourseInitDto;
 import ua.thecompany.eloguru.dto.InitDto.TopicInitDto;
+import ua.thecompany.eloguru.dto.StudentCourseProgressDto;
 import ua.thecompany.eloguru.dto.TopicDto;
 import ua.thecompany.eloguru.mappers.CourseMapper;
+import ua.thecompany.eloguru.mappers.StudentCourseProgressMapper;
 import ua.thecompany.eloguru.mappers.TopicMapper;
 import ua.thecompany.eloguru.model.Course;
 import ua.thecompany.eloguru.model.Student;
@@ -28,15 +33,13 @@ import ua.thecompany.eloguru.model.Topic;
 import ua.thecompany.eloguru.repositories.CourseRepository;
 import ua.thecompany.eloguru.repositories.StudentCourseProgressRepository;
 import ua.thecompany.eloguru.repositories.StudentRepository;
-import ua.thecompany.eloguru.services.CourseService;
-import ua.thecompany.eloguru.services.FeedbackService;
-import ua.thecompany.eloguru.services.TeacherService;
-import ua.thecompany.eloguru.services.TopicService;
+import ua.thecompany.eloguru.services.*;
 
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.Principal;
 import java.util.*;
 
 @Service
@@ -52,6 +55,8 @@ public class CourseServiceImpl implements CourseService {
     private final TopicMapper topicMapper;
     private final TopicService topicService;
     private final FeedbackService feedbackService;
+    private final AccountService accountService;
+    private final StudentCourseProgressMapper studentCourseProgressMapper;
 
     @Override
     @Transactional
@@ -178,6 +183,21 @@ public class CourseServiceImpl implements CourseService {
         Topic topic = topicService.createTopic(topicInitDto);
         course.getTopics().add(topic);
         return topicMapper.topicModelToTopicDto(topic);
+    }
+
+    @Override
+    @Transactional
+    public ResponseEntity<StudentCourseProgressDto> getCourseProgress(Principal principal, @PathVariable Long courseId) {
+        if (principal == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        try {
+            var progress = studentCourseProgressRepository.findByStudentIdAndCourseId(accountService.getStudentByAccountId(
+                            accountService.getIdByEmail(principal.getName())).id(), courseId)
+                    .orElseThrow(() -> new EntityNotFoundException("Cannot find progress for student"));
+            return new ResponseEntity<>(studentCourseProgressMapper.toDTO(progress), HttpStatus.OK);
+        }
+        catch (EntityNotFoundException e){
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override

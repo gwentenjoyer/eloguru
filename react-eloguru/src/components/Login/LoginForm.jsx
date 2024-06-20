@@ -10,11 +10,13 @@ export default function LoginForm() {
 
     const [errCred, setErrCred] = useState(false);
     const [errNotFound, setErrNotFound] = useState(false);
+    const [otherErr, setOtherErr] = useState(false);
     const navigate = useNavigate();
 
     const handleSubmit = (event) => {
         event.preventDefault();
         setErrNotFound(false)
+        setOtherErr(false)
         setErrCred(false)
         const logData = {
             email,
@@ -54,6 +56,8 @@ export default function LoginForm() {
                 // Handle 401 error here
             } else {
                 console.error("An error occurred");
+                setOtherErr(true)
+
                 // Handle other errors here
             }
         })
@@ -82,6 +86,7 @@ export default function LoginForm() {
             <Form.Group className="d-flex justify-content-center">
                 {errCred &&  <Form.Text className="text-white bg-danger rounded p-2 mt-2 mb-4">Invalid credentials. Please check your email or password</Form.Text>}
                 {errNotFound &&  <Form.Text className="text-white bg-danger rounded p-2 mt-2 mb-4">The account either does not exist or is not activated</Form.Text>}
+                {otherErr &&  <Form.Text className="text-white bg-danger rounded p-2 mt-2 mb-4">Something went wrong</Form.Text>}
             </Form.Group>
             <div className={"row justify-content-center"}>
 

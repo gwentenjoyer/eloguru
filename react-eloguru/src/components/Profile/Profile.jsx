@@ -11,6 +11,7 @@ export default function Profile() {
     const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const [courses, setCourses] = useState([]);
+    const [progresses, setProgresses] = useState([]);
     const [accountId, setAccountId] = useState();
 
     const fetchCourse = async (id) => {
@@ -26,7 +27,7 @@ export default function Profile() {
     const fetchCourseProgress = async (id) => {
         const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${id}/getProgress`, { credentials: 'include' });
         if (!response.ok) {
-            console.error("Failed to fetch data to get course");
+            console.error(`Failed to get progress of course ${id}`);
             return;
         }
         const data = await response.json();
@@ -73,17 +74,23 @@ export default function Profile() {
     useEffect(() => {
         const fetchAllCourses = async () => {
             if (userInfo) {
-                let coursePromises;
+                let coursePromises, progressPromises;
                 if (userInfo.role === "TEACHER" && userInfo.teachingCoursesId) {
                     coursePromises = userInfo.teachingCoursesId.map(id => id !== -1 && fetchCourse(id));
                 } else if (userInfo.role === "STUDENT" && userInfo.coursesId) {
                     coursePromises = userInfo.coursesId.map(id => id !== -1 && fetchCourse(id));
+                    progressPromises = userInfo.coursesId.map(id => fetchCourseProgress(id));
                 }
 
                 if (coursePromises) {
                     const courseData = await Promise.all(coursePromises);
                     const filteredCourses = courseData.filter(course => course !== null && course.id !== undefined);
                     setCourses(filteredCourses);
+                }
+                if (progressPromises) {
+                    const progressData = await Promise.all(progressPromises);
+                    const filteredProgress = progressData.filter(p => (p !== null) && p?.id !== undefined);
+                    setProgresses(filteredProgress);
                 }
             }
         };
@@ -370,9 +377,12 @@ export default function Profile() {
                         {!isEditMode && (
                             <div className="d-flex flex-column justify-content-center text-center align-items-center">
                                 {courses.length > 0 ? (
-                                    courses.sort((a, b) => a.id - b.id).map((course, index) => (
-                                        <CoursePreview key={index} label={course.header} id={course.id} />
-                                    ))
+                                    courses.sort((a, b) => a.id - b.id).map((course, index) => {
+                                        let currProgress = (progresses.find(obj => obj.courseId === course.id));
+                                        return (<CoursePreview key={index} label={course.header} id={course.id}
+                                                       progress={currProgress?.progressPercentage || "0"}
+                                                           isCompleted={currProgress?.isCompleted}/>)
+                                    })
                                 ) : (
                                     userInfo.role !== "ADMIN" && (
                                         userInfo.role === "TEACHER" ?

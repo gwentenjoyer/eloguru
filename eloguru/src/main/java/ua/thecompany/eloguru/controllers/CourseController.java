@@ -36,7 +36,7 @@ public class CourseController {
     private final StudentCourseProgressMapper studentCourseProgressMapper;
 
     @PostMapping("/create")
-    public ResponseEntity<?> createCourse(Principal principal, @Valid @RequestBody @ModelAttribute  CourseInitDto courseInitDto) {
+    public ResponseEntity<?> createCourse(Principal principal, @Valid @ModelAttribute  CourseInitDto courseInitDto) {
         try {
             System.out.println(principal);
             if (principal == null)
@@ -91,18 +91,9 @@ public class CourseController {
         }
     }
 
-    @GetMapping("{id}/getProgress")
+    @GetMapping("/{courseId}/getProgress")
     public ResponseEntity<StudentCourseProgressDto> getCourseProgress(Principal principal, @PathVariable Long courseId) {
-        if (principal == null) return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        try {
-            var progress = studentCourseProgressRepository.findByStudentIdAndCourseId(accountService.getStudentByAccountId(
-                    accountService.getIdByEmail(principal.getName())).id(), courseId)
-                    .orElseThrow(() -> new EntityNotFoundException("Cannot find progress for student"));
-            return new ResponseEntity<>(studentCourseProgressMapper.toDTO(progress), HttpStatus.OK);
-        }
-        catch (EntityNotFoundException e){
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-        }
+        return courseService.getCourseProgress(principal, courseId);
     }
 
     @PostMapping("{id}/delete")
