@@ -13,7 +13,7 @@ function SearchBar() {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        navigate(`/courses${searchInput && `?label=${searchInput}`}`);
+        navigate(`/course${searchInput && `?label=${searchInput}`}`);
     }
 
     return (

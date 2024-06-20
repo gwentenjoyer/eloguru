@@ -110,7 +110,7 @@ public class CourseController {
     @PutMapping("{id}")
     public ResponseEntity<CourseDto> updateCourse(Principal principal, @Valid @RequestBody CourseInitDto courseInitDto, @PathVariable Long id) {
         try {
-            if (true || courseService.isTeacherOwnsCourse(id, accountService.getTeacherByAccountId(accountService.getIdByEmail(principal.getName())).id())) {
+            if (courseService.isTeacherOwnsCourse(id, accountService.getTeacherByAccountId(accountService.getIdByEmail(principal.getName())).id())) {
 
                 courseService.updateCourse(courseInitDto, id);
                 return new ResponseEntity<>(HttpStatus.OK);
@@ -120,6 +120,14 @@ public class CourseController {
         catch (EntityNotFoundException e){
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("{id}/isTeacherOwn")
+    public ResponseEntity<Boolean> isTeacherOwnCourse(Principal principal, @PathVariable Long id) {
+        if (principal == null )
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        var own = courseService.isTeacherOwnsCourse(id, accountService.getTeacherByAccountId(accountService.getIdByEmail(principal.getName())).id());
+            return new ResponseEntity<>(own, HttpStatus.OK);
     }
 
     @PostMapping("/{courseId}/enroll")

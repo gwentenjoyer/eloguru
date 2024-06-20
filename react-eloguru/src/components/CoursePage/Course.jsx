@@ -33,6 +33,7 @@ const Course = ({ courseId }) => {
     const navigate = useNavigate();
     const [teacherName, setTeacherName] = useState('');
     const [triggerFetch, setTriggerFetch] = useState(false);
+    const [isTeacherOwn, setIsTeacherOwn] = useState(false);
 
     const fetchEnrollmentStatus = async () => {
         try {
@@ -48,6 +49,21 @@ const Course = ({ courseId }) => {
             }
         } catch (error) {
             console.error('Error fetching enrollment status:', error);
+        }
+    };
+    const fetchTeacherStatus = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/isTeacherOwn`, {
+                credentials: 'include'
+            });
+            if (response.ok) {
+                const isEnrolled = await response.json();
+                setIsTeacherOwn(isEnrolled);
+            } else {
+                console.error('Failed to fetch own status');
+            }
+        } catch (error) {
+            console.error('Error fetching owning status:', error);
         }
     };
 
@@ -77,6 +93,8 @@ const Course = ({ courseId }) => {
                 const role = await getUserRole();
                 if (role === "STUDENT")
                     await fetchEnrollmentStatus();
+                else if (role === "TEACHER")
+                    await fetchTeacherStatus();
                 setIsLoading(false);
 
             } catch (error) {
@@ -260,11 +278,13 @@ const Course = ({ courseId }) => {
                         }
                     </div>
                 }
-                <button className="sign-up-button" disabled={userRole != "STUDENT"} onClick={
+                {userRole === "STUDENT" &&
+
+                    <button className="sign-up-button" disabled={userRole != "STUDENT"} onClick={
                     userEnrolled ? () => { handleDisenroll() } : () => { handleEnroll() }
                 }>{userEnrolled ? "Disenroll" : "Enroll"}
-                </button>
-                {userRole && userRole != "STUDENT" && <button className="sign-up-button" onClick={() => {
+                </button>}
+                {userRole && userRole != "STUDENT" && isTeacherOwn && <button className="sign-up-button" onClick={() => {
                     setVerifyDelete(true)
                 }}>Delete
                 </button>
@@ -273,7 +293,7 @@ const Course = ({ courseId }) => {
                     show={verifyDelete}
                     onHide={() => setVerifyDelete(false)}
                 />
-                {userRole && userRole != "STUDENT" && !isEditMode &&
+                {userRole && userRole != "STUDENT" && !isEditMode && isTeacherOwn &&
                     <div className="w-50 bg-warning logout text-center p-2 my-1"
                          style={{
                              "borderRadius": "30px",
@@ -327,9 +347,13 @@ const Course = ({ courseId }) => {
                 <button onClick={() => setActiveTab('themes')}
                         className={activeTab === 'themes' ? 'active' : ''}>Themes
                 </button>
+                {
+                    userRole && userRole === "TEACHER" && isTeacherOwn &&
+
                 <button onClick={() => setTopicModalShow(true)}
                         className={activeTab === 'addtopic' ? 'active' : ''}>Add topic
                 </button>
+                }
             </div>
             <TopicCreateModal show={topicModalShow} courseId={courseId}
                               onHide={() => setTopicModalShow(false)}
@@ -406,7 +430,7 @@ const Course = ({ courseId }) => {
                 {activeTab === 'themes' && <div>
                     <div id="accordion">
                         {topics.map((item, index) => (
-                            <Collapse key={index} label={item.label} id={index} courseId={courseId} topicId={item.topicId} userRole={userRole}>
+                            <Collapse key={index} label={item.label} id={index} courseId={courseId} isTeacherOwn={isTeacherOwn} topicId={item.topicId} userRole={userRole}>
                                 <div>
                                     {item.description}
                                 </div>

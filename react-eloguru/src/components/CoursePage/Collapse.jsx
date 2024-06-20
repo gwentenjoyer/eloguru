@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import {Dropdown} from "react-bootstrap";
 
-function Collapse({ label, children, id, courseId, topicId, userRole }) {
+function Collapse({ label, children, id, courseId, topicId, userRole, isTeacherOwn }) {
     const [isOpen, setIsOpen] = useState(false);
     const [isCompleted, setIsCompleted] = useState(false);
 
@@ -108,7 +108,7 @@ function Collapse({ label, children, id, courseId, topicId, userRole }) {
                     </button>
                 </h5>
                 </div>
-                {userRole === "TEACHER"?
+                {userRole === "TEACHER" && isTeacherOwn &&
                         <div className={"mx-3"}>
                             <Dropdown>
                                 <Dropdown.Toggle variant="success" id="dropdown-basic">
@@ -121,7 +121,7 @@ function Collapse({ label, children, id, courseId, topicId, userRole }) {
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
-                :<></>}
+                }
             </div>
             {isOpen && (
                 <div id={`collapse${id}`} className="collapse show" aria-labelledby={`heading${id}`}>
