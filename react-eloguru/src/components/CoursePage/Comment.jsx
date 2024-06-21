@@ -1,5 +1,6 @@
 import React from "react";
 import '../../css/Comment.css'
+import Rating from "@mui/material/Rating";
 function Comment({ name, text, rate}) {
     return (
         // <div className="css-l6lvqi">
@@ -19,14 +20,21 @@ function Comment({ name, text, rate}) {
         //     </div>
         // </div>
         <div className="comment-item m-3 ">
-            <div className="name text-center text-middle align-items-center">
+            <div className="commname text-center text-middle align-items-center">
                 <div>
                     <img src="/blankUser.png" alt="User photo" className="rounded-photo"/>
                 </div>
                 <div className="comment-center m-1">{name}</div>
             </div>
             <div className="rate-comment">
-                <div className="rate">Rate: {rate}/5</div>
+                <div className="rate d-flex align-items-center"><span className={"me-2"}>Rate:</span>
+                    <Rating className={"mt-2 mb-2"}
+                            name="simple-controlled"
+                            value={rate}
+                            readOnly
+                            precision={0.5}
+                    />
+                </div>
                 <div className="comment">{text}</div>
             </div>
         </div>

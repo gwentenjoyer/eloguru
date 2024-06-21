@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import {useNavigate} from "react-router-dom";
 import "../../css/CoursePreview.css"
-function CoursePreview({ label, id, progress, isCompleted=false}) {
+function CoursePreview({ label, id, role, progress, isCompleted=false}) {
     const navigate = useNavigate();
     const handleToggle = () => {
         navigate(`/course/${id}`);
@@ -17,9 +17,10 @@ function CoursePreview({ label, id, progress, isCompleted=false}) {
                     <h5 className="mb-0">
                         {label}
                     </h5>
-                    <h6 className="mb-0 progress-text">
-                        {progress}%
-                    </h6>
+                    { role === "STUDENT" &&
+                        <h6 className="mb-0 progress-text">
+                            {progress}%
+                        </h6>}
                 </div>
             </div>
         </div>

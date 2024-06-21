@@ -8,7 +8,7 @@ COPY react-eloguru /app/react-eloguru
 
 WORKDIR /app/react-eloguru
 
-RUN mkdir /app/react-eloguru/build
+RUN mkdir -p /app/react-eloguru/build
 
 RUN npm install
 

@@ -129,13 +129,13 @@ export default function NavBar() {
                     {/*<ModalTriggerButton/>*/}
                     <>
                         {userInfoData?.role == "teacher" &&
-                            <Button variant="warning" className="m-2" onClick={() => navigate(`/createCourse`)}>
+                            <Button variant="primary" className="m-2 button-login" onClick={() => navigate(`/createCourse`)}>
                                 Create
                             </Button>
                         }
 
                         {userInfoData?.role == "admin" &&
-                            <Button variant="warning" className="m-2" onClick={() => navigate(`/admin/data`)}>
+                            <Button variant="primary" className="m-2 button-login" onClick={() => navigate(`/admin/data`)}>
                                 Administration
                             </Button>
                         }

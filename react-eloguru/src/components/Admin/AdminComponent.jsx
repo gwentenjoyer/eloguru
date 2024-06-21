@@ -117,17 +117,20 @@ export default function AdminComponent() {
 
     return (
         <div className="content" style={{"position": "relative"}}>
-            <div style={{"paddingLeft": "18%"}}>
-                <button className={isEditMode ? "btn-success btn" : "btn-success btn d-none"}
-                        style={{"padding": "1% 4%", "marginBottom": "10px", "float": "left"}}
-                        onClick={handleSaveButton}>Save
-                </button>
+            <div>
+                <div style={{"paddingLeft": "18%"}}>
+                    <button className={isEditMode ? "btn-success btn" : "btn-success btn d-none"}
+                            style={{"padding": "1% 4%", "marginBottom": "10px", "float": "left"}}
+                            onClick={handleSaveButton}>Save
+                    </button>
+                </div>
+                <div style={{"paddingLeft": "18%"}}>
+                    <button className={isEditMode ? "btn-danger btn" : "btn-warning btn"}
+                            style={{"padding": "1% 4%", "marginBottom": "10px", "marginLeft": "10px"}}
+                            onClick={handleEditButton}>{isEditMode ? "Cancel" : "Edit"}</button>
+                </div>
             </div>
-            <div style={{"paddingLeft": "18%"}}>
-                <button className={isEditMode ? "btn-danger btn" : "btn-warning btn"}
-                        style={{"padding": "1% 4%", "marginBottom": "10px", "marginLeft": "10px"}}
-                        onClick={handleEditButton}>{isEditMode ? "Скасувати" : "Редагувати"}</button>
-            </div>
+
             <button className={"carousel-control-prev"} onClick={handleButtonPrevClick}>
                 <span aria-hidden="true" className="carousel-control-prev-icon"></span>
                 <span className="visually-hidden">Previous</span></button>

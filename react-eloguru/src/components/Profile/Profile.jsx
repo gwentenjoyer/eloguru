@@ -379,7 +379,7 @@ export default function Profile() {
                                 {courses.length > 0 ? (
                                     courses.sort((a, b) => a.id - b.id).map((course, index) => {
                                         let currProgress = (progresses.find(obj => obj.courseId === course.id));
-                                        return (<CoursePreview key={index} label={course.header} id={course.id}
+                                        return (<CoursePreview key={index} role={userInfo.role} label={course.header} id={course.id}
                                                        progress={currProgress?.progressPercentage || "0"}
                                                            isCompleted={currProgress?.isCompleted}/>)
                                     })

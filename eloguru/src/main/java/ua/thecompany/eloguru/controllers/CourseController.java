@@ -97,6 +97,10 @@ public class CourseController {
 
     @PostMapping("{id}/delete")
     public ResponseEntity<CourseDto> deleteCourse(Principal principal, @PathVariable Long id) {
+        if (accountService.getAccountById(accountService.getIdByEmail(principal.getName())).id() == 1) {
+            courseService.deleteCourseById(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        }
         if (courseService.isTeacherOwnsCourse(id, accountService.getTeacherByAccountId(accountService.getIdByEmail(principal.getName())).id())) {
 //        if (courseService.isAccountOwnsCourse(id, accountService.getIdByEmail(principal.getName()))) {
             courseService.deleteCourseById(id);
