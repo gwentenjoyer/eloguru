@@ -46,11 +46,23 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                         .requestMatchers("/accounts/signup", "/accounts/login", "/", "/accounts/check", "/",
                                 "/index.html", "/static/**", "/*.ico", "/*.json", "/*.png","/*.jpg",
-                                "/static/coursesPhotos/**", "/accounts/activate", "/about", "/login", "/sign-up",
-                                "/courses", "/courses/**", "/course/**", "swagger-ui/**", "/actuator", "/actuator/**", "/topics/**", "/accounts/**").permitAll()
-                        .requestMatchers("/profile", "/accounts/**").authenticated()
-                        .requestMatchers("/admin", "/admin/**").hasAnyAuthority(EnumeratedRole.ADMIN.name())
-                        .requestMatchers("/courses/create", "/admin/**").hasAnyAuthority(EnumeratedRole.TEACHER.name())
+                                "/static/coursesPhotos/**", "/coursesPhotos/**", "/accounts/activate", "/about", "/login", "/sign-up",
+                                "/courses", "/courses", "/course", "swagger-ui/**", "/actuator", "/actuator/**",
+                                "/accounts/login", "/accounts/signup").permitAll()
+                        .requestMatchers(HttpMethod.PUT,"/courses/{courseId}").hasAnyAuthority(EnumeratedRole.TEACHER.name().toLowerCase())
+                        .requestMatchers(HttpMethod.GET, "/courses/**", "/courses/{courseId}", "/course/{courseId}",
+                                "/accounts/teacher/{teacherId}/getName", "/courses/{courseId}/topics","/accounts/check").permitAll()
+                        .requestMatchers("/profile", "/accounts/logout","/accounts/getUserInfo","/accounts","/accounts/refreshToken").authenticated()
+                        .requestMatchers("/courses/create", "/admin/**", "/courses/{courseId}/topics/{topicId}/delete",
+                                "/courses/{courseId}/topics/{topicId}", "/courses/{courseId}", "/courses/{courseId}/delete",
+                                "/courses/create","/courses/{courseId}/topics/create","/createCourse", "/course/{courseId}").hasAnyAuthority(EnumeratedRole.TEACHER.name().toLowerCase())
+                        .requestMatchers("/admin", "/admin/**", "/courses/{courseId}/delete").hasAnyAuthority(EnumeratedRole.ADMIN.name().toLowerCase())
+                        .requestMatchers(HttpMethod.GET, "/courses/{courseId}/topics/{topicId}/completed",
+                                "/courses/{courseId}/checkEnroll","/courses/{id}/getProgress").hasAnyAuthority(EnumeratedRole.STUDENT.name().toLowerCase())
+                        .requestMatchers(HttpMethod.POST,"/courses/{courseId}/topics/{topicId}/save_topic_progress",
+                                "/courses/{courseId}/enroll", "/courses/{courseId}/disenroll", "/course/{courseId}/disenroll",
+                                "/courses/{courseId}/topics/{topicId}/remove_topic_progress",
+                                "/feedbacks").hasAnyAuthority(EnumeratedRole.STUDENT.name().toLowerCase())
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
