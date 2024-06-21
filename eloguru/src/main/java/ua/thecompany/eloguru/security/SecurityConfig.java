@@ -44,16 +44,22 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests((authz) -> authz
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
-//                        .requestMatchers("/accounts/signup", "/accounts/login", "/", "/accounts/check",
-//                                "/login", "/sign-up", "/courses", "swagger-ui/**", "/actuator", "/actuator/**", "**").permitAll()
-                                .requestMatchers("**").permitAll()
-
+                        .requestMatchers("/accounts/signup", "/accounts/login", "/", "/accounts/check", "/",
+                                "/index.html", "/static/**", "/*.ico", "/*.json", "/*.png","/*.jpg",
+                                "/static/coursesPhotos/**", "/accounts/activate", "/about", "/login", "/sign-up",
+                                "/courses", "/courses/**", "/course/**", "swagger-ui/**", "/actuator", "/actuator/**", "/topics/**", "/accounts/**").permitAll()
+                        .requestMatchers("/profile", "/accounts/**").authenticated()
+                        .requestMatchers("/admin", "/admin/**").hasAnyAuthority(EnumeratedRole.ADMIN.name())
+                        .requestMatchers("/courses/create", "/admin/**").hasAnyAuthority(EnumeratedRole.TEACHER.name())
                 )
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-
-                    .build();
+                .formLogin(form -> form
+                    .loginPage("/?login=true")
+                    .permitAll()
+                )
+                .build();
     }
 //    @Bean
 //    public UrlBasedCorsConfigurationSource corsConfigurationSource() {

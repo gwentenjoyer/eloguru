@@ -33,8 +33,6 @@ public class CourseController {
     private final CourseService courseService;
     private final StudentService studentService;
     private final AccountService accountService;
-    private final StudentCourseProgressRepository studentCourseProgressRepository;
-    private final StudentCourseProgressMapper studentCourseProgressMapper;
 
     @PostMapping("/create")
     public ResponseEntity<?> createCourse(Principal principal, @Valid @ModelAttribute  CourseInitDto courseInitDto) {
