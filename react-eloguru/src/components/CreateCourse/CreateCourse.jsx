@@ -49,7 +49,7 @@ const CreateCourse = () => {
         for (const pair of courseData.entries()) {
             console.log(pair[0] + ': ' + pair[1]);
         }
-        axios.post(`${process.env.REACT_APP_BASE_URL}/courses/create`, courseData, {
+        axios.post(`/courses/create`, courseData, {
             headers: {
                 'Content-Type': 'multipart/form-data',
             },

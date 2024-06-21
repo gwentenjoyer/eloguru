@@ -17,7 +17,7 @@ export default function AdminComponent() {
 
     const fetchUsersData = async (pageInfo) => {
         try {
-            const response = await axios.get(`${process.env.REACT_APP_BASE_URL}/accounts/list?sort=Id&page=` + pageInfo.page, {withCredentials: true});
+            const response = await axios.get(`/accounts/list?sort=Id&page=` + pageInfo.page, {withCredentials: true});
             if (response.status === 200) {
                 setUsers(prevUsers => response.data);
                 setPageInfo(prevState => ({...prevState, maxPage: response.data.totalPages}));
@@ -77,7 +77,7 @@ export default function AdminComponent() {
         setIsEditMode(!isEditMode);
     }
     const updateUser = (userId, userChanges) => {
-        fetch(`${process.env.REACT_APP_BASE_URL}/accounts/${userId}?statusActive=${userChanges.active}`, {
+        fetch(`/accounts/${userId}?statusActive=${userChanges.active}`, {
             credentials: 'include',
             method: 'PUT',
         })

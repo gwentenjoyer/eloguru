@@ -8,7 +8,7 @@ export default function RequireAuth({url}) {
 
     useEffect(() => {
         const fetchData = async () => {
-            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/${url}`,{credentials: 'include'});
+            const response = await fetch(`/${url}`,{credentials: 'include'});
             if (response.status === 200 && !response.redirected) {
                 setIsOk(true);
             } else {

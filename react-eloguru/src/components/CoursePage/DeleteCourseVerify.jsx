@@ -6,7 +6,7 @@ export default function DeleteCourseVerify(props) {
 
     const navigate = useNavigate();
     const handleDelete = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${props.courseId}/delete`, {credentials: 'include', method: "POST"});
+        const response = await fetch(`/courses/${props.courseId}/delete`, {credentials: 'include', method: "POST"});
 
         if (!response.status === 200){
             console.log(response)

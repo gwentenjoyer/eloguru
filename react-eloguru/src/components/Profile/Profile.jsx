@@ -15,7 +15,7 @@ export default function Profile() {
     const [accountId, setAccountId] = useState();
 
     const fetchCourse = async (id) => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${id}`, { credentials: 'include' });
+        const response = await fetch(`/courses/${id}`, { credentials: 'include' });
         if (!response.ok) {
             console.error("Failed to fetch data to get course");
             return;
@@ -25,7 +25,7 @@ export default function Profile() {
     };
 
     const fetchCourseProgress = async (id) => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${id}/getProgress`, { credentials: 'include' });
+        const response = await fetch(`/courses/${id}/getProgress`, { credentials: 'include' });
         if (!response.ok) {
             console.error(`Failed to get progress of course ${id}`);
             return;
@@ -35,7 +35,7 @@ export default function Profile() {
     };
 
     const fetchUserCheck = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/check`, { credentials: 'include' });
+        const response = await fetch(`/accounts/check`, { credentials: 'include' });
         if (!response.ok) {
             console.error("Failed to fetch data to check user");
             return;
@@ -49,7 +49,7 @@ export default function Profile() {
             setIsLoading(true);
             try {
                 const [userInfoResponse, checkResponse] = await Promise.all([
-                    fetch(`${process.env.REACT_APP_BASE_URL}/accounts/getUserInfo`, { credentials: 'include' }),
+                    fetch(`/accounts/getUserInfo`, { credentials: 'include' }),
                     fetchUserCheck()
                 ]);
 
@@ -103,7 +103,7 @@ export default function Profile() {
     };
 
     const handleLogoutButton = () => {
-        fetch(`${process.env.REACT_APP_BASE_URL}/accounts/logout`, {
+        fetch(`/accounts/logout`, {
             credentials: 'include',
             method: 'POST',
         })
@@ -134,7 +134,7 @@ export default function Profile() {
             fullname: userInfo.fullname
         };
 
-        axios.put(`${process.env.REACT_APP_BASE_URL}/accounts`, payload, { withCredentials: true })
+        axios.put(`/accounts`, payload, { withCredentials: true })
             .then((res) => {
                 if (res.status === 200) {
                     setIsEditMode(false);

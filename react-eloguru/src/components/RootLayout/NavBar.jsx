@@ -28,7 +28,7 @@ export default function NavBar() {
     };
 
     const handleLogout = async () => {
-         fetch(`${process.env.REACT_APP_BASE_URL}/accounts/logout`, {
+         fetch(`/accounts/logout`, {
             credentials: 'include',
             method: 'POST',
         })
@@ -44,7 +44,7 @@ export default function NavBar() {
     useEffect(() => {
             const fetchUserInfo = async () => {
                 try {
-                    const data = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/check`, {credentials: 'include'});
+                    const data = await fetch(`/accounts/check`, {credentials: 'include'});
                     // const data = await response?.json();
                     // if (!response?.redirected) {
                     //     setUserInfo(data);

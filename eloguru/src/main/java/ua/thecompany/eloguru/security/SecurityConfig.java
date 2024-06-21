@@ -46,9 +46,8 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS,"/**").permitAll()
                         .requestMatchers("/accounts/signup", "/accounts/login", "/", "/accounts/check", "/",
                                 "/index.html", "/static/**", "/*.ico", "/*.json", "/*.png","/*.jpg",
-                                "/static/coursesPhotos/**", "/coursesPhotos/**", "/accounts/activate", "/about", "/login", "/sign-up",
-                                "/courses", "/courses", "/course", "swagger-ui/**", "/actuator", "/actuator/**",
-                                "/accounts/login", "/accounts/signup").permitAll()
+                                "/static/coursesPhotos/**", "/coursesPhotos/**", "/accounts/activate", "/activate", "/about", "/login", "/sign-up",
+                                "/courses", "/courses", "/course", "swagger-ui/**", "/actuator", "/actuator/**", "/accounts/signup").permitAll()
                         .requestMatchers(HttpMethod.PUT,"/courses/{courseId}").hasAnyAuthority(EnumeratedRole.TEACHER.name().toLowerCase())
                         .requestMatchers(HttpMethod.GET, "/courses/**", "/courses/{courseId}", "/course/{courseId}",
                                 "/accounts/teacher/{teacherId}/getName", "/courses/{courseId}/topics","/accounts/check").permitAll()
@@ -73,21 +72,21 @@ public class SecurityConfig {
                 )
                 .build();
     }
+
 //    @Bean
-//    public UrlBasedCorsConfigurationSource corsConfigurationSource() {
-//
-//        configuration.addAllowedHeader("*");
-//        configuration.setAllowCredentials(true);
-//
-//        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-//        source.registerCorsConfiguration("/**", configuration);
-//        return source;
+//    public WebMvcConfigurer corsConfigurer() {
+//        return new WebMvcConfigurer() {
+//            @Override
+//            public void addCorsMappings(CorsRegistry registry) {
+//                registry.addMapping("/**").allowedOrigins("*");
+//            }
+//        };
 //    }
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("https://eloguru.saasjet.com"));
         configuration.setAllowedMethods(Arrays.asList("GET","POST", "PUT", "DELETE"));
         configuration.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type"));
         configuration.setAllowCredentials(true);
@@ -95,4 +94,5 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
 }

@@ -1,5 +1,5 @@
 const handleLogout = async () => {
-    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/logout`, { credentials: 'include'});
+    const response = await fetch(`/accounts/logout`, { credentials: 'include'});
     if (!response.ok){
         console.error("Failed to fetch data user")
     }

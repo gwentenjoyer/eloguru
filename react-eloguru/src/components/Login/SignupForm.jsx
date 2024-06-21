@@ -42,7 +42,7 @@ export default function SignupForm() {
         // If passwords match, send the data to the server
         // Here you can implement your logic to send data to the server
 
-        axios.post(`${process.env.REACT_APP_BASE_URL}/accounts/signup?role=${selectedOption}`, logData, {withCredentials: true})
+        axios.post(`/accounts/signup?role=${selectedOption}`, logData, {withCredentials: true})
             .then(res => {
                     // window.location.href = "/profile"
                 setSuccReg(true);

@@ -10,7 +10,7 @@ function Collapse({ label, children, id, courseId, topicId, userRole, isTeacherO
     };
 
     const saveTopics = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}/save_topic_progress`,
+        const response = await fetch(`/courses/${courseId}/topics/${topicId}/save_topic_progress`,
             {
                 credentials: 'include',
                 method: "POST"
@@ -22,7 +22,7 @@ function Collapse({ label, children, id, courseId, topicId, userRole, isTeacherO
     };
 
     const removeTopics = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}/remove_topic_progress`,
+        const response = await fetch(`/courses/${courseId}/topics/${topicId}/remove_topic_progress`,
             {
                 credentials: 'include',
                 method: "POST"
@@ -34,7 +34,7 @@ function Collapse({ label, children, id, courseId, topicId, userRole, isTeacherO
     };
 
     const getCompletedTopics = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}/completed`,
+        const response = await fetch(`/courses/${courseId}/topics/${topicId}/completed`,
             {
                 credentials: 'include'
             }
@@ -54,7 +54,7 @@ function Collapse({ label, children, id, courseId, topicId, userRole, isTeacherO
     };
 
     const handleDeleteTheme = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}/delete`, { credentials: 'include', method: "POST" });
+        const response = await fetch(`/courses/${courseId}/topics/${topicId}/delete`, { credentials: 'include', method: "POST" });
         if (response.status !== 200) {
             console.log(response);
             console.error("Failed to delete");
@@ -64,7 +64,7 @@ function Collapse({ label, children, id, courseId, topicId, userRole, isTeacherO
     };
 
     const handleEditTheme = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/${topicId}`, {credentials: 'include', method: "PUT"});
+        const response = await fetch(`/courses/${courseId}/topics/${topicId}`, {credentials: 'include', method: "PUT"});
         if (response.status !== 200) {
             console.log(response);
             console.error("Failed to edit");

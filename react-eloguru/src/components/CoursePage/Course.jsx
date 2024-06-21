@@ -37,7 +37,7 @@ const Course = ({ courseId }) => {
 
     const fetchEnrollmentStatus = async () => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/checkEnroll`, {
+            const response = await fetch(`/courses/${courseId}/checkEnroll`, {
                 credentials: 'include'
             });
             if (response.ok) {
@@ -53,7 +53,7 @@ const Course = ({ courseId }) => {
     };
     const fetchTeacherStatus = async () => {
         try {
-            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/isTeacherOwn`, {
+            const response = await fetch(`/courses/${courseId}/isTeacherOwn`, {
                 credentials: 'include'
             });
             if (response.ok) {
@@ -71,7 +71,7 @@ const Course = ({ courseId }) => {
         const fetchUserInfo = async () => {
             try {
                 const [courseResponse, topicsResponse] = await Promise.all([
-                    fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}`, { credentials: 'include' }),
+                    fetch(`/courses/${courseId}`, { credentials: 'include' }),
                     fetchTopics()
                 ]);
 
@@ -82,7 +82,7 @@ const Course = ({ courseId }) => {
                 const data = await courseResponse.json();
                 console.log("course data", data)
                 setCourse(data);
-                const teacherNameRes = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/teacher/${data.teacherId}/getName`, { credentials: 'include' });
+                const teacherNameRes = await fetch(`/accounts/teacher/${data.teacherId}/getName`, { credentials: 'include' });
                 setTeacherName(await teacherNameRes.text())
                 setTopics(await topicsResponse.json())
                 setCourseName(data?.header)
@@ -107,13 +107,13 @@ const Course = ({ courseId }) => {
     }, [courseId, triggerFetch]);
 
     const fetchTopics = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics`, { credentials: 'include' });
+        const response = await fetch(`/courses/${courseId}/topics`, { credentials: 'include' });
         console.log(response)
         return response;
     }
 
     const getUserRole = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/check`, { credentials: 'include' });
+        const response = await fetch(`/accounts/check`, { credentials: 'include' });
         let role = '';
         if (response.status == 200) {
             role = (await response.json()).role.toString().toUpperCase();
@@ -123,7 +123,7 @@ const Course = ({ courseId }) => {
     }
 
     const handleEnroll = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/enroll`, { credentials: 'include', method: "POST" });
+        const response = await fetch(`/courses/${courseId}/enroll`, { credentials: 'include', method: "POST" });
 
         if (!response.status === 200) {
             console.log(response)
@@ -134,7 +134,7 @@ const Course = ({ courseId }) => {
     };
 
     const handleDisenroll = async () => {
-        const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/disenroll`, { credentials: 'include', method: "POST" });
+        const response = await fetch(`/courses/${courseId}/disenroll`, { credentials: 'include', method: "POST" });
         console.log("another", response)
         if (response.status !== 200) {
             console.log(response)
@@ -163,7 +163,7 @@ const Course = ({ courseId }) => {
             rating: commentRate
         }
         try {
-            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/feedbacks`, {
+            const response = await fetch(`/feedbacks`, {
                 credentials: 'include',
                 method: "POST",
                 headers: {
@@ -197,7 +197,7 @@ const Course = ({ courseId }) => {
         };
         console.log(courseData);
         try {
-            const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}`, courseData, { withCredentials: true });
+            const response = await axios.put(`/courses/${courseId}`, courseData, { withCredentials: true });
             if (response.status === 200) {
                 // const updatedCourse = await response.json();
                 // setCourse(updatedCourse);

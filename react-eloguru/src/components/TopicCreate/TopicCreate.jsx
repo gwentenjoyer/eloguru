@@ -22,7 +22,7 @@ const TopicCreate = ({courseId}) => {
         }
         console.log(payload);
 
-        const response = await axios.post(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}/topics/create`, payload,
+        const response = await axios.post(`/courses/${courseId}/topics/create`, payload,
             {
                 withCredentials: 'include',
             });

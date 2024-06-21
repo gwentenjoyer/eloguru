@@ -24,12 +24,12 @@ export default function LoginForm() {
         }
         console.log(logData)
         //TODO: warning on form that not found
-        axios.post(`${process.env.REACT_APP_BASE_URL}/accounts/login`, logData, {withCredentials: true})
+        axios.post(`/accounts/login`, logData, {withCredentials: true})
             .then(async (res) => {
                 if (res.status == 200){
                     // window.location.href = "/profile"
                     localStorage.setItem("account", JSON.stringify())
-                    const response = await fetch(`${process.env.REACT_APP_BASE_URL}/accounts/getUserInfo`, { credentials: 'include' });
+                    const response = await fetch(`/accounts/getUserInfo`, { credentials: 'include' });
                     if (!response.ok){
                         console.error("Failed to fetch data user")
                         navigate('/');

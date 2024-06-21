@@ -20,7 +20,7 @@ const CourseList = () => {
             const queryParams = new URLSearchParams(location.search);
             const label = queryParams.get('label');
             // console.log(`${process.env.REACT_APP_BASE_URL}/courses?page=${page}&size=${size}${label ? `&label=${label}`: ""}`);
-            const response = await fetch(`${process.env.REACT_APP_BASE_URL}/courses?page=${page}&size=${size}${label ? `&label=${label}`: ""}`, { credentials: 'include' });
+            const response = await fetch(`/courses?page=${page}&size=${size}${label ? `&label=${label}`: ""}`, { credentials: 'include' });
             const data = await response.json();
             console.log(data)
             setFirstPage(data);

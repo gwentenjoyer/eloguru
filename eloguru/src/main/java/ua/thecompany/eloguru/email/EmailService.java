@@ -127,7 +127,7 @@ public class EmailService {
                 "                    <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n" +
                 "                      <tr>\n" +
                 "                        <td align=\"center\" style=\"border-radius: 6px;\">\n" +
-                "                          <a href=\"http://localhost:8080/activate?activationCode=" + activationCode +
+                "                          <a href=\"https://eloguru.saasjet.com/activate?activationCode=" + activationCode +
                 "\" target=\"_blank\" style=\"display: inline-block; padding: 16px 36px; font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif; font-size: 16px; color: #ffffff; text-decoration: none; border-radius: 6px; background-color: rgb(0, 23, 107);\">Verify</a>\n" +
                 "                        </td>\n" +
                 "                      </tr>\n" +
