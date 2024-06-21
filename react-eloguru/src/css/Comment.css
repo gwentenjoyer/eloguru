@@ -3,7 +3,7 @@
     border: 1px solid black;
     border-radius: 5px;
     padding: 10px;
-    width: 300px;
+    max-width: 700px;
     font-family: Arial, sans-serif;
 }
 .comment-item div {
@@ -31,4 +31,8 @@
     width: 50px; /* Set the width of the photo */
     height: 50px; /* Set the height of the photo */
     object-fit: cover; /* Scales the photo to fill the entire element without distorting it */
+}
+
+.commname{
+    max-width: 25%;
 }

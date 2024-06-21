@@ -11,6 +11,7 @@ import DataAdminPage from "../CreateCourse/DataAdminPage";
 import DeleteCourseVerify from "./DeleteCourseVerify";
 import LoginModal from "../Login/LoginModal";
 import TopicCreateModal from "../TopicCreate/TopicCreateModal";
+import {Dropdown} from "react-bootstrap";
 
 const Course = ({ courseId }) => {
     const [activeTab, setActiveTab] = useState('info');
@@ -284,28 +285,39 @@ const Course = ({ courseId }) => {
                     userEnrolled ? () => { handleDisenroll() } : () => { handleEnroll() }
                 }>{userEnrolled ? "Disenroll" : "Enroll"}
                 </button>}
-                {userRole && userRole != "STUDENT" && isTeacherOwn && <button className="sign-up-button" onClick={() => {
-                    setVerifyDelete(true)
-                }}>Delete
-                </button>
-                }
+
+                {userRole && userRole != "STUDENT" && isTeacherOwn && (
+                    <div className="mx-3">
+                        <Dropdown className={"sign-up-button"}>
+                            <Dropdown.Toggle variant="info" className="m-2 p-2 px-3" style={{"background-color": "var(--main-blu)", "color": "var(--light)"}} id="dropdown-basic">
+                                Action
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item href="#/action-1" onClick={handleEditButton}>Edit</Dropdown.Item>
+                                <Dropdown.Item href="#/action-2" onClick={setVerifyDelete}>Delete</Dropdown.Item>
+                                {
+                                    userRole && userRole === "TEACHER" && isTeacherOwn &&
+
+                                    <Dropdown.Item href="#/action-2" onClick={() => setTopicModalShow(true)}
+                                                   className={activeTab === 'addtopic' ? 'active' : ''}
+                                    >Add topic</Dropdown.Item>
+                                    //
+                                    // <button onClick={() => setTopicModalShow(true)}
+                                    //         className={activeTab === 'addtopic' ? 'active' : ''}>Add topic
+                                    // </button>
+                                }
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                )}
+
                 <DeleteCourseVerify
+                    courseId={courseId}
                     show={verifyDelete}
                     onHide={() => setVerifyDelete(false)}
                 />
-                {userRole && userRole != "STUDENT" && !isEditMode && isTeacherOwn &&
-                    <div className="w-50 bg-warning logout text-center p-2 my-1"
-                         style={{
-                             "borderRadius": "30px",
-                             "cursor": "pointer",
-                             "margin": "0 0.5rem "
-                         }}
-                         onClick={handleEditButton}>
-                        <span className={"btn btn-warning"} style={{ "padding": "0px" }}
-                        >Edit
-                        </span>
-                    </div>
-                }
+
                 {userRole && userRole != "STUDENT" && isEditMode &&
                     <div className="bg-success w-50 logout text-center p-2 my-1"
                          style={{
@@ -347,19 +359,16 @@ const Course = ({ courseId }) => {
                 <button onClick={() => setActiveTab('themes')}
                         className={activeTab === 'themes' ? 'active' : ''}>Themes
                 </button>
-                {
-                    userRole && userRole === "TEACHER" && isTeacherOwn &&
 
-                <button onClick={() => setTopicModalShow(true)}
-                        className={activeTab === 'addtopic' ? 'active' : ''}>Add topic
-                </button>
-                }
             </div>
-            <TopicCreateModal show={topicModalShow} courseId={courseId}
-                              onHide={() => setTopicModalShow(false)}
-                              onCreate={(newTopic) => {
-                                  setTopics(prevTopics => [...prevTopics, newTopic]);
-                              }}
+            <TopicCreateModal
+                show={topicModalShow}
+                courseId={courseId}
+                onHide={() => setTopicModalShow(false)}
+                onCreate={(newTopic) => {
+                    setTopics(prevTopics => [...prevTopics, newTopic]);
+                    setTopicModalShow(false); // Close modal after topic creation
+                }}
             />
             <div className="course-content">
                 {activeTab === 'info' && !isEditMode && <div>{(course?.description)}</div>}
