@@ -11,6 +11,7 @@ import DataAdminPage from "../CreateCourse/DataAdminPage";
 import DeleteCourseVerify from "./DeleteCourseVerify";
 import LoginModal from "../Login/LoginModal";
 import TopicCreateModal from "../TopicCreate/TopicCreateModal";
+import {Dropdown} from "react-bootstrap";
 
 const Course = ({ courseId }) => {
     const [activeTab, setActiveTab] = useState('info');
@@ -284,28 +285,40 @@ const Course = ({ courseId }) => {
                     userEnrolled ? () => { handleDisenroll() } : () => { handleEnroll() }
                 }>{userEnrolled ? "Disenroll" : "Enroll"}
                 </button>}
-                {userRole && userRole != "STUDENT" && isTeacherOwn && <button className="sign-up-button" onClick={() => {
+                {userRole && userRole === "ADMIN" && <button className="sign-up-button" onClick={() => {
                     setVerifyDelete(true)
-                }}>Delete
-                </button>
-                }
+                }}>Delete</button>}
+                {userRole && userRole != "STUDENT" && isTeacherOwn && (
+                    <div className="mx-3">
+                        <Dropdown className={"sign-up-button"}>
+                            <Dropdown.Toggle variant="info" className="m-2 p-2 px-3" style={{"background-color": "var(--main-blu)", "color": "var(--light)"}} id="dropdown-basic">
+                                Action
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                                <Dropdown.Item href="#/action-1" onClick={handleEditButton}>Edit</Dropdown.Item>
+                                <Dropdown.Item href="#/action-2" onClick={setVerifyDelete}>Delete</Dropdown.Item>
+                                {
+                                    userRole && userRole === "TEACHER" && isTeacherOwn &&
+
+                                    <Dropdown.Item href="#/action-2" onClick={() => setTopicModalShow(true)}
+                                                   className={activeTab === 'addtopic' ? 'active' : ''}
+                                    >Add topic</Dropdown.Item>
+                                    //
+                                    // <button onClick={() => setTopicModalShow(true)}
+                                    //         className={activeTab === 'addtopic' ? 'active' : ''}>Add topic
+                                    // </button>
+                                }
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </div>
+                )}
                 <DeleteCourseVerify
+                    courseId={courseId}
                     show={verifyDelete}
                     onHide={() => setVerifyDelete(false)}
                 />
-                {userRole && userRole != "STUDENT" && !isEditMode && isTeacherOwn &&
-                    <div className="w-50 bg-warning logout text-center p-2 my-1"
-                         style={{
-                             "borderRadius": "30px",
-                             "cursor": "pointer",
-                             "margin": "0 0.5rem "
-                         }}
-                         onClick={handleEditButton}>
-                        <span className={"btn btn-warning"} style={{ "padding": "0px" }}
-                        >Edit
-                        </span>
-                    </div>
-                }
+
                 {userRole && userRole != "STUDENT" && isEditMode &&
                     <div className="bg-success w-50 logout text-center p-2 my-1"
                          style={{
@@ -347,19 +360,16 @@ const Course = ({ courseId }) => {
                 <button onClick={() => setActiveTab('themes')}
                         className={activeTab === 'themes' ? 'active' : ''}>Themes
                 </button>
-                {
-                    userRole && userRole === "TEACHER" && isTeacherOwn &&
 
-                <button onClick={() => setTopicModalShow(true)}
-                        className={activeTab === 'addtopic' ? 'active' : ''}>Add topic
-                </button>
-                }
             </div>
-            <TopicCreateModal show={topicModalShow} courseId={courseId}
-                              onHide={() => setTopicModalShow(false)}
-                              onCreate={(newTopic) => {
-                                  setTopics(prevTopics => [...prevTopics, newTopic]);
-                              }}
+            <TopicCreateModal
+                show={topicModalShow}
+                courseId={courseId}
+                onHide={() => setTopicModalShow(false)}
+                onCreate={(newTopic) => {
+                    setTopics(prevTopics => [...prevTopics, newTopic]);
+                    setTopicModalShow(false); // Close modal after topic creation
+                }}
             />
             <div className="course-content">
                 {activeTab === 'info' && !isEditMode && <div>{(course?.description)}</div>}
@@ -376,13 +386,15 @@ const Course = ({ courseId }) => {
                 {(activeTab === 'comments' && !isEditMode) && <div className={"mb-3"}>
                     {userRole && userRole === "STUDENT" &&
                         <div className="d-flex flex-row">
-                            <div className="d-flex text-center justify-content-center align-items-center"><label>You may leave your course review:</label></div>
-                            <div className="mx-3 d-flex flex-column w-75">
+                            {/*<div className="d-flex text-center justify-content-center align-items-center"><label>You may leave your course review:</label></div>*/}
+                            <div className="mx-3 d-flex flex-column w-75 commsec">
                                 <div>
                                     <Rating
                                         name="simple-controlled"
                                         value={commentRate}
-                                        onChange={(event, newValue) => { setCommentRate(newValue) }}
+                                        onChange={(event, newValue) => {
+                                            setCommentRate(newValue)
+                                        }}
                                     />
                                 </div>
                                 <div>
@@ -393,36 +405,34 @@ const Course = ({ courseId }) => {
                                         required
                                     ></textarea>
                                 </div>
-                                <div className="d-flex flex-row justify-content-end">
-                                    <div className="bg-success w-50 logout text-center p-2 my-1"
-                                         style={{
-                                             "borderRadius": "30px",
-                                             "cursor": "pointer",
-                                             "margin": "0 0.5rem "
-                                         }}
-                                         onClick={handleCommentSave}>
-                                        <span className={"btn btn-success"} style={{ "padding": "0px" }}
-                                        >Save
-                                        </span>
-                                    </div>
-                                    <div className="bg-danger w-50 logout text-center p-2 my-1"
-                                         style={{
-                                             "borderRadius": "30px",
-                                             "cursor": "pointer",
-                                             "margin": "0 0.5rem "
-                                         }}
-                                         onClick={handleCommentCancel}>
-                                        <span className={"btn btn-danger"} style={{ "padding": "0px" }}
-                                        >Cancel
-                                        </span>
-                                    </div>
+                                <div className="d-flex justify-content-end w-100">
+                                    <button className="btn btn-success mx-2"
+                                            style={{
+                                                "borderRadius": "30px",
+                                                "cursor": "pointer",
+                                                "margin": "0 0.5rem ",
+                                                "width": "150px"
+                                            }}
+                                            onClick={handleCommentSave}>
+                                        Post
+                                    </button>
+                                    <button className="btn btn-danger mx-2"
+                                            style={{
+                                                "borderRadius": "30px",
+                                                "cursor": "pointer",
+                                                "margin": "0 0.5rem ",
+                                                "width": "150px"
+                                            }}
+                                            onClick={handleCommentCancel}>
+                                        Cancel
+                                    </button>
                                 </div>
                             </div>
                         </div>}
-                    <div></div>
+                    <div className={"m-4 font-6 mb-2"}>{userRole === "STUDENT" ? "Other reviews:" : "Reviews:"}</div>
                     <div id="comment-container">
                         {course?.feedbacks.map((item, index) => (
-                            <Comment key={index} name={item.fullname} text={item.text} rate={item.rating} />
+                            <Comment key={index} name={item.fullname} text={item.text} rate={item.rating}/>
                         ))}
                     </div>
                 </div>
@@ -430,7 +440,8 @@ const Course = ({ courseId }) => {
                 {activeTab === 'themes' && <div>
                     <div id="accordion">
                         {topics.map((item, index) => (
-                            <Collapse key={index} label={item.label} id={index} courseId={courseId} isTeacherOwn={isTeacherOwn} topicId={item.topicId} userRole={userRole}>
+                            <Collapse key={index} label={item.label} id={index} courseId={courseId}
+                                      isTeacherOwn={isTeacherOwn} userEnrolled={userEnrolled} topicId={item.topicId} userRole={userRole}>
                                 <div>
                                     {item.description}
                                 </div>
