@@ -14,7 +14,7 @@ RUN npm install
 
 RUN npm run build
 
-FROM maven:3.8.7-openjdk-18-slim as maven
+FROM maven:3.8.7-openjdk-18-slim
 
 RUN mkdir /app
 
@@ -28,9 +28,7 @@ RUN if [ ! -f ".mvn/wrapper/maven-wrapper.jar" ]; then \
     fi
 
 RUN mvn install
-#RUN mvn clean package -DskipTests
 
 EXPOSE 8080
 
-#CMD ["java", "-jar", "/app/Eloguru/target/eloguru-1.0.0.jar"]
 CMD [ "./mvnw", "spring-boot:run" ]

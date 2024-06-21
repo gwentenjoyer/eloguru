@@ -59,6 +59,7 @@ function Collapse({ label, children, id, courseId, topicId, userRole, isTeacherO
             console.log(response);
             console.error("Failed to delete");
         }
+        window.location.reload();
         console.log("deleted");
     };
 

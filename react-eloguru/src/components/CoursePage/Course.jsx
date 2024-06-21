@@ -199,10 +199,10 @@ const Course = ({ courseId }) => {
         try {
             const response = await axios.put(`${process.env.REACT_APP_BASE_URL}/courses/${courseId}`, courseData, { withCredentials: true });
             if (response.status === 200) {
-                const updatedCourse = await response.json();
-                setCourse(updatedCourse);
-                setIsEditMode(false);
-                console.log("success");
+                // const updatedCourse = await response.json();
+                // setCourse(updatedCourse);
+                // setIsEditMode(false);
+                window.location.reload();
             }
         } catch (error) {
             console.error('Error updating course:', error);
