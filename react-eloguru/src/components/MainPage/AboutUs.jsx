@@ -45,7 +45,7 @@ export default function AboutUs() {
                             </div>
                             <div className="d-flex justify-content-center g-4">
                                 {/*<div className="col-sm-6">*/}
-                                    <Link className="btn btn-warning btn-main-blu py-3 px-5" to="/about">Читати більше</Link>
+                                    <Link className="btn btn-warning btn-main-blu py-3 px-5" to="/about">Read more</Link>
                                 {/*</div>*/}
                             </div>
                         </div>

@@ -376,13 +376,15 @@ const Course = ({ courseId }) => {
                 {(activeTab === 'comments' && !isEditMode) && <div className={"mb-3"}>
                     {userRole && userRole === "STUDENT" &&
                         <div className="d-flex flex-row">
-                            <div className="d-flex text-center justify-content-center align-items-center"><label>You may leave your course review:</label></div>
-                            <div className="mx-3 d-flex flex-column w-75">
+                            {/*<div className="d-flex text-center justify-content-center align-items-center"><label>You may leave your course review:</label></div>*/}
+                            <div className="mx-3 d-flex flex-column w-75 commsec">
                                 <div>
                                     <Rating
                                         name="simple-controlled"
                                         value={commentRate}
-                                        onChange={(event, newValue) => { setCommentRate(newValue) }}
+                                        onChange={(event, newValue) => {
+                                            setCommentRate(newValue)
+                                        }}
                                     />
                                 </div>
                                 <div>
@@ -393,36 +395,34 @@ const Course = ({ courseId }) => {
                                         required
                                     ></textarea>
                                 </div>
-                                <div className="d-flex flex-row justify-content-end">
-                                    <div className="bg-success w-50 logout text-center p-2 my-1"
-                                         style={{
-                                             "borderRadius": "30px",
-                                             "cursor": "pointer",
-                                             "margin": "0 0.5rem "
-                                         }}
-                                         onClick={handleCommentSave}>
-                                        <span className={"btn btn-success"} style={{ "padding": "0px" }}
-                                        >Save
-                                        </span>
-                                    </div>
-                                    <div className="bg-danger w-50 logout text-center p-2 my-1"
-                                         style={{
-                                             "borderRadius": "30px",
-                                             "cursor": "pointer",
-                                             "margin": "0 0.5rem "
-                                         }}
-                                         onClick={handleCommentCancel}>
-                                        <span className={"btn btn-danger"} style={{ "padding": "0px" }}
-                                        >Cancel
-                                        </span>
-                                    </div>
+                                <div className="d-flex justify-content-end w-100">
+                                    <button className="btn btn-success mx-2"
+                                            style={{
+                                                "borderRadius": "30px",
+                                                "cursor": "pointer",
+                                                "margin": "0 0.5rem ",
+                                                "width": "150px"
+                                            }}
+                                            onClick={handleCommentSave}>
+                                        Post
+                                    </button>
+                                    <button className="btn btn-danger mx-2"
+                                            style={{
+                                                "borderRadius": "30px",
+                                                "cursor": "pointer",
+                                                "margin": "0 0.5rem ",
+                                                "width": "150px"
+                                            }}
+                                            onClick={handleCommentCancel}>
+                                        Cancel
+                                    </button>
                                 </div>
                             </div>
                         </div>}
-                    <div></div>
+                    <div className={"m-4 font-6 mb-2"}>{userRole === "STUDENT" ? "Other reviews:" : "Reviews:"}</div>
                     <div id="comment-container">
                         {course?.feedbacks.map((item, index) => (
-                            <Comment key={index} name={item.fullname} text={item.text} rate={item.rating} />
+                            <Comment key={index} name={item.fullname} text={item.text} rate={item.rating}/>
                         ))}
                     </div>
                 </div>
@@ -430,7 +430,8 @@ const Course = ({ courseId }) => {
                 {activeTab === 'themes' && <div>
                     <div id="accordion">
                         {topics.map((item, index) => (
-                            <Collapse key={index} label={item.label} id={index} courseId={courseId} isTeacherOwn={isTeacherOwn} topicId={item.topicId} userRole={userRole}>
+                            <Collapse key={index} label={item.label} id={index} courseId={courseId}
+                                      isTeacherOwn={isTeacherOwn} userEnrolled={userEnrolled} topicId={item.topicId} userRole={userRole}>
                                 <div>
                                     {item.description}
                                 </div>
