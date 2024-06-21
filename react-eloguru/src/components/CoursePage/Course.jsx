@@ -285,7 +285,9 @@ const Course = ({ courseId }) => {
                     userEnrolled ? () => { handleDisenroll() } : () => { handleEnroll() }
                 }>{userEnrolled ? "Disenroll" : "Enroll"}
                 </button>}
-
+                {userRole && userRole === "ADMIN" && <button className="sign-up-button" onClick={() => {
+                    setVerifyDelete(true)
+                }}>Delete</button>}
                 {userRole && userRole != "STUDENT" && isTeacherOwn && (
                     <div className="mx-3">
                         <Dropdown className={"sign-up-button"}>
@@ -311,7 +313,6 @@ const Course = ({ courseId }) => {
                         </Dropdown>
                     </div>
                 )}
-
                 <DeleteCourseVerify
                     courseId={courseId}
                     show={verifyDelete}
